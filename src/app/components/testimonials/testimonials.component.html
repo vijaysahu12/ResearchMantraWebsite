@@ -1,0 +1,61 @@
+<section id="testimonials" class="testimonials-section">
+    <div class="testimonials-container">
+        <!-- Header -->
+        <div class="section-header">
+            <div class="eyebrow">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                </svg>
+                Testimonials
+            </div>
+            <h2 class="main-heading">Trusted by <span class="highlight">2,000+</span> Traders</h2>
+            <p class="sub-heading">
+                Don't just take our word for it. Here's what our community has to say about their journey with Research
+                Mantra.
+            </p>
+        </div>
+
+        <!-- Grid -->
+        <div class="testimonials-grid">
+            @for (item of testimonials(); track item.id) {
+            <div class="testimonial-card">
+                <!-- Quote Icon -->
+                <div class="quote-icon">
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor">
+                        <path
+                            d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.987z" />
+                    </svg>
+                </div>
+
+                <!-- Text -->
+                <p class="testimonial-text">"{{ item.text }}"</p>
+
+                <!-- Rating -->
+                <div class="rating">
+                    @for (star of [1,2,3,4,5]; track star) {
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                    }
+                </div>
+
+                <!-- User Info -->
+                <div class="user-info">
+                    <div class="avatar-circle">
+                        {{ item.initial }}
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">{{ item.name }}</span>
+                        <span class="user-meta">{{ item.role }} </span>
+                        <!-- <span>• {{ item.location }}</span> -->
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>

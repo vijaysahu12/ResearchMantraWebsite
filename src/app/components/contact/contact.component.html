@@ -1,0 +1,97 @@
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+        <!-- Header -->
+        <div class="section-header">
+            <div class="eyebrow">Contact Us</div>
+            <h2 class="main-heading">Get in <span class="highlight">Touch</span></h2>
+            <p class="sub-heading">
+                Have specific questions about our plans or research? Send us a message and our team will get back to you
+                shortly.
+            </p>
+        </div>
+
+        <div class="contact-content">
+            <!-- Contact Card Container -->
+            <div class="contact-card">
+                <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+                    <div class="form-grid">
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" formControlName="fullName"
+                                placeholder="Enter your full name"
+                                [class.error]="contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid" />
+                            @if (contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid) {
+                            <span class="error-text">Name is required</span>
+                            }
+                        </div>
+
+                        <!-- Occupation -->
+                        <div class="form-group">
+                            <label for="occupation">Occupation *</label>
+                            <input type="text" id="occupation" formControlName="occupation"
+                                placeholder="E.g. Trader, Professional, Retired"
+                                [class.error]="contactForm.get('occupation')?.touched && contactForm.get('occupation')?.invalid" />
+                            @if (contactForm.get('occupation')?.touched && contactForm.get('occupation')?.invalid) {
+                            <span class="error-text">Occupation is required</span>
+                            }
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number *</label>
+                            <input type="tel" id="phoneNumber" formControlName="phoneNumber"
+                                placeholder="10-digit mobile number"
+                                [class.error]="contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid" />
+                            @if (contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid) {
+                            <span class="error-text">Valid 10-digit number is required</span>
+                            }
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" formControlName="email" placeholder="yourname@example.com"
+                                [class.error]="contactForm.get('email')?.touched && contactForm.get('email')?.invalid" />
+                            @if (contactForm.get('email')?.touched && contactForm.get('email')?.invalid) {
+                            <span class="error-text">Valid email is required</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="form-group full-width">
+                        <label for="message">Message *</label>
+                        <textarea id="message" formControlName="message" rows="5" placeholder="How can we help you?"
+                            [class.error]="contactForm.get('message')?.touched && contactForm.get('message')?.invalid"></textarea>
+                        @if (contactForm.get('message')?.touched && contactForm.get('message')?.invalid) {
+                        <span class="error-text">Message is required</span>
+                        }
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+                            @if (isSubmitting()) {
+                            <span>Sending...</span>
+                            } @else {
+                            <span>ContactUs</span>
+                            }
+                        </button>
+                    </div>
+
+                    @if (submitSuccess()) {
+                    <div class="success-message">
+                        Thank you! Your message has been sent successfully. We'll be in touch soon.
+                    </div>
+                    }
+
+                    @if (submitError()) {
+                    <div class="error-message">
+                        Oops! Something went wrong. Please try again later or contact us directly.
+                    </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

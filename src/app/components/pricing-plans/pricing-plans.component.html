@@ -1,0 +1,115 @@
+<section id="pricing" class="pricing-section">
+    <div class="pricing-container">
+        <!-- Header Area -->
+        <div class="section-header">
+            <div class="pricing-eyebrow">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path d="M13 10V3L4 14H11V21L20 10H13Z" />
+                </svg>
+                Pricing Plans
+            </div>
+            <h2 class="main-heading">Choose the Research Style That Fits <span class="highlight">You</span></h2>
+            <p class="sub-heading">Select a plan based on your trading style and capital</p>
+        </div>
+
+        <!-- Comparison Table (Desktop/Tablet) -->
+        <div class="table-wrapper">
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th class="feature-col">Feature</th>
+                        <th>Cash Positional</th>
+                        <th class="popular-col">
+                            Fatafat Options
+                            <span class="popular-badge">Most Popular</span>
+                        </th>
+                        <th>Hunting Future</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (row of features(); track row.name) {
+                    <tr>
+                        <td class="feature-name">{{ row.name }}</td>
+                        <td>{{ row.cashPositional }}</td>
+                        <td class="popular-bg">{{ row.fatafatOptions }}</td>
+                        <td>{{ row.huntingFuture }}</td>
+                    </tr>
+                    }
+                    <tr class="price-row">
+                        <td class="feature-name">Price per Month</td>
+                        <td class="price-value">Contact for pricing</td>
+                        <td class="price-value popular-bg">₹12,000</td>
+                        <td class="price-value">₹15,000</td>
+                    </tr>
+                    <tr class="cta-row">
+                        <td></td>
+                        <td><button class="btn secondary" routerLink="/contact">Contact Us</button></td>
+                        <td class="popular-bg"><button class="btn primary" routerLink="/contact">Get Started</button>
+                        </td>
+                        <td><button class="btn secondary" routerLink="/contact">Get Started</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile View (Stacked Cards) -->
+        <div class="mobile-plans">
+            <!-- Fatafat Options (Popular) -->
+            <div class="mobile-plan-card popular-card">
+                <div class="card-header">
+                    <span class="popular-badge">Most Popular</span>
+                    <h3>Fatafat Options</h3>
+                    <p class="price">₹12,000 <span>/ month</span></p>
+                </div>
+                <div class="card-features">
+                    @for (row of features(); track row.name) {
+                    <div class="mobile-row">
+                        <span class="label">{{ row.name }}</span>
+                        <span class="value">{{ row.fatafatOptions }}</span>
+                    </div>
+                    }
+                </div>
+                <button class="btn primary full-width" routerLink="/contact">Get Started</button>
+            </div>
+
+            <!-- Cash Positional -->
+            <div class="mobile-plan-card">
+                <div class="card-header">
+                    <h3>Cash Positional</h3>
+                    <p class="price">Contact Us</p>
+                </div>
+                <div class="card-features">
+                    @for (row of features(); track row.name) {
+                    <div class="mobile-row">
+                        <span class="label">{{ row.name }}</span>
+                        <span class="value">{{ row.cashPositional }}</span>
+                    </div>
+                    }
+                </div>
+                <button class="btn secondary full-width" routerLink="/contact">Contact Us</button>
+            </div>
+
+            <!-- Hunting Future -->
+            <div class="mobile-plan-card">
+                <div class="card-header">
+                    <h3>Hunting Future</h3>
+                    <p class="price">₹15,000 <span>/ month</span></p>
+                </div>
+                <div class="card-features">
+                    @for (row of features(); track row.name) {
+                    <div class="mobile-row">
+                        <span class="label">{{ row.name }}</span>
+                        <span class="value">{{ row.huntingFuture }}</span>
+                    </div>
+                    }
+                </div>
+                <button class="btn secondary full-width" routerLink="/contact">Get Started</button>
+            </div>
+        </div>
+
+        <!-- Legal Footer -->
+        <div class="pricing-footer">
+            <p>All prices are exclusive of GST. Contact us for custom enterprise solutions.</p>
+        </div>
+    </div>
+</section>

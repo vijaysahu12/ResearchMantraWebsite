@@ -1,0 +1,78 @@
+<header class="header">
+  <div class="header-container">
+    <div class="left-section">
+      <div class="logo-wrapper">
+        <div class="logo-circle">RM</div>
+      </div>
+      <div class="brand-info">
+        <span class="brand-name">Research Mantra By Susmita Sahoo</span>
+        <span class="brand-subtitle">SEBI Registered Research Analyst </span>
+        <span class="brand-subtitle">INH000019150</span>
+      </div>
+    </div>
+
+    <nav class="center-section" [class.mobile-open]="isMenuOpen()" aria-label="Main Navigation">
+      <ul class="nav-links">
+        <li><a [routerLink]="['/']" fragment="home" (click)="isMenuOpen.set(false)"><strong>Home</strong></a>
+        </li>
+        <li><a [routerLink]="['/']" fragment="features" (click)="isMenuOpen.set(false)"><strong>Features</strong></a>
+        </li>
+        <li><a [routerLink]="['/']" fragment="pricing" (click)="isMenuOpen.set(false)"><strong>Services</strong></a>
+        </li>
+        <li><a [routerLink]="['/']" fragment="about" (click)="isMenuOpen.set(false)"><strong>About</strong></a></li>
+        <li><a [routerLink]="['/']" fragment="testimonials"
+            (click)="isMenuOpen.set(false)"><strong>Testimonials</strong></a></li>
+        <li><a [routerLink]="['/']" fragment="faq" (click)="isMenuOpen.set(false)"><strong>FAQ</strong></a></li>
+        <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li>
+        <li><a [routerLink]="['/contact']" (click)="isMenuOpen.set(false)"><strong>Contact</strong></a></li>
+
+        <!-- RA Compliance Dropdown -->
+        <li class="dropdown" [class.open]="isComplianceOpen()">
+          <a class="dropdown-toggle" (click)="toggleCompliance($event)">
+            <strong>RA Compliance</strong>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a [routerLink]="['/complaint-data']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Complaint Data</a></li>
+            <li><a [routerLink]="['/compliance-audit']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Compliance Audit</a></li>
+            <li><a [routerLink]="['/grievance-redressal']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Grievance Redressal</a></li>
+            <li><a [routerLink]="['/investor-charter']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Investor Charter & Disclosure</a></li>
+            <li><a [routerLink]="['/dos-donts']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Do's and Dont's for Investors</a></li>
+            <li><a [routerLink]="['/disclaimer']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Disclaimer</a></li>
+            <li><a [routerLink]="['/privacy-policy']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Privacy Policy</a></li>
+            <li><a [routerLink]="['/refund-policy']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Refund Policy</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="right-section">
+      <!-- <button class="btn-login" type="button">Login</button>
+      <button class="btn-get-started" type="button">Get Started</button> -->
+      <button class="mobile-toggle" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen()" aria-label="Toggle menu"
+        type="button">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          @if (!isMenuOpen()) {
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+          } @else {
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+          }
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>

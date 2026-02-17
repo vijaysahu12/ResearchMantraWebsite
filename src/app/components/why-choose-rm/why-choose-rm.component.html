@@ -1,0 +1,64 @@
+<section id="features" class="why-choose-section">
+    <div class="why-container">
+        <!-- Header Area -->
+        <div class="section-header">
+            <div class="eyebrow">Why Choose Us</div>
+            <h2 class="main-heading">Trade with <span class="highlight">Confidence</span></h2>
+            <p class="sub-heading">
+                Our research-first approach gives you the edge you need in the market. Here's what sets Research Mantra
+                apart.
+            </p>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            @for (feature of features(); track feature.id) {
+            <div class="feature-card">
+                <div class="icon-box">
+                    @switch (feature.id) {
+                    @case (1) {
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1v22M5 12h14"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    }
+                    @case (2) {
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    }
+                    @case (3) {
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    }
+                    @case (4) {
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    }
+                    @case (5) {
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    }
+                    @case (6) {
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    }
+                    }
+                </div>
+                <h3 class="feature-title">{{ feature.title }}</h3>
+                <p class="feature-description">{{ feature.description }}</p>
+            </div>
+            }
+        </div>
+    </div>
+</section>

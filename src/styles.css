@@ -1,0 +1,50 @@
+/* You can add global styles to this file, and also import other style files */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    padding-top: 72px;
+}
+
+section[id] {
+    scroll-margin-top: 72px;
+    /* Matches header height for sticky navigation */
+}
+
+/* Responsive adjustments for body padding */
+@media (max-width: 640px) {
+    body {
+        padding-top: 80px;
+        /* Slightly more padding for wrapped header */
+    }
+
+    section[id] {
+        scroll-margin-top: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 85px;
+        /* Account for potentially taller header with wrapped text */
+    }
+
+    section[id] {
+        scroll-margin-top: 85px;
+    }
+}
+
+@media (max-width: 375px) {
+    body {
+        padding-top: 90px;
+        /* Extra padding for very small screens */
+    }
+
+    section[id] {
+        scroll-margin-top: 90px;
+    }
+}

@@ -1,0 +1,142 @@
+.legal-page {
+    padding: 2px 0 50px;
+    background-color: #F8FAFC;
+    min-height: 100vh;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+.legal-container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.legal-content {
+    background: #FFFFFF;
+    padding: 60px;
+    border-radius: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    color: #4B5563;
+    line-height: 1.8;
+}
+
+.annexure-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111827;
+    border-bottom: 2px solid #F1F5F9;
+    padding-bottom: 12px;
+    margin-bottom: 32px;
+}
+
+.legal-content h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 40px 0 24px;
+}
+
+.table-container {
+    margin-bottom: 60px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    background: #F8FAFC;
+    color: #475569;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 2px solid #E2E8F0;
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+tbody tr:hover {
+    background-color: #FDFDFD;
+}
+
+tfoot td {
+    background: #F8FAFC;
+    font-weight: bold;
+}
+
+.table-note {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 40px 24px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .legal-page {
+        padding: 80px 0 48px;
+    }
+
+    .legal-container {
+        padding: 0 16px;
+    }
+
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .legal-content {
+        padding: 24px 16px;
+        border-radius: 20px;
+    }
+
+    .annexure-title {
+        font-size: 22px;
+    }
+
+    .legal-content h3 {
+        font-size: 18px;
+        margin: 32px 0 20px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th,
+    td {
+        padding: 10px 12px;
+    }
+
+    .table-note {
+        font-size: 12px;
+    }
+}

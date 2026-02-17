@@ -1,0 +1,173 @@
+.legal-page {
+    padding: 2px 0 50px;
+    background-color: #F8FAFC;
+    min-height: 100vh;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+.legal-container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.legal-content {
+    background: #FFFFFF;
+    padding: 60px;
+    border-radius: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    color: #4B5563;
+    line-height: 1.8;
+}
+
+.table-container {
+    margin-bottom: 60px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 15px;
+}
+
+th {
+    background: #F8FAFC;
+    color: #1e293b;
+    font-weight: 700;
+    padding: 16px;
+    border-bottom: 2px solid #E2E8F0;
+}
+
+td {
+    padding: 16px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+tbody tr:hover {
+    background-color: #F8FAFC;
+}
+
+.grievance-steps {
+    margin-top: 40px;
+}
+
+.grievance-steps h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 32px;
+}
+
+.step-card {
+    display: flex;
+    gap: 24px;
+    background: #F8FAFC;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #E2E8F0;
+}
+
+.step-number {
+    background: #2563EB;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    height: fit-content;
+    white-space: nowrap;
+}
+
+.step-body p {
+    margin-bottom: 8px;
+}
+
+.step-body p:last-child {
+    margin-bottom: 0;
+}
+
+.step-body a {
+    color: #2563EB;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 40px 24px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+
+    .step-card {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .legal-page {
+        padding: 80px 0 48px;
+    }
+
+    .legal-container {
+        padding: 0 16px;
+    }
+
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .legal-content {
+        padding: 24px 16px;
+        border-radius: 20px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th,
+    td {
+        padding: 12px;
+    }
+
+    .grievance-steps h2 {
+        font-size: 20px;
+        margin-bottom: 24px;
+    }
+
+    .step-card {
+        padding: 16px;
+        border-radius: 12px;
+        gap: 10px;
+    }
+
+    .step-number {
+        font-size: 13px;
+        padding: 3px 10px;
+    }
+
+    .step-body p {
+        font-size: 15px;
+    }
+}

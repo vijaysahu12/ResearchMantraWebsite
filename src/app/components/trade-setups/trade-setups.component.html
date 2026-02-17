@@ -1,0 +1,76 @@
+<section class="trade-setups-section">
+    <div class="trades-container">
+        <!-- Header Area -->
+        <div class="section-header">
+            <!-- <div class="live-badge">
+                <span class="dot"></span>
+                Live Trades
+            </div> -->
+            <h2 class="main-heading">Today's <span class="main-headingtxt">Trade Setups</span></h2>
+            <p class="sub-heading">
+                Real-time trade ideas with clear entry, target, and stop-loss levels
+            </p>
+        </div>
+
+        <!-- Trade Cards Grid -->
+        <div class="trades-grid">
+            @for (trade of trades(); track trade.id) {
+            <div class="trade-card">
+                <div class="card-top">
+                    <div class="instrument-info">
+                        <span class="instrument-name">{{ trade.instrument }}</span>
+                        <span class="gain-pct">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                                <path d="M7 14l5-5 5 5H7z"></path>
+                            </svg>
+                            {{ trade.gainPct }}
+                        </span>
+                    </div>
+                    <div class="type-time">
+                        <span class="type-badge" [class.buy-badge]="trade.type === 'BUY'">{{ trade.type }}</span>
+                        <span class="trade-time">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ trade.time }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-divider"></div>
+
+                <div class="details-rows">
+                    <div class="detail-row">
+                        <span class="label">ENTRY</span>
+                        <span class="value">{{ trade.entry }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">TARGET</span>
+                        <span class="value text-green">{{ trade.target }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">STOP LOSS</span>
+                        <span class="value text-red">{{ trade.sl }}</span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="status-pill" [class.success]="trade.status === 'Target Achieved'">
+                        {{ trade.status }}
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Legal Disclaimer -->
+        <div class="disclaimer-area">
+            <p>
+                Past performance does not guarantee future results. All trades are for educational purposes only.
+                Please consult your financial advisor before making investment decisions.
+            </p>
+        </div>
+    </div>
+</section>

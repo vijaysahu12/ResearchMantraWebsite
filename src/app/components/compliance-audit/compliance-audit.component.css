@@ -1,0 +1,137 @@
+.legal-page {
+    padding: 2px 0 50px;
+    background-color: #F8FAFC;
+    min-height: 100vh;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+.legal-container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.legal-content {
+    background: #FFFFFF;
+    padding: 60px;
+    border-radius: 24px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    color: #4B5563;
+    line-height: 1.8;
+}
+
+.audit-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F8FAFC;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    margin-bottom: 40px;
+}
+
+.audit-label,
+.status-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748B;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+.audit-detail {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-badge.pending {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FDE68A;
+}
+
+.audit-note {
+    font-size: 16px;
+    color: #64748B;
+    border-top: 1px solid #F1F5F9;
+    padding-top: 32px;
+}
+
+@media (max-width: 768px) {
+    .legal-content {
+        padding: 40px 24px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+
+    .audit-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .legal-page {
+        padding: 80px 0 48px;
+    }
+
+    .legal-container {
+        padding: 0 16px;
+    }
+
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .legal-content {
+        padding: 24px 16px;
+        border-radius: 20px;
+    }
+
+    .audit-card {
+        padding: 24px 16px;
+        border-radius: 16px;
+    }
+
+    .audit-detail {
+        font-size: 18px;
+    }
+
+    .status-badge {
+        font-size: 13px;
+        padding: 6px 16px;
+    }
+
+    .audit-note {
+        font-size: 15px;
+        padding-top: 24px;
+    }
+}

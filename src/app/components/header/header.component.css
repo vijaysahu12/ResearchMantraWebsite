@@ -1,0 +1,542 @@
+:host {
+    display: block;
+    --header-height: 72px;
+    --bg-color: #E5E7EB;
+    --brand-yellow: #FACC15;
+    --text-primary: #111827;
+    --text-muted: #6B7280;
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.header {
+    background-color: #FFFFFF;
+    height: var(--header-height);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    font-family: var(--font-family);
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.header-container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-circle {
+    width: 42px;
+    height: 42px;
+    background-color: var(--brand-yellow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-name {
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+.brand-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.center-section {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    height: var(--header-height);
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+.nav-links li {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--text-muted);
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-login {
+    background: transparent;
+    border: none;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: opacity 0.2s;
+}
+
+.btn-login:hover {
+    opacity: 0.7;
+}
+
+.btn-get-started {
+    background-color: var(--brand-yellow);
+    color: #000000;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-get-started:hover {
+    background-color: #EAB308;
+    /* Yellow 500 equivalent */
+    transform: translateY(-1px);
+}
+
+.mobile-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+/* Dropdown Styling */
+.dropdown {
+    position: relative;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--text-primary);
+    transition: color 0.2s;
+}
+
+.dropdown-toggle svg {
+    transition: transform 0.2s;
+}
+
+.dropdown.open .dropdown-toggle svg {
+    transform: rotate(180deg);
+}
+
+/* Desktop Hover */
+@media (hover: hover) {
+    .dropdown:hover .dropdown-menu {
+        display: flex;
+    }
+
+    .dropdown:hover .dropdown-toggle svg {
+        transform: rotate(180deg);
+    }
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FFFFFF;
+    border: 1px solid #F1F5F9;
+    border-radius: 12px;
+    padding: 12px;
+    min-width: 220px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 1001;
+}
+
+/* Arrow indicator for dropdown */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: #FFFFFF;
+    border-left: 1px solid #F1F5F9;
+    border-top: 1px solid #F1F5F9;
+    z-index: -1;
+}
+
+/* Hover bridge to prevent menu from closing when moving mouse over the gap */
+.dropdown-menu::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background: transparent;
+}
+
+.dropdown.open .dropdown-menu {
+    display: flex;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: background-color 0.2s, color 0.2s;
+    text-align: left;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #F8FAFC;
+    color: var(--brand-yellow);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .header-container {
+        padding: 0 20px;
+    }
+
+    .left-section {
+        flex: 1;
+        min-width: 0;
+        /* Allow flex items to shrink */
+        gap: 10px;
+    }
+
+    .brand-info {
+        min-width: 0;
+        /* Allow text to wrap */
+        flex: 1;
+    }
+
+    .brand-name {
+        font-size: 16px;
+        white-space: normal;
+        /* Allow wrapping */
+        line-height: 1.2;
+    }
+
+    .brand-subtitle {
+        font-size: 11px;
+    }
+
+    .center-section {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        background-color: #FFFFFF;
+        padding: 40px 24px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        display: none;
+        max-height: calc(100vh - var(--header-height));
+        overflow-y: auto;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .center-section.mobile-open {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+        color: var(--text-primary);
+        height: auto;
+    }
+
+    .nav-links a {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    /* Mobile Dropdown Adjustments */
+    .dropdown {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dropdown-toggle {
+        font-size: 18px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dropdown-menu {
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        background: rgba(0, 0, 0, 0.03);
+        margin-top: 10px;
+        width: 100%;
+        min-width: unset;
+        padding: 8px;
+    }
+
+    .dropdown-menu::before {
+        display: none;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dropdown-menu li a {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .mobile-toggle {
+        display: flex;
+        order: 3;
+        flex-shrink: 0;
+        /* Prevent hamburger from shrinking */
+    }
+
+    .btn-login {
+        display: none;
+    }
+
+    .btn-get-started {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        padding: 0 16px;
+    }
+
+    .left-section {
+        gap: 8px;
+        max-width: 75%;
+        /* Ensure it doesn't push hamburger off screen */
+    }
+
+    .logo-circle {
+        width: 38px;
+        height: 38px;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+    .brand-name {
+        font-size: 15px;
+        line-height: 1.15;
+    }
+
+    .brand-subtitle {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    .header {
+        height: auto;
+        min-height: var(--header-height);
+        padding: 8px 0;
+    }
+
+    .header-container {
+        padding: 0 12px;
+        align-items: flex-start;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .left-section {
+        max-width: 70%;
+        gap: 8px;
+    }
+
+    .logo-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .brand-name {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+
+    .brand-subtitle {
+        font-size: 9px;
+        line-height: 1.3;
+    }
+
+    .mobile-toggle {
+        margin-top: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        padding: 0 12px;
+    }
+
+    .left-section {
+        max-width: 65%;
+    }
+
+    .brand-name {
+        font-size: 13px;
+        /* Allow the name to wrap to 2 lines if needed */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .brand-subtitle {
+        font-size: 9px;
+    }
+
+    .logo-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .btn-get-started {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 375px) {
+    .header-container {
+        padding: 0 10px;
+    }
+
+    .left-section {
+        max-width: 60%;
+        gap: 6px;
+    }
+
+    .logo-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .brand-name {
+        font-size: 12px;
+    }
+
+    .brand-subtitle:last-child {
+        display: none;
+        /* Hide the registration number on very small screens */
+    }
+
+    .mobile-toggle svg {
+        width: 20px;
+        height: 20px;
+    }
+}

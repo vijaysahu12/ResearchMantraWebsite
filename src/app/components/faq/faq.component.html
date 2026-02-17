@@ -1,0 +1,40 @@
+<section id="faq" class="faq-section">
+    <div class="faq-container">
+        <!-- Header Area -->
+        <div class="section-header">
+            <h2 class="main-heading">Frequently Asked <span class="highlight">Questions</span></h2>
+            <p class="sub-heading">
+                Got questions? We've got answers. If you can't find what you're looking for, feel free to contact us.
+            </p>
+        </div>
+
+        <!-- Accordion List -->
+        <div class="faq-list">
+            @for (item of faqs(); track item.id) {
+            <div class="faq-item" [class.expanded]="expandedItemId() === item.id">
+                <button class="faq-header" (click)="toggleItem(item.id)"
+                    [attr.aria-expanded]="expandedItemId() === item.id">
+                    <span class="question-text">{{ item.question }}</span>
+                    <span class="toggle-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </span>
+                </button>
+                <div class="faq-content" [class.show]="expandedItemId() === item.id">
+                    <div class="content-inner">
+                        <p class="answer-text">{{ item.answer }}</p>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Footer CTA -->
+        <div class="faq-footer">
+            <p class="footer-text">Still have questions?</p>
+            <a [routerLink]="['/contact']" class="contact-link">Contact our support team &rarr;</a>
+        </div>
+    </div>
+</section>
