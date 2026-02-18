@@ -69,13 +69,13 @@ interface WebsiteLead {
           <div class="form-group">
             <label for="name">Full Name*</label>
             <input type="text" id="name" formControlName="name" placeholder="Enter your name"
-                   [class.error]="isFieldInvalid('name')">
+                   (input)="onNameInput($event)" [class.error]="isFieldInvalid('name')">
           </div>
 
           <div class="form-group">
             <label for="mobile">Mobile Number*</label>
-            <input type="tel" id="mobile" formControlName="mobile" maxlength="10" placeholder="Step into financial growth"
-                   [class.error]="isFieldInvalid('mobile')">
+            <input type="tel" id="mobile" formControlName="mobile" maxlength="10" placeholder="Enter your mobile number"
+                   (input)="onMobileInput($event)" [class.error]="isFieldInvalid('mobile')">
           </div>
 
           <div class="form-group">
@@ -303,6 +303,26 @@ export class EnquiryFormComponent {
     email: ['', [Validators.required, Validators.email]],
     message: ['']
   });
+
+  onNameInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    input.value = value;
+    this.enquiryForm.get('name')?.setValue(value, { emitEvent: false });
+    input.setSelectionRange(start, end);
+  }
+
+  onMobileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const value = input.value.replace(/\D/g, '').slice(0, 10);
+    input.value = value;
+    this.enquiryForm.get('mobile')?.setValue(value, { emitEvent: false });
+    input.setSelectionRange(start, end);
+  }
 
   generateGuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {

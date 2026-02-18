@@ -46,10 +46,10 @@
                         [class.error]="mobileForm.get('mobile')?.touched && mobileForm.get('mobile')?.invalid">
                         <span class="country-code">+91</span>
                         <input type="tel" placeholder="Enter your mobile number" formControlName="mobile" maxlength="10"
-                            aria-label="Mobile Number" />
+                            (input)="onMobileNumberInput($event)" aria-label="Mobile Number" />
                     </div>
                     <button type="submit" class="cta-button" [disabled]="mobileForm.invalid">
-                        Unlock 3 Free Trade Ideas
+                        Unlock Sudarshan Strategy
                     </button>
                 </form>
                 }
@@ -60,7 +60,7 @@
                     <div class="input-wrapper"
                         [class.error]="nameForm.get('name')?.touched && nameForm.get('name')?.invalid">
                         <input type="text" placeholder="Enter your name" formControlName="name" minlength="3"
-                            aria-label="Name" />
+                            (input)="onNameInput($event)" aria-label="Name" />
                     </div>
                     <button type="submit" class="cta-button" [disabled]="nameForm.invalid || isLoading()">
                         @if (isLoading()) {
@@ -79,6 +79,7 @@
                         }}XXXXXX{{ mobileNumber() | slice:8:10 }}</p>
 
                     <form [formGroup]="otpForm" (ngSubmit)="onOtpVerify()">
+                        @if (timer() > 0) {
                         <div class="otp-inputs" formArrayName="otp">
                             @for (control of otpDigits.controls; track $index) {
                             <input #otpInput type="tel" [formControlName]="$index" maxlength="1"
@@ -88,16 +89,9 @@
                         </div>
 
                         <div class="otp-actions">
-                            <span class="timer" [class.expired]="timer() === 0">
-                                @if (timer() > 0) {
+                            <span class="timer">
                                 Expires in {{ formatTime(timer()) }}
-                                } @else {
-                                OTP Expired
-                                }
                             </span>
-                            @if (canResend()) {
-                            <button type="button" class="resend-btn" (click)="resendOtp()">Resend OTP</button>
-                            }
                         </div>
 
                         <button type="submit" class="cta-button" [disabled]="otpForm.invalid || isLoading()">
@@ -107,6 +101,22 @@
                             Submit OTP
                             }
                         </button>
+                        } @else {
+                        <div class="expired-state fade-in">
+                            <div class="expired-icon">
+                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#EF4444"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <p class="expired-text">OTP has expired</p>
+                            <button type="button" class="cta-button resend-btn-full" (click)="resendOtp()">
+                                Resend New OTP
+                            </button>
+                        </div>
+                        }
                     </form>
                 </div>
                 }

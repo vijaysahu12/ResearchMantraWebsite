@@ -98,6 +98,26 @@ export class RmIntroComponent implements OnInit {
         });
     }
 
+    onNameInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const value = input.value.replace(/[0-9]/g, '');
+        input.value = value;
+        this.nameForm.get('name')?.setValue(value, { emitEvent: false });
+        input.setSelectionRange(start, end);
+    }
+
+    onMobileNumberInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const value = input.value.replace(/\D/g, '');
+        input.value = value;
+        this.mobileForm.get('mobile')?.setValue(value, { emitEvent: false });
+        input.setSelectionRange(start, end);
+    }
+
     // Step 1: Mobile Submit
     onMobileSubmit() {
         if (this.mobileForm.invalid) return;

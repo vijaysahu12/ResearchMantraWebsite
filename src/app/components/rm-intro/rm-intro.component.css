@@ -239,6 +239,13 @@
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.otp-container .cta-button {
+    padding: 16px 32px;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
 .timer {
@@ -247,6 +254,53 @@
 
 .timer.expired {
     color: var(--text-red);
+}
+
+.expired-state {
+    text-align: center;
+    padding: 24px;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px dashed rgba(239, 68, 68, 0.2);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.expired-icon {
+    margin-bottom: 4px;
+    animation: pulseRed 2s infinite;
+}
+
+@keyframes pulseRed {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.expired-text {
+    color: var(--text-red);
+    font-weight: 700;
+    font-size: 18px;
+    margin: 0;
+}
+
+.resend-btn-full {
+    width: 100%;
+    margin-top: 8px;
+    background-color: var(--accent-teal);
 }
 
 .resend-btn {
@@ -609,11 +663,17 @@
     .hero-container {
         flex-direction: column;
         text-align: center;
-        gap: 48px;
+        gap: 32px;
     }
 
     .hero-content {
         max-width: 100%;
+        flex: none;
+    }
+
+    .hero-visual {
+        flex: none;
+        width: 100%;
     }
 
     .bullet-list {
@@ -627,6 +687,7 @@
     .cta-form,
     .otp-container,
     .success-container {
+        flex-direction: column;
         width: 100%;
         max-width: 480px;
         margin: 0 auto;
@@ -643,6 +704,12 @@
 
     .disclaimer {
         padding-left: 0;
+        margin-top: -4px;
+    }
+
+    .cta-section {
+        min-height: auto;
+        gap: 8px;
     }
 
     .stats-grid {
@@ -702,11 +769,12 @@
 
 @media (max-width: 480px) {
     .hero-section {
-        padding: 60px 0;
+        padding: 40px 0;
     }
 
     .hero-container {
         padding: 0 16px;
+        gap: 24px;
     }
 
     .headline {

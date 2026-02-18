@@ -70,6 +70,26 @@ export class ContactComponent {
         });
     }
 
+    onNameInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const value = input.value.replace(/[^a-zA-Z\s]/g, '');
+        input.value = value;
+        this.contactForm.get('fullName')?.setValue(value, { emitEvent: false });
+        input.setSelectionRange(start, end);
+    }
+
+    onMobileInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const value = input.value.replace(/\D/g, '').slice(0, 10);
+        input.value = value;
+        this.contactForm.get('phoneNumber')?.setValue(value, { emitEvent: false });
+        input.setSelectionRange(start, end);
+    }
+
     onSubmit() {
         if (this.contactForm.valid) {
             this.isSubmitting.set(true);

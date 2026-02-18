@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <label for="fullName">Full Name *</label>
                             <input type="text" id="fullName" formControlName="fullName"
-                                placeholder="Enter your full name"
+                                placeholder="Enter your full name" (input)="onNameInput($event)"
                                 [class.error]="contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid" />
                             @if (contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid) {
                             <span class="error-text">Name is required</span>
@@ -41,7 +41,7 @@
                         <div class="form-group">
                             <label for="phoneNumber">Phone Number *</label>
                             <input type="tel" id="phoneNumber" formControlName="phoneNumber"
-                                placeholder="10-digit mobile number"
+                                placeholder="10-digit mobile number" maxlength="10" (input)="onMobileInput($event)"
                                 [class.error]="contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid" />
                             @if (contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid) {
                             <span class="error-text">Valid 10-digit number is required</span>
@@ -74,7 +74,7 @@
                             @if (isSubmitting()) {
                             <span>Sending...</span>
                             } @else {
-                            <span>ContactUs</span>
+                            <span>Contact Us</span>
                             }
                         </button>
                     </div>
