@@ -131,7 +131,7 @@ export class ContactComponent {
                 PurchaseOrderKey: null
             };
 
-            this.http.post('https://localhost:44380/api/Leads/WebsiteLeads', payload)
+            this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
                 .pipe(
                     finalize(() => this.isSubmitting.set(false))
                 )

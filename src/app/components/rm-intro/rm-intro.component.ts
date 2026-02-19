@@ -188,7 +188,7 @@ export class RmIntroComponent implements OnInit {
         };
 
         // 3. Execute: Save Lead -> Send OTP
-        this.http.post('https://localhost:44380/api/Leads/WebsiteLeads', leadPayload)
+        this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', leadPayload)
             .pipe(
                 switchMap(() => this.leadService.sendOtp(otpPayload)),
                 takeUntilDestroyed(this.destroyRef)
