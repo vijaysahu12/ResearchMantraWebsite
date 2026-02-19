@@ -89,6 +89,16 @@ interface WebsiteLead {
             <textarea id="message" formControlName="message" rows="4" placeholder="How can we help you?"></textarea>
           </div>
 
+          <div class="terms-wrapper">
+            <label class="checkbox-container">
+              <input type="checkbox" formControlName="acceptTerms">
+              <span class="checkmark"></span>
+              <span class="terms-text">
+                I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank" (click)="$event.stopPropagation()">Terms & Conditions</a>
+              </span>
+            </label>
+          </div>
+
           <button type="submit" class="submit-btn" [disabled]="enquiryForm.invalid || isSubmitting()">
             {{ isSubmitting() ? 'Sending...' : 'Contact Now' }}
           </button>
@@ -267,6 +277,83 @@ interface WebsiteLead {
       border: 1px solid #a7f3d0;
     }
 
+    /* Terms Checkbox Styling */
+    .terms-wrapper {
+      margin-bottom: 20px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-left: 28px;
+      cursor: pointer;
+      font-size: 13px;
+      user-select: none;
+      color: #4B5563;
+    }
+
+    .checkbox-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      height: 18px;
+      width: 18px;
+      background-color: #f9fafb;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-container:hover input ~ .checkmark {
+      border-color: #111827;
+    }
+
+    .checkbox-container input:checked ~ .checkmark {
+      background-color: #111827;
+      border-color: #111827;
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    .checkbox-container input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    .checkbox-container .checkmark:after {
+      left: 5.5px;
+      top: 2px;
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .terms-text a {
+      color: #111827;
+      text-decoration: underline;
+      font-weight: 600;
+      text-underline-offset: 2px;
+    }
+
+    .terms-text a:hover {
+      color: #000;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -301,7 +388,8 @@ export class EnquiryFormComponent {
     name: ['', [Validators.required, Validators.minLength(2)]],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
     email: ['', [Validators.required, Validators.email]],
-    message: ['']
+    message: [''],
+    acceptTerms: [false, Validators.requiredTrue]
   });
 
   onNameInput(event: Event) {
@@ -382,7 +470,7 @@ export class EnquiryFormComponent {
         PurchaseOrderKey: null
       };
 
-      this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
+      this.http.post('https://localhost:44380/api/Leads/WebsiteLeads', payload)
         .pipe(
           finalize(() => this.isSubmitting.set(false))
         )

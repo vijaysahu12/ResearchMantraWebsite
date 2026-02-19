@@ -20,27 +20,17 @@ export class App {
     this.handleDomainRedirect();
   }
 
+
   private handleDomainRedirect(): void {
     if (typeof window === 'undefined') return;
 
-    const url = new URL(window.location.href);
-    const fromDomain = 'susmitasahoo.in';
-    const toDomain = 'researchmantra.in';
-
-    // Allow exact domain or subdomains only
-    const isFromDomain =
-      url.hostname === fromDomain ||
-      url.hostname.endsWith(`.${fromDomain}`);
-
-    if (!isFromDomain) return;
-
-    // Prevent redirect loops
-    if (url.hostname === toDomain || url.hostname.endsWith(`.${toDomain}`)) {
-      return;
+    // Direct check for the old domain string
+    if (window.location.hostname.includes('susmitasahoo.in')) {
+      const url = new URL(window.location.href);
+      url.hostname = 'researchmantra.in';
+      url.protocol = 'https:'; // Ensures the final destination is always secure
+      window.location.replace(url.toString());
     }
-
-    url.hostname = toDomain;
-    window.location.replace(url.toString());
   }
 
 }

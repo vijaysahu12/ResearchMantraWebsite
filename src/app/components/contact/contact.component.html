@@ -69,8 +69,23 @@
                         }
                     </div>
 
+                    <!-- Terms and Conditions -->
+                    <div class="terms-group full-width">
+                        <label class="checkbox-container">
+                            <input type="checkbox" formControlName="acceptTerms">
+                            <span class="checkmark"></span>
+                            <span class="terms-text">
+                                I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank"
+                                    (click)="$event.stopPropagation()">Terms & Conditions</a>
+                            </span>
+                        </label>
+                        @if (contactForm.get('acceptTerms')?.touched && contactForm.get('acceptTerms')?.invalid) {
+                        <span class="error-text">You must accept the terms to proceed</span>
+                        }
+                    </div>
+
                     <div class="form-actions">
-                        <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+                        <button type="submit" class="submit-btn" [disabled]="contactForm.invalid || isSubmitting()">
                             @if (isSubmitting()) {
                             <span>Sending...</span>
                             } @else {

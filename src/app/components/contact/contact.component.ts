@@ -58,7 +58,8 @@ export class ContactComponent {
             occupation: ['', [Validators.required]],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
             email: ['', [Validators.required, Validators.email]],
-            message: ['', [Validators.required]]
+            message: ['', [Validators.required]],
+            acceptTerms: [false, Validators.requiredTrue]
         });
     }
 
@@ -130,7 +131,7 @@ export class ContactComponent {
                 PurchaseOrderKey: null
             };
 
-            this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
+            this.http.post('https://localhost:44380/api/Leads/WebsiteLeads', payload)
                 .pipe(
                     finalize(() => this.isSubmitting.set(false))
                 )

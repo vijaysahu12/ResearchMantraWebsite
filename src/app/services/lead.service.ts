@@ -55,13 +55,13 @@ export interface ApiResponse<T = unknown> {
 export class LeadService {
     private http = inject(HttpClient);
     private readonly CRM_API_URL = 'https://crmapi.researchmantra.in/api/Leads';
-    // private readonly OTP_API_URL = 'https://localhost:44380/api/Leads';
+    private readonly OTP_API_URL = 'https://localhost:44380/api/Leads';
 
     sendOtp(data: SendOtpRequest): Observable<ApiResponse> {
-        return this.http.post<ApiResponse>(`${this.CRM_API_URL}/send-otp`, data);
+        return this.http.post<ApiResponse>(`${this.OTP_API_URL}/send-otp`, data);
     }
 
     verifyOtp(data: VerifyOtpRequest): Observable<ApiResponse<{ youtubeLink: string }>> {
-        return this.http.post<ApiResponse<{ youtubeLink: string }>>(`${this.CRM_API_URL}/verify-otp`, data);
+        return this.http.post<ApiResponse<{ youtubeLink: string }>>(`${this.OTP_API_URL}/verify-otp`, data);
     }
 }

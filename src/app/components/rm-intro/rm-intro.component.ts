@@ -46,7 +46,8 @@ export class RmIntroComponent implements OnInit {
         });
 
         this.nameForm = this.fb.group({
-            name: ['', [Validators.required, Validators.minLength(3)]]
+            name: ['', [Validators.required, Validators.minLength(3)]],
+            acceptTerms: [false, Validators.requiredTrue]
         });
 
         this.otpForm = this.fb.group({
@@ -66,22 +67,27 @@ export class RmIntroComponent implements OnInit {
         if (savedState) {
             try {
                 const state = JSON.parse(savedState);
+
+                // If the saved step was OTP, check if it's still valid
+                if (state.step === 'otp') {
+                    const now = Date.now();
+                    const expiresAt = state.expiresAt || 0;
+                    const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
+
+                    if (remaining <= 0) {
+                        // OTP Expired while page was closed/refreshed
+                        sessionStorage.removeItem('leadState');
+                        this.currentStep.set('mobile');
+                        return;
+                    }
+                    this.startTimer(remaining);
+                }
+
                 if (state.mobile) this.mobileNumber.set(state.mobile);
                 if (state.name) this.userName.set(state.name);
                 if (state.youtubeLink) this.youtubeLink.set(state.youtubeLink);
-                if (state.step) {
-                    this.currentStep.set(state.step as Step);
-                    if (state.step === 'otp') {
-                        const now = Date.now();
-                        const expiresAt = state.expiresAt || 0;
-                        const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
-                        if (remaining > 0) {
-                            this.startTimer(remaining);
-                        } else {
-                            this.canResend.set(true);
-                        }
-                    }
-                }
+                if (state.step) this.currentStep.set(state.step as Step);
+
             } catch (e) {
                 console.error('Failed to restore state', e);
                 sessionStorage.removeItem('leadState');
@@ -182,7 +188,7 @@ export class RmIntroComponent implements OnInit {
         };
 
         // 3. Execute: Save Lead -> Send OTP
-        this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', leadPayload)
+        this.http.post('https://localhost:44380/api/Leads/WebsiteLeads', leadPayload)
             .pipe(
                 switchMap(() => this.leadService.sendOtp(otpPayload)),
                 takeUntilDestroyed(this.destroyRef)

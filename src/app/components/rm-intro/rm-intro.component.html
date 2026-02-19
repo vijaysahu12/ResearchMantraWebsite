@@ -45,8 +45,8 @@
                     <div class="input-wrapper"
                         [class.error]="mobileForm.get('mobile')?.touched && mobileForm.get('mobile')?.invalid">
                         <span class="country-code">+91</span>
-                        <input type="tel" placeholder="Enter your mobile number" formControlName="mobile" maxlength="10"
-                            (input)="onMobileNumberInput($event)" aria-label="Mobile Number" />
+                        <input type="tel" placeholder="Enter your whatsapp mobile number" formControlName="mobile"
+                            maxlength="10" (input)="onMobileNumberInput($event)" aria-label="Mobile Number" />
                     </div>
                     <button type="submit" class="cta-button" [disabled]="mobileForm.invalid">
                         Unlock Sudarshan Strategy
@@ -62,6 +62,18 @@
                         <input type="text" placeholder="Enter your name" formControlName="name" minlength="3"
                             (input)="onNameInput($event)" aria-label="Name" />
                     </div>
+
+                    <div class="terms-wrapper">
+                        <label class="checkbox-container">
+                            <input type="checkbox" formControlName="acceptTerms">
+                            <span class="checkmark"></span>
+                            <span class="terms-text">
+                                I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank"
+                                    (click)="$event.stopPropagation()">Terms & Conditions</a>
+                            </span>
+                        </label>
+                    </div>
+
                     <button type="submit" class="cta-button" [disabled]="nameForm.invalid || isLoading()">
                         @if (isLoading()) {
                         <span class="spinner"></span> Verifying...
