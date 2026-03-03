@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DomSanitizer, SafeHtml, Title, Meta } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BlogService, BlogPost } from '../../services/blog.service';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
     selector: 'app-blog-details',
@@ -226,8 +227,7 @@ export class BlogDetailsComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private blogService = inject(BlogService);
     private sanitizer = inject(DomSanitizer);
-    private titleService = inject(Title);
-    private metaService = inject(Meta);
+    private seoService = inject(SeoService);
 
     blog = signal<BlogPost | undefined>(undefined);
     sanitizedContent = computed(() => {
@@ -253,23 +253,15 @@ export class BlogDetailsComponent implements OnInit {
     }
 
     private updateSeoTags(blog: BlogPost) {
-        // Set Title
         const pageTitle = blog.metaTitle || blog.title;
-        this.titleService.setTitle(pageTitle);
-
-        // Set Description
         const description = blog.metaDescription || blog.excerpt;
-        this.metaService.updateTag({ name: 'description', content: description });
 
-        // Set Keywords
-        if (blog.keywords) {
-            this.metaService.updateTag({ name: 'keywords', content: blog.keywords });
-        }
-
-        // Open Graph tags for social sharing
-        this.metaService.updateTag({ property: 'og:title', content: pageTitle });
-        this.metaService.updateTag({ property: 'og:description', content: description });
-        this.metaService.updateTag({ property: 'og:image', content: blog.image });
-        this.metaService.updateTag({ property: 'og:type', content: 'article' });
+        this.seoService.setMetaTags({
+            title: pageTitle,
+            description: description,
+            keywords: blog.keywords,
+            image: blog.image,
+            type: 'article'
+        });
     }
 }

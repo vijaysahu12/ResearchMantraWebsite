@@ -42,7 +42,7 @@ interface WebsiteLead {
   template: `
     <!-- Floating Button -->
     <button class="floating-btn" (click)="toggleEnquiry()" aria-label="Enquire Now">
-      <span class="btn-text">Get Expert Advice</span>
+      <span class="btn-text">Request a Free Demo</span>
       <span class="btn-icon">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -55,7 +55,7 @@ interface WebsiteLead {
       <div class="enquiry-overlay" (click)="toggleEnquiry()"></div>
       <div class="enquiry-panel" [class.open]="isOpen()">
         <div class="panel-header">
-          <h3>Get Expert Advice</h3>
+          <h3>Request a Free Demo</h3>
           <button class="close-btn" (click)="toggleEnquiry()" aria-label="Close">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -387,7 +387,7 @@ export class EnquiryFormComponent {
   enquiryForm: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
     message: [''],
     acceptTerms: [false, Validators.requiredTrue]
   });
@@ -478,6 +478,14 @@ export class EnquiryFormComponent {
           next: () => {
             this.successMessage.set('Thank you! Our expert will contact you shortly.');
             this.enquiryForm.reset();
+
+            // Track lead_submit event
+            if (typeof (window as any).gtag === 'function') {
+              (window as any).gtag('event', 'lead_submit', {
+                form_type: 'side_dropdown',
+                page_location: window.location.href
+              });
+            }
 
             // Close panel after delay
             setTimeout(() => {

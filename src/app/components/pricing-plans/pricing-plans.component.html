@@ -18,12 +18,12 @@
                 <thead>
                     <tr>
                         <th class="feature-col">Feature</th>
-                        <th>Cash Positional</th>
+                        <th>Index HNI</th>
                         <th class="popular-col">
                             Fatafat Options
                             <span class="popular-badge">Most Popular</span>
                         </th>
-                        <th>Hunting Future</th>
+                        <th>Personal Support</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,9 +107,141 @@
             </div>
         </div>
 
+        <!-- Download Reports Button -->
+        <div class="reports-cta">
+            <button class="btn reports-btn" (click)="openReportModal()">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Performance Reports
+            </button>
+        </div>
+
         <!-- Legal Footer -->
         <div class="pricing-footer">
             <p>All prices are exclusive of GST. Contact us for custom enterprise solutions.</p>
         </div>
     </div>
 </section>
+
+<!-- Report Download Modal -->
+@if (isModalOpen()) {
+<div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="closeModal()">&times;</button>
+
+        @if (currentStep() === 'form') {
+        <div class="modal-body">
+            <form [formGroup]="reportForm" (ngSubmit)="onSendOtp()">
+                <div class="form-group">
+                    <label>Full name:</label>
+                    <input type="text" formControlName="fullName" placeholder="Enter your full name"
+                        [class.error]="reportForm.get('fullName')?.touched && reportForm.get('fullName')?.invalid">
+                </div>
+
+                <div class="form-group">
+                    <label>Language:</label>
+                    <select formControlName="language"
+                        [class.error]="reportForm.get('language')?.touched && reportForm.get('language')?.invalid">
+                        <option value="" disabled selected>Select</option>
+                        <option value="English">English</option>
+                        <option value="Hindi">Hindi</option>
+                        <option value="Gujarati">Gujarati</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Email address:</label>
+                    <input type="email" formControlName="email" placeholder="example@email.com"
+                        [class.error]="reportForm.get('email')?.touched && reportForm.get('email')?.invalid">
+                </div>
+
+                <div class="form-group">
+                    <label>Number:</label>
+                    <div class="otp-input-wrapper">
+                        <input type="tel" formControlName="mobile" placeholder="Enter mobile number" maxlength="10"
+                            [class.error]="reportForm.get('mobile')?.touched && reportForm.get('mobile')?.invalid">
+                        <button type="button" class="send-otp-btn" (click)="onSendOtp()"
+                            [disabled]="reportForm.get('mobile')?.invalid || isLoading()">
+                            Send OTP
+                        </button>
+                    </div>
+                </div>
+
+                <div class="terms-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" formControlName="acceptTerms">
+                        <span class="checkmark"></span>
+                        <span class="terms-text">
+                            I hereby acknowledge and accept all <a href="/terms-conditions" target="_blank">Terms &
+                                Conditions</a>, <a href="/privacy-policy" target="_blank">Privacy Policy</a> and the
+                            Disclaimer & Disclosure.
+                        </span>
+                    </label>
+                </div>
+
+                @if (errorMessage()) {
+                <div class="form-error">{{ errorMessage() }}</div>
+                }
+
+                <button type="submit" class="download-btn" [disabled]="reportForm.invalid || isLoading()">
+                    @if (isLoading()) {
+                    <span class="spinner"></span> Processing...
+                    } @else {
+                    Download PDF
+                    }
+                </button>
+            </form>
+        </div>
+        }
+
+        @if (currentStep() === 'otp') {
+        <div class="modal-body otp-step">
+            <h3>Verify Mobile Number</h3>
+            <p>Enter the 6-digit OTP sent to your WhatsApp number</p>
+
+            <form [formGroup]="otpForm" (ngSubmit)="onOtpVerify()">
+                <div class="otp-boxes" formArrayName="otp">
+                    @for (control of otpDigits.controls; track $index) {
+                    <input #otpInput type="tel" [formControlName]="$index" maxlength="1"
+                        (input)="onOtpInput($index, $event)" (keydown)="onOtpKeyDown($index, $event)" class="otp-box" />
+                    }
+                </div>
+
+                <div class="otp-timer">
+                    @if (timer() > 0) {
+                    Expires in {{ formatTime(timer()) }}
+                    } @else {
+                    <button type="button" class="resend-link" (click)="onSendOtp()" [disabled]="isLoading()">Resend
+                        OTP</button>
+                    }
+                </div>
+
+                @if (errorMessage()) {
+                <div class="form-error">{{ errorMessage() }}</div>
+                }
+
+                <button type="submit" class="download-btn" [disabled]="otpForm.invalid || isLoading()">
+                    @if (isLoading()) {
+                    <span class="spinner"></span> Verifying...
+                    } @else {
+                    Submit & Download
+                    }
+                </button>
+            </form>
+        </div>
+        }
+
+        @if (currentStep() === 'success') {
+        <div class="modal-body success-step">
+            <div class="success-icon-large">✓</div>
+            <h3>Thank You!</h3>
+            <p>Your performance report has been generated. It should open in a new tab shortly.</p>
+            <button class="download-btn" (click)="closeModal()">Done</button>
+        </div>
+        }
+    </div>
+</div>
+}

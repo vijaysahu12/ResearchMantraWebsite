@@ -7,6 +7,8 @@ import { PricingPlansComponent } from '../pricing-plans/pricing-plans.component'
 import { AboutSushmitaComponent } from '../about-sushmita/about-sushmita.component';
 import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { FaqComponent } from '../faq/faq.component';
+import { ComplaintsSummaryComponent } from '../complaints-summary/complaints-summary.component';
+import { MustReadComponent } from '../must-read/must-read.component';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +20,8 @@ import { FaqComponent } from '../faq/faq.component';
     PricingPlansComponent,
     AboutSushmitaComponent,
     TestimonialsComponent,
+    ComplaintsSummaryComponent,
+    MustReadComponent,
     FaqComponent
   ],
   template: `
@@ -27,6 +31,8 @@ import { FaqComponent } from '../faq/faq.component';
     <app-pricing-plans></app-pricing-plans>
     <app-about-sushmita></app-about-sushmita>
     <app-testimonials></app-testimonials>
+    <app-complaints-summary></app-complaints-summary>
+    <app-must-read></app-must-read>
     <app-faq></app-faq>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

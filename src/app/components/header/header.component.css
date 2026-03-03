@@ -40,17 +40,13 @@
 }
 
 .logo-circle {
-    width: 42px;
-    height: 42px;
-    background-color: var(--brand-yellow);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FFFFFF;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: -0.02em;
+    display: none;
+}
+
+.brand-logo {
+    height: 48px;
+    width: auto;
+    display: block;
 }
 
 .brand-info {

@@ -1,0 +1,37 @@
+<section class="must-read-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="header-content">
+                <h2 class="section-title">Must Read</h2>
+                <p class="section-subtitle">Must read for investors. Learn, invest & earn with us.</p>
+            </div>
+            <a routerLink="/blogs" class="read-more-link">Read More &rarr;</a>
+        </div>
+
+        <div class="carousel-container" (mouseenter)="stopAutoPlay()" (mouseleave)="startAutoPlay()">
+            <div class="carousel-track" [style.transform]="'translateX(-' + (currentIndex() * (100 / 3)) + '%)'">
+                @for (blog of blogs(); track blog.id) {
+                <div class="blog-card-wrapper">
+                    <div class="blog-card" [routerLink]="['/', blog.slug]">
+                        <div class="card-image">
+                            <img [src]="blog.image" [alt]="blog.title" loading="lazy">
+                        </div>
+                        <div class="card-body">
+                            <h3 class="blog-title">{{ blog.title }}</h3>
+                            <p class="blog-excerpt">{{ blog.excerpt }}</p>
+                            <div class="card-footer">
+                                <span class="author">{{ blog.author }}</span>
+                                <span class="date">{{ blog.date }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Controls (Optional but good for UX) -->
+            <button class="nav-btn prev" (click)="prev()" aria-label="Previous">&lsaquo;</button>
+            <button class="nav-btn next" (click)="next()" aria-label="Next">&rsaquo;</button>
+        </div>
+    </div>
+</section>

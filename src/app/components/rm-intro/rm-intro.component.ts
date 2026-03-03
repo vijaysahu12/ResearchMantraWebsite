@@ -281,6 +281,14 @@ export class RmIntroComponent implements OnInit {
                     this.youtubeLink.set('https://www.youtube.com/watch?v=6RbqRDqKdjc');
                     sessionStorage.removeItem('leadState');
                     this.stopTimer();
+
+                    // Track lead_submit event
+                    if (typeof (window as any).gtag === 'function') {
+                        (window as any).gtag('event', 'lead_submit', {
+                            form_type: 'otp_verification',
+                            page_location: window.location.href
+                        });
+                    }
                 },
                 error: (err: any) => {
                     this.isLoading.set(false);

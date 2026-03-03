@@ -57,7 +57,7 @@ export class ContactComponent {
             fullName: ['', [Validators.required]],
             occupation: ['', [Validators.required]],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-            email: ['', [Validators.required, Validators.email]],
+            email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
             message: ['', [Validators.required]],
             acceptTerms: [false, Validators.requiredTrue]
         });
@@ -139,6 +139,15 @@ export class ContactComponent {
                     next: () => {
                         this.submitSuccess.set(true);
                         this.contactForm.reset();
+
+                        // Track lead_submit event
+                        if (typeof (window as any).gtag === 'function') {
+                            (window as any).gtag('event', 'lead_submit', {
+                                form_type: 'contact_page',
+                                page_location: window.location.href
+                            });
+                        }
+
                         // Reset success message after 5 seconds
                         setTimeout(() => this.submitSuccess.set(false), 5000);
                     },

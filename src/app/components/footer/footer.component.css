@@ -41,16 +41,13 @@
 }
 
 .logo-circle {
-    width: 40px;
-    height: 40px;
-    background-color: var(--brand-yellow);
-    color: #000000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 16px;
+    display: none;
+}
+
+.footer-brand-logo {
+    height: 48px;
+    width: auto;
+    display: block;
 }
 
 .brand-name {
@@ -265,5 +262,36 @@
 
     .footer-bottom p {
         font-size: 12px;
+    }
+}
+
+.footer-disclosure {
+    margin: 32px 0;
+    padding: 24px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-disclosure p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    text-align: justify;
+}
+
+.footer-disclosure p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .footer-disclosure {
+        padding: 16px;
+    }
+
+    .footer-disclosure p {
+        font-size: 12px;
+        text-align: center;
     }
 }
