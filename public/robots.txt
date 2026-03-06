@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://researchmantra.in/sitemap.xml

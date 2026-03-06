@@ -556,121 +556,218 @@
     gap: 40px;
 }
 
-.trade-card {
-    background: var(--card-bg);
+/* Premium Enquiry Card Styling */
+.enquiry-card {
+    background: #FFFFFF;
     border-radius: 24px;
     width: 100%;
-    max-width: 380px;
+    max-width: 440px;
     color: #1E293B;
     overflow: hidden;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
 }
 
-.card-header {
-    padding: 24px 24px 16px;
-    border-bottom: 1px solid #F1F5F9;
+.enquiry-card:hover {
+    transform: translateY(-5px);
 }
 
-.card-title {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: #64748B;
+.enquiry-card .card-header {
+    padding: 13px 21px 14px;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    border-bottom: 1px solid #E2E8F0;
+    position: relative;
 }
 
-.card-body {
-    padding: 12px 0;
+.enquiry-card .card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 32px;
+    right: 32px;
+    height: 2px;
+    background: var(--accent-teal);
+    border-radius: 2px;
 }
 
-.setup-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 24px;
-    border-bottom: 1px solid #F1F5F9;
+.enquiry-card .card-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: var(--accent-teal);
+    display: block;
+    margin-bottom: 12px;
 }
 
-.setup-row:last-child {
-    border-bottom: none;
+.card-headline {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
 }
 
-.setup-row .label {
-    color: #64748B;
-    font-weight: 500;
-    font-size: 15px;
-}
-
-.setup-row .value {
-    font-weight: 700;
-    font-size: 16px;
-}
-
-.text-green {
-    color: var(--text-green);
-}
-
-.text-red {
-    color: var(--text-red);
-}
-
-.text-bold {
-    font-weight: 800 !important;
-}
-
-/* Process Flow Styling */
-.process-flow {
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 460px;
-    margin-top: 20px;
-}
-
-.flow-item {
+.enquiry-body {
+    padding: 18px;
     display: flex;
     flex-direction: column;
+    gap: 24px;
+}
+
+.enquiry-body .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.enquiry-body label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.05em;
+}
+
+.enquiry-body input,
+.enquiry-body textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #F1F5F9;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: #F8FAFC;
+    color: #0F172A;
+}
+
+.enquiry-body input:focus,
+.enquiry-body textarea:focus {
+    outline: none;
+    border-color: var(--accent-teal);
+    background: #FFFFFF;
+    box-shadow: 0 10px 20px -10px rgba(20, 184, 166, 0.2);
+}
+
+.mobile-input-container {
+    display: flex;
     align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-    width: 80px;
-    opacity: 0.4;
+    background: #F8FAFC;
+    border: 2px solid #F1F5F9;
+    border-radius: 12px;
+    overflow: hidden;
     transition: all 0.3s ease;
 }
 
-.flow-item.active {
-    opacity: 1;
+.mobile-input-container:focus-within {
+    border-color: var(--accent-teal);
+    background: #FFFFFF;
+    box-shadow: 0 10px 20px -10px rgba(20, 184, 166, 0.2);
 }
 
-.flow-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
+.country-prefix {
+    padding: 0 16px;
+    font-weight: 800;
+    font-size: 15px;
+    color: #1E293B;
+    border-right: 2px solid #F1F5F9;
+    background: #F1F5F9;
+}
+
+.mobile-input-container input {
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    padding: 12px 16px;
+}
+
+.enquiry-card .terms-wrapper {
+    margin: 4px 0;
+}
+
+.enquiry-card .checkbox-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #475569;
+    padding-left: 0;
 }
 
-.flow-item.active .flow-icon {
+.enquiry-card .checkmark {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    flex-shrink: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+}
+
+.enquiry-card .checkbox-container input:checked~.checkmark {
     background-color: var(--accent-teal);
     border-color: var(--accent-teal);
-    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
 }
 
-.flow-item span {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+.enquiry-card .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+}
+
+.submit-button {
+    width: 100%;
+    background-color: #0F172A;
     color: #FFFFFF;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
 }
 
-.flow-line {
-    flex: 1;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-    margin-top: 22px;
-    /* Center of 44px icon */
+.submit-button:hover:not(:disabled) {
+    background-color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+.submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.success-msg {
+    margin-top: 15px;
+    padding: 12px;
+    background: #F0FDF4;
+    color: #166534;
+    border: 1px solid #BBF7D0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
 }
 
 /* Trust Section Styling */
@@ -744,7 +841,6 @@
     font-size: 13px;
     color: var(--text-muted);
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
@@ -919,8 +1015,34 @@
         font-size: 14px;
     }
 
-    .trade-card {
+    .trade-card,
+    .enquiry-card {
         max-width: 100%;
+        margin-top: 20px;
+    }
+
+    .enquiry-card .card-header {
+        padding: 20px;
+    }
+
+    .enquiry-body {
+        padding: 24px 20px;
+        gap: 16px;
+    }
+
+    .card-headline {
+        font-size: 22px;
+    }
+
+    .enquiry-card .checkbox-container {
+        align-items: flex-start;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .submit-button {
+        padding: 16px;
+        font-size: 15px;
     }
 
     .flow-item {

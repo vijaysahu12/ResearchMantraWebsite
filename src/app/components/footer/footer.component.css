@@ -55,6 +55,23 @@
     font-weight: 700;
 }
 
+.app-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.app-badge img {
+    height: 36px;
+    width: auto;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.app-badge:hover img {
+    transform: scale(1.05);
+}
+
 .brand-desc {
     font-size: 15px;
     line-height: 1.6;

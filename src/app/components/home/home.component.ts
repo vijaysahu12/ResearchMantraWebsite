@@ -12,7 +12,6 @@ import { MustReadComponent } from '../must-read/must-read.component';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [
     RmIntroComponent,
     TradeSetupsComponent,
