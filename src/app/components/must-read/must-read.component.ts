@@ -55,6 +55,7 @@ export class MustReadComponent implements OnDestroy {
     private platformId = inject(PLATFORM_ID);
 
     blogs = this.blogService.getBlogs();
+    // blogs = this.blogService.loadBlogs();
     currentIndex = signal(0);
     private carouselInterval: any;
 

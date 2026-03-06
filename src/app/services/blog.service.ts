@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 export interface BlogPost {
     id: number;
@@ -236,7 +238,7 @@ export class BlogService {
 
                 <h2>Putting It All Together: Daily Routine</h2>
                 <p>A structured routine reinforces the <strong>Best Trading Tips</strong> discussed above. Here’s a sample routine followed by disciplined traders:</p>
-                
+
                 <div class="routine-container">
                     <div class="routine-row">
                         <div class="routine-time">Pre-market</div>
@@ -501,7 +503,7 @@ export class BlogService {
             keywords: 'Best Stock Advisory',
             content: `
                 <h2>Best Stock Advisory In India 2026 Trends Insights</h2>
-                
+
                 <p><strong>TL;DR:</strong> Indian markets in 2026 are dynamic, shaped by global cues, IPO booms, and sectoral rotations. Choosing the <strong>best stock advisory</strong> is essential to navigate volatility, manage risks, and capture long-term opportunities.</p>
 
                 <h2>Introduction</h2>
@@ -620,7 +622,7 @@ export class BlogService {
             keywords: 'Share Market Advisory',
             content: `
                 <h2>Top Share Market Advisory in 2026 Trends Tips And Strategic Insights</h2>
-                
+
                 <p><strong>TL;DR:</strong> In 2026, volatile global cues, IPO bonanzas, and policy updates make informed guidance indispensable. A trusted <strong>share market advisory</strong> helps you navigate sectors, timing, and risk with clarity.</p>
 
                 <h2>Introduction</h2>
@@ -724,7 +726,7 @@ export class BlogService {
             keywords: 'Stock Market Advisory Company',
             content: `
                 <h2>Stock Market Advisory Company Choosing Wisely in 2026</h2>
-                
+
                 <p><strong>TL;DR:</strong> A trustworthy <strong>stock market advisory company</strong> can add value by providing research, risk controls, and regulatory compliance. But many advisory firms differ vastly; choosing one demands scrutiny over track record, transparency, and credibility.</p>
 
                 <h2>Introduction</h2>
@@ -852,7 +854,7 @@ export class BlogService {
             keywords: 'Stock Market Advisory',
             content: `
                 <h2>Stock Market Advisory Services Strategic Insight 2026</h2>
-                
+
                 <p><strong>TL;DR:</strong> In 2026’s volatile environment, savvy investors need a credible <strong>stock market advisory</strong> to filter noise, align with regulations, and act decisively. Choosing the right advisory could be your competitive edge.</p>
 
                 <h2>Introduction</h2>
@@ -929,7 +931,7 @@ export class BlogService {
             keywords: 'Stock Advisory',
             content: `
                 <h2>Modern Stock Advisory And Market Strategy</h2>
-                
+
                 <p><strong>TL;DR:</strong> In 2026’s volatile markets, effective <strong>stock advisory</strong> becomes essential. The right advisory helps filter noise, manage risk, and align your portfolio with macro shifts and regulatory trends.</p>
 
                 <h2>Introduction</h2>
@@ -1006,7 +1008,7 @@ export class BlogService {
             keywords: 'Share Market Advisory Services',
             content: `
                 <h2>Share Market Advisory Services Expert Guidance</h2>
-                
+
                 <p><strong>TL;DR:</strong> India’s equity markets are navigating turbulence driven by global headwinds, yet supported by strong domestic growth drivers and regulatory evolution. In this environment, <strong>share market advisory services</strong> are no longer optional—they are becoming essential tools for informed decision-making. This guide helps investors separate hype from actionable insight and understand why the <a href="/stock-market-advisory-guide" target="_blank">best stock market advisory</a> solutions matter more than ever in 2026.</p>
 
                 <h2>Introduction</h2>
@@ -1072,7 +1074,7 @@ export class BlogService {
             keywords: 'Free Intraday Tips',
             content: `
                 <h2>Free Intraday Tips In 2026 Trends Tools Tacticle Strategies For Indian Market</h2>
-                
+
                 <p><strong>TL;DR:</strong> In volatile markets, <strong>free intraday tips</strong> can be useful starting pointers—but only when backed by <strong>risk discipline</strong>, context, and scanning cues. Use them as signals, not guarantees.</p>
 
                 <h2>Introduction</h2>
@@ -1186,12 +1188,34 @@ export class BlogService {
             `
         }
     ]);
+private blogs = signal<any[]>([]);
 
-    getBlogs() {
-        return this.blogsData;
-    }
+     private apiUrl = `${environment.apiurl}WebsiteBlog`;
+ private http = inject(HttpClient);
+    // getBlogs() {
+    //     return this.blogsData;
+    // }
 
     getBlogBySlug(slug: string) {
         return this.blogsData().find(blog => blog.slug === slug);
     }
+
+loadBlogs(page = 1, size = 10, search = '') {
+
+  this.http.get<any>(
+    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}`
+  )
+  .subscribe(res => {
+      this.blogs.set(res.data);
+  });
+
+}
+
+   getBlogs() {
+    return this.blogsData; // returning signal
+  }
+
+   getBlogDetails(id: string) {
+    return this.http.get(`${this.apiUrl}/GetBlogDetails/${id}`);
+  }
 }
