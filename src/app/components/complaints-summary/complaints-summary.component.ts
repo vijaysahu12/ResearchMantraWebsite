@@ -37,11 +37,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
                         <tr>
                             <td>SEBI (SCORES)</td>
                             <td>0</td>
-                            <td>4</td>
-                            <td>2</td>
-                            <td>2</td>
                             <td>0</td>
-                            <td>15</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
                         </tr>
                         <tr>
                             <td>Other Sources (if any)</td>
@@ -57,11 +57,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
                         <tr>
                             <td><strong>Grand Total</strong></td>
                             <td>0</td>
-                            <td>4</td>
-                            <td>2</td>
-                            <td>2</td>
                             <td>0</td>
-                            <td>15</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
                         </tr>
                     </tfoot>
                 </table>

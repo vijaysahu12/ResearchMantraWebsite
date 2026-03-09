@@ -65,7 +65,7 @@ export class TradeSetupsComponent implements AfterViewInit, OnDestroy {
             ]
         }, {
             id: 5,
-            title: 'Short term gain',
+            title: 'Connect, Share & Engage',
             image: 'assets/6.png',
             items: [
                 "Share your thoughts, post updates, and connect with other users."
