@@ -68,7 +68,7 @@
     <!-- Blogs Grid -->
     <div class="blogs-grid">
       @for (blog of filteredBlogs(); track blog.id) {
-        <article class="blog-card" [routerLink]="['/', blog.slug]" style="cursor: pointer">
+        <article class="blog-card" [routerLink]="['/admin/blog-details', blog.slug]" style="cursor: pointer">
           <!-- Blog Image -->
           <div class="blog-image">
             <img [src]="getCurrentImage(blog)" [alt]="blog.title" />

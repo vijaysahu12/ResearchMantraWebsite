@@ -1260,9 +1260,9 @@ private blogs = signal<any[]>([]);
     //     return this.blogsData().find(blog => blog.slug === slug);
     // }
 
-    getBlogBySlug(slug: string) {
-  return this.blogs().find(blog => blog.slug === slug);
-}
+//     getBlogBySlug(slug: string) {
+//   return this.blogs().find(blog => blog.slug === slug);
+// }
 
 loadBlogs(page = 1, size = 10, search = '') {
 
@@ -1279,9 +1279,9 @@ loadBlogs(page = 1, size = 10, search = '') {
     return this.blogs; // returning signal
   }
 
-   getBlogDetails(id: string) {
-    return this.http.get(`${this.apiUrl}/GetBlogDetails/${id}`);
-  }
+getBlogDetails(slug: string) {
+  return this.http.get(`${this.apiUrl}/GetBlogBySlug/${slug}`);
+}
 
   addComment(payload: any) {
     return this.http.post(`${this.apiUrl}/AddComment`, payload);

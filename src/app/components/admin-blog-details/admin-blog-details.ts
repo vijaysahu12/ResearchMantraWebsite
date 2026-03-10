@@ -26,22 +26,29 @@ export class AdminBlogDetails implements OnInit {
         return content ? this.sanitizer.bypassSecurityTrustHtml(content) : '';
     });
 
-    ngOnInit() {
-        this.route.params.subscribe(params => {
-            const slugValue = params['slug'];
+ngOnInit() {
+  const slugValue = this.route.snapshot.paramMap.get('slug');
 
-            if (slugValue) {
-                const foundBlog = this.blogService.getBlogBySlug(slugValue);
-                this.blog.set(foundBlog);
+  if (slugValue) {
 
-                if (foundBlog) {
-                    this.updateSeoTags(foundBlog);
-                }
+    this.blogService.getBlogDetails(slugValue).subscribe((res: any) => {
 
-                window.scrollTo(0, 0);
-            }
-        });
-    }
+      const blog = {
+        ...res.data,
+        content: this.blogService['processBlogContent'](res.data.content)
+      };
+
+      this.blog.set(blog);
+
+      if (blog) {
+        this.updateSeoTags(blog);
+      }
+
+      window.scrollTo(0, 0);
+
+    });
+  }
+}
 
     private updateSeoTags(blog: BlogPost) {
         const pageTitle = blog.metaTitle || blog.title;

@@ -36,8 +36,14 @@ public activeCommentBlogId: string | number | null = null;
   imageIndexes: { [key: string]: number } = {};
   userId: any = '00000000-0000-0000-0000-000000000000'; // Replace with actual user ID logic
 
+  constructor(
+    private adminBlogService: AdminBlogService,
+  ) {}
+
   ngOnInit() {
+   if (!this.blogs() || this.blogs().length === 0) {
     this.blogService.loadBlogs();
+  }
   }
 
   filteredBlogs = computed(() => {
