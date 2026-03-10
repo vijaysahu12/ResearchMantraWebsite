@@ -348,17 +348,19 @@ export class RmIntroComponent implements OnInit {
 
     startTimer(seconds: number) {
         this.stopTimer();
+        const expiresAt = Date.now() + (seconds * 1000);
         this.timer.set(seconds);
         this.canResend.set(false);
 
-        const expiresAt = Date.now() + (seconds * 1000);
         this.saveStateWithExpiration(expiresAt);
 
         this.timerInterval = setInterval(() => {
-            const current = this.timer();
-            if (current > 0) {
-                this.timer.set(current - 1);
-            } else {
+            const now = Date.now();
+            const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
+
+            this.timer.set(remaining);
+
+            if (remaining <= 0) {
                 this.canResend.set(true);
                 this.stopTimer();
             }
