@@ -19,6 +19,7 @@ import { BlogsComponent } from './components/blogs/blogs.component';
 import { BlogDetailsComponent } from './components/blog-details/blog-details.component';
 import { AdminBlogs } from './components/admin-blogs/admin-blogs';
 import { AdminBlogDetails } from './components/admin-blog-details/admin-blog-details';
+import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
