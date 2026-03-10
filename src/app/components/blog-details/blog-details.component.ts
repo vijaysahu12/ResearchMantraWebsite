@@ -90,22 +90,22 @@ import { SeoService } from '../../services/seo.service';
         }
 
         .bg-text-overlay {
-            position: absolute;
-            bottom: 50px;
-            left: 0;
-            right: 0;
-            font-size: clamp(60px, 12vw, 150px);
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.08);
-            white-space: nowrap;
-            overflow: hidden;
-            text-transform: uppercase;
-            z-index: 1;
-            pointer-events: none;
-            background: rgba(239, 68, 68, 0.2);
-            padding: 10px 0;
-            line-height: 1;
-        }
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    font-size: clamp(60px, 12vw, 150px);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+    overflow: hidden; /* This keeps it inside the hero */
+    text-overflow: clip; /* Prevents dots on the background text */
+    text-transform: uppercase;
+    z-index: 1;
+    pointer-events: none;
+    line-height: 1;
+    width: 100%; /* Ensure it stays within screen bounds */
+}
 
         .blog-title {
             font-size: clamp(32px, 5vw, 48px);
@@ -181,6 +181,48 @@ import { SeoService } from '../../services/seo.service';
             text-decoration: underline;
         }
 
+        .content-wrapper {
+    word-wrap: break-word;      /* Break long words/URLs */
+    overflow-wrap: break-word;  /* Modern browsers */
+    word-break: break-word;
+    max-width: 100%;            /* Stay within parent */
+}
+
+/* Ensure images from Quill/Database never exceed card width */
+.content-wrapper ::ng-deep img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+/* Ensure iframes (videos) are responsive */
+.content-wrapper ::ng-deep iframe {
+    max-width: 100% !important;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+}
+
+.content-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 60px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    /* Remove max-height and overflow:visible entirely
+       to let the natural flow of the document take over */
+}
+
+@media (max-width: 768px) {
+    .content-card {
+        padding: 30px 20px; /* Reduce padding on mobile */
+        border-radius: 0;     /* Full width looks better on mobile */
+    }
+    .content-layout {
+        padding: 0;          /* Remove side padding to save space */
+    }
+}
         .article-footer {
             margin-top: 60px;
             padding-top: 40px;

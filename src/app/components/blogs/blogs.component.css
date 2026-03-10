@@ -465,3 +465,164 @@
         font-size: 15px;
     }
 }
+.read-more-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+
+  color: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50px;               /* pill shape */
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.3);
+}
+
+.read-more-arrow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.45);
+  background: linear-gradient(135deg, #5a6fd9 0%, #6a3f91 100%);
+}
+
+.read-more-arrow .arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.read-more-arrow:hover .arrow {
+  transform: translateX(6px);
+}
+.blog-image{
+ position:relative;
+}
+
+.img-nav{
+ position:absolute;
+ top:50%;
+ transform:translateY(-50%);
+ background:rgba(0,0,0,0.5);
+ color:white;
+ border:none;
+ padding:6px 10px;
+ cursor:pointer;
+ font-size:18px;
+}
+
+.img-nav.prev{
+ left:5px;
+}
+
+.img-nav.next{
+ right:5px;
+}
+.image-dots{
+position:absolute;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:6px;
+z-index:6;
+}
+
+.dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:rgba(255,255,255,0.5);
+transition:all 0.3s;
+}
+
+.dot.active{
+background:#fff;
+transform:scale(1.2);
+}
+.blog-interactions {
+  display: flex;
+  gap: 15px;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+}
+
+.interaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.interaction-btn:hover { color: #007bff; }
+.interaction-btn.liked { color: #e74c3c; }
+
+.comments-container {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.comment-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.comment-author { font-weight: bold; color: #555; }
+.interaction-btn {
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.interaction-btn.liked {
+  color: red;
+}
+/* The base button style */
+.interaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b; /* Default gray */
+  transition: all 0.2s ease;
+}
+
+/* When the liked class is present, change the color of the text and the SVG */
+.interaction-btn.liked {
+  color: #ef4444; /* Tailwind Red 500 */
+}
+
+.interaction-btn.liked svg {
+  fill: #ef4444;   /* Fills the heart with red */
+  stroke: #ef4444; /* Changes the border to red */
+  transform: scale(1.1); /* Optional: slight pop effect */
+}
