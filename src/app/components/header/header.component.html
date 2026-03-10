@@ -24,7 +24,7 @@
             (click)="isMenuOpen.set(false)"><strong>Testimonials</strong></a></li>
         <li><a [routerLink]="['/']" fragment="faq" (click)="isMenuOpen.set(false)"><strong>FAQ</strong></a></li>
         <!-- <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li> -->
-                 <li class="dropdown" [class.open]="isComplianceOpen()">
+        <li class="dropdown" [class.open]="isComplianceOpen()">
           <a class="dropdown-toggle" (click)="toggleCompliance($event)">
             <strong>Blogs</strong>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -42,8 +42,8 @@
         <li><a [routerLink]="['/contact']" (click)="isMenuOpen.set(false)"><strong>Contact</strong></a></li>
 
         <!-- RA Compliance Dropdown -->
-        <li class="dropdown" [class.open]="isComplianceOpen()">
-          <a class="dropdown-toggle" (click)="toggleCompliance($event)">
+        <li class="dropdown" [class.open]="isBlogsOpen()">
+          <a class="dropdown-toggle" (click)="toggleBlogs($event)">
             <strong>RA Compliance</strong>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="6 9 12 15 18 9"></polyline>
