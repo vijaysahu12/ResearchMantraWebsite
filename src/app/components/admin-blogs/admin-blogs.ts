@@ -9,17 +9,18 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
+import { AdminBlogService } from '../../services/admin-blog.service';
 
 @Component({
-  selector: 'app-blogs',
+  selector: 'app-admin-blogs',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './blogs.component.html',
-  styleUrl: './blogs.component.css',
+  templateUrl: './admin-blogs.html',
+  styleUrl: './admin-blogs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BlogsComponent implements OnInit {
-  private blogService = inject(BlogService);
+export class AdminBlogs implements OnInit {
+  private blogService = inject(AdminBlogService);
   private router = inject(Router);
   // Define state variable
 public activeCommentBlogId: string | number | null = null;
@@ -36,7 +37,7 @@ public activeCommentBlogId: string | number | null = null;
   userId: any = '00000000-0000-0000-0000-000000000000'; // Replace with actual user ID logic
 
   ngOnInit() {
-    this.blogService.getBlogs();
+    this.blogService.loadBlogs();
   }
 
   filteredBlogs = computed(() => {
@@ -119,7 +120,7 @@ public activeCommentBlogId: string | number | null = null;
     };
   }
   navigateToBlog(slug: string) {
-    this.router.navigate(['/', slug]);
+    this.router.navigate(['/admin/blog-details', slug]);
   }
 
 toggleComments(blog: any, event: Event) {

@@ -14,15 +14,20 @@ export interface BlogPost {
     author: string;
     readTime: string;
     image: string;
+    images: any[];
     metaTitle?: string;
     metaDescription?: string;
     keywords?: string;
+    commentsCount?: number;
+    likesCount?: number;
+    isLiked?: boolean;
+    comments?: any[];
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class BlogService {
+export class AdminBlogService {
     private blogsData = signal<BlogPost[]>([
         {
             id: 1,
@@ -34,6 +39,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '10 min read',
             image: 'assets/Best-Stock-Advisory-In-India-2026-Trends-Insights.jpg',
+            images:['assets/Best-Stock-Advisory-In-India-2026-Trends-Insights.jpg'],
             metaTitle: 'Top 10 Best Stock Market Tips 2026 Proven Strategies for Investing',
             metaDescription: 'Discover the best Stock Market Tips for 2026. Learn expert strategies, risk management, and the latest trends to grow wealth and trade smarter',
             keywords: 'Stock Market Tips',
@@ -132,6 +138,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '8 min read',
             image: 'assets/Best-Trading-Tips-2026-Top-Strategies-Trends-And-Risk-Controls.jpg',
+            images: ['assets/Best-Trading-Tips-2026-Top-Strategies-Trends-And-Risk-Controls.jpg'],
             metaTitle: '10 Best Trading Tips 2026: Top Strategies, Trends & Risk Controls',
             metaDescription: 'Discover the Best Trading Tips for 2026! Learn modern strategies, risk management, psychological tactics, and step-by-step guidance to trade',
             keywords: 'Best Trading Tips',
@@ -278,6 +285,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '7 min read',
             image: 'assets/Daily-Tradin-Tips-2026-Smart-Strategies-Trends-For-Every-Traders.jpg',
+            images: ['assets/Daily-Tradin-Tips-2026-Smart-Strategies-Trends-For-Every-Traders.jpg'],
             metaTitle: 'Daily Trading Tips for 2026 Trends, Strategies & Risk Management',
             metaDescription: 'Explore actionable Daily Trading Tips for 2026 — from momentum strategies to risk control, trends shaping markets, and expert advice.',
             keywords: 'Daily Trading Tips',
@@ -385,6 +393,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '12 min read',
             image: 'assets/Free-Intraday-Tips-In-2026-Trends-Tools-Tacticle-Strategies-For-Indian-Market.jpg',
+            images: ['assets/Free-Intraday-Tips-In-2026-Trends-Tools-Tacticle-Strategies-For-Indian-Market.jpg'],
             metaTitle: 'Top Advisory Company in India 2026: Trends, Insights & Guide',
             metaDescription: 'Looking for the top advisory company in India in 2026? Discover market trends and expert strategies for smarter investing.',
             keywords: 'Top Advisory Company in India',
@@ -499,6 +508,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '15 min read',
             image: 'assets/Modern-Stock-Advisory-And-Market-Strategy.jpg',
+            images: ['assets/Modern-Stock-Advisory-And-Market-Strategy.jpg'],
             metaTitle: 'Best Stock Advisory in India 2026: Choose the Right One',
             metaDescription: 'Looking for the best stock advisory in India in 2026? Learn how to choose the right advisor, reduce risk & invest smarter with expert guidance',
             keywords: 'Best Stock Advisory',
@@ -618,6 +628,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '9 min read',
             image: 'assets/Share-Market-Advisory-Services-Expert-Guidance.jpg',
+            images: ['assets/Share-Market-Advisory-Services-Expert-Guidance.jpg'],
             metaTitle: 'Share Market Advisory 2026: Trends, Tactics & Insights',
             metaDescription: 'Explore 2026 market trends, tactics with the right share market advisory. Get clarity, risk control, informed strategies for smarter investing',
             keywords: 'Share Market Advisory',
@@ -722,6 +733,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '11 min read',
             image: 'assets/Stock-Market-Advisory-Company-Choosing-Wisely-in-2026.jpg',
+            images: ['assets/Stock-Market-Advisory-Company-Choosing-Wisely-in-2026.jpg'],
             metaTitle: 'Stock Market Advisory Company Guide 2026 & Selection Tips',
             metaDescription: 'Explore this stock market advisory company guide for 2026 to understand trends, risks, regulations & how to choose a reliable advisory partner',
             keywords: 'Stock Market Advisory Company',
@@ -850,6 +862,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '13 min read',
             image: 'assets/Stock-Market-Advisory-Services-Strategic-insight.jpg',
+            images: ['assets/Stock-Market-Advisory-Services-Strategic-insight.jpg'],
             metaTitle: 'Stock Market Advisory in 2026: Market Outlook & Guide',
             metaDescription: 'Learn why stock market advisory matters in 2026, key market trends to watch, and how to choose the right advisory for smarter investing.',
             keywords: 'Stock Market Advisory',
@@ -927,6 +940,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '10 min read',
             image: 'assets/Stock-Market-Tips-2026-Proven-Strategies-For-Smarter-Investing.jpg',
+            images: ['assets/Stock-Market-Tips-2026-Proven-Strategies-For-Smarter-Investing.jpg'],
             metaTitle: 'Stock Advisory in 2026: Trends, Risks & Smart Selection',
             metaDescription: 'Explore stock advisory in 2026, covering key market trends, risks, compliance factors, and how to choose the right advisory for your goals.',
             keywords: 'Stock Advisory',
@@ -1004,6 +1018,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '14 min read',
             image: 'assets/Top-Advisory-company-in-India-2026.jpg',
+            images: ['assets/Top-Advisory-company-in-India-2026.jpg'],
             metaTitle: 'Share Market Advisory Services 2026 for Smarter Investing',
             metaDescription: 'Thinking long-term in 2026? See how share market advisory services help smarter decisions using data-driven insights, structured risk control',
             keywords: 'Share Market Advisory Services',
@@ -1070,6 +1085,7 @@ export class BlogService {
             author: 'Susmita Sahoo',
             readTime: '8 min read',
             image: 'assets/Top-Share-Market-Advisory-in-2026-Trends-Tips-And-Strategic-Insights.jpg',
+            images: ['assets/Top-Share-Market-Advisory-in-2026-Trends-Tips-And-Strategic-Insights.jpg'],
             metaTitle: 'Best Free Intraday Tips 2026: Smart Strategies & Safe Practices',
             metaDescription: 'Explore actionable and safe free intraday tips in 2026. Learn strategies, risk controls, and how to use them wisely in volatile markets.',
             keywords: 'Free Intraday Tips',
@@ -1236,32 +1252,32 @@ private blogs = signal<any[]>([]);
 
      private apiUrl = `${environment.apiurl}WebsiteBlog`;
  private http = inject(HttpClient);
-    getBlogs() {
-        return this.blogsData;
-    }
+    // getBlogs() {
+    //     return this.blogsData;
+    // }
+
+    // getBlogBySlug(slug: string) {
+    //     return this.blogsData().find(blog => blog.slug === slug);
+    // }
 
     getBlogBySlug(slug: string) {
-        return this.blogsData().find(blog => blog.slug === slug);
-    }
+  return this.blogs().find(blog => blog.slug === slug);
+}
 
-//     getBlogBySlug(slug: string) {
-//   return this.blogs().find(blog => blog.slug === slug);
-// }
+loadBlogs(page = 1, size = 10, search = '') {
 
-// loadBlogs(page = 1, size = 10, search = '') {
+  this.http.get<any>(
+    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}`
+  )
+  .subscribe(res => {
+      this.blogs.set(res.data);
+  });
 
-//   this.http.get<any>(
-//     `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}`
-//   )
-//   .subscribe(res => {
-//       this.blogs.set(res.data);
-//   });
+}
 
-// }
-
-  //  getBlogs() {
-  //   return this.blogs; // returning signal
-  // }
+   getBlogs() {
+    return this.blogs; // returning signal
+  }
 
    getBlogDetails(id: string) {
     return this.http.get(`${this.apiUrl}/GetBlogDetails/${id}`);

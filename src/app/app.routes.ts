@@ -17,6 +17,8 @@ import { ComplaintDataComponent } from './components/complaint-data/complaint-da
 import { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
 import { BlogsComponent } from './components/blogs/blogs.component';
 import { BlogDetailsComponent } from './components/blog-details/blog-details.component';
+import { AdminBlogs } from './components/admin-blogs/admin-blogs';
+import { AdminBlogDetails } from './components/admin-blog-details/admin-blog-details';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -37,6 +39,7 @@ export const routes: Routes = [
     { path: 'refund-policy', component: RefundPolicyComponent },
     { path: 'terms-conditions', component: TermsConditionsComponent },
     { path: 'blogs', component: BlogsComponent },
+    { path: 'admin/blogs', component: AdminBlogs},
 
     // Blog Redirects (Old to New)
     { path: 'top-share-market-advisory-services-india-2025-e', redirectTo: 'best-share-market-advisory-services', pathMatch: 'full' },
@@ -53,6 +56,8 @@ export const routes: Routes = [
 
     // Root-level Blog Detail Catch-all
     { path: 'blog/:slug', redirectTo: ':slug', pathMatch: 'full' },
+    // { path: 'admin/blog-details/:slug', redirectTo: ':slug', pathMatch: 'full' },
+      { path: 'admin/blog-details/:slug', component: AdminBlogDetails },
     { path: ':slug', component: BlogDetailsComponent },
 
     { path: '**', redirectTo: '' }

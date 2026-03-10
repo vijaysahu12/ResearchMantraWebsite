@@ -23,7 +23,22 @@
         <li><a [routerLink]="['/']" fragment="testimonials"
             (click)="isMenuOpen.set(false)"><strong>Testimonials</strong></a></li>
         <li><a [routerLink]="['/']" fragment="faq" (click)="isMenuOpen.set(false)"><strong>FAQ</strong></a></li>
-        <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li>
+        <!-- <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li> -->
+                 <li class="dropdown" [class.open]="isComplianceOpen()">
+          <a class="dropdown-toggle" (click)="toggleCompliance($event)">
+            <strong>Blogs</strong>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Blogs</a></li>
+            <li><a [routerLink]="['/admin/blogs']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+                Admin Blogs</a></li>
+          </ul>
+        </li>
+
         <li><a [routerLink]="['/contact']" (click)="isMenuOpen.set(false)"><strong>Contact</strong></a></li>
 
         <!-- RA Compliance Dropdown -->
