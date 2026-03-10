@@ -183,8 +183,11 @@ loadCommentsForBlog(blog: any) {
   event.stopPropagation();
   this.blogService.toggleLike(blog.id, this.userId).subscribe({
     next: (res) => {
+            this.blogService.getBlogs(); // Refresh the blogs signal to update the UI
        blog.isLiked = res.data.isLiked;
       blog.likesCount = res.data.totalLikes;
+
+      location.reload(); // Force reload to update like status and count
     }
   });
 }
