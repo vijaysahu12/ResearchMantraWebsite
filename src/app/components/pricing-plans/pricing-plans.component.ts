@@ -1,11 +1,6 @@
-import { Component, ChangeDetectionStrategy, signal, inject, DestroyRef, QueryList, ElementRef, ViewChildren } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { LeadService } from '../../services/lead.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 interface FeatureRow {
     name: string;
@@ -17,221 +12,76 @@ interface FeatureRow {
 @Component({
     selector: 'app-pricing-plans',
     standalone: true,
-    imports: [RouterLink, CommonModule, ReactiveFormsModule],
+    imports: [RouterLink, ReactiveFormsModule],
     templateUrl: './pricing-plans.component.html',
     styleUrl: './pricing-plans.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PricingPlansComponent {
     private fb = inject(FormBuilder);
-    private http = inject(HttpClient);
-    private leadService = inject(LeadService);
-    private destroyRef = inject(DestroyRef);
 
     // Modal State
     isModalOpen = signal(false);
-    currentStep = signal<'form' | 'otp' | 'success'>('form');
     isLoading = signal(false);
     errorMessage = signal('');
-    timer = signal(0);
-    canResend = signal(false);
-    private timerInterval: any;
 
     // Form
     reportForm: FormGroup;
-    otpForm: FormGroup;
-
-    @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
 
     constructor() {
         this.reportForm = this.fb.group({
-            fullName: ['', [Validators.required, Validators.minLength(2)]],
-            language: ['', [Validators.required]],
-            email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-            mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-            acceptTerms: [false, Validators.requiredTrue]
+            fromDate: [''],
+            toDate: ['']
         });
-
-        this.otpForm = this.fb.group({
-            otp: this.fb.array(Array(6).fill('').map(() =>
-                this.fb.control('', [Validators.required, Validators.pattern(/^\d$/)])
-            ))
-        });
-    }
-
-    get otpDigits() {
-        return this.otpForm.get('otp') as FormArray;
     }
 
     openReportModal() {
         this.isModalOpen.set(true);
-        this.currentStep.set('form');
         this.errorMessage.set('');
+        this.reportForm.reset({ fromDate: '', toDate: '' });
     }
 
     closeModal() {
         this.isModalOpen.set(false);
-        this.stopTimer();
     }
 
-    generateGuid(): string {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
+    isDateRangeInvalid(): boolean {
+        const from = this.reportForm.get('fromDate')?.value;
+        const to = this.reportForm.get('toDate')?.value;
+        if (from && to) {
+            return new Date(to) < new Date(from);
+        }
+        return false;
     }
 
-    onSendOtp() {
-        if (this.reportForm.invalid) {
-            this.reportForm.markAllAsTouched();
+
+    onDownloadDirect() {
+        if (this.isDateRangeInvalid()) {
+            this.errorMessage.set('To Date cannot be earlier than From Date');
             return;
         }
 
         this.isLoading.set(true);
         this.errorMessage.set('');
 
-        const formValue = this.reportForm.value;
-        const now = new Date().toISOString();
+        const fromDate = this.reportForm.get('fromDate')?.value || '';
+        const toDate = this.reportForm.get('toDate')?.value || '';
+        const apiUrl = `https://crmapi.researchmantra.in/api/PdfReports/generate?fromDate=${fromDate}&toDate=${toDate}`;
 
-        // Save Lead first
-        const leadPayload: any = {
-            Id: 0,
-            PublicKey: this.generateGuid(),
-            FullName: formValue.fullName,
-            Gender: '',
-            CountryCode: '+91',
-            MobileNumber: formValue.mobile,
-            AlternateMobileNumber: '',
-            EmailId: formValue.email,
-            ProfileImage: '',
-            PriorityStatus: 'Normal',
-            AssignedTo: '',
-            ServiceKey: '',
-            LeadTypeKey: '',
-            LeadSourceKey: 'Report Download',
-            Remarks: `Language: ${formValue.language}`,
-            IsDisabled: 0,
-            IsDelete: 0,
-            CreatedOn: now,
-            CreatedBy: 'Website',
-            IsSpam: 0,
-            IsWon: 0,
-            ModifiedOn: now,
-            ModifiedBy: 'Website',
-            City: '',
-            PinCode: '',
-            StatusId: 1,
-            Favourite: false,
-            PurchaseOrderKey: null
-        };
+        // Short delay to show spinner
+        setTimeout(() => {
+            this.isLoading.set(false);
+            window.open(apiUrl, '_blank');
+            this.closeModal();
 
-        this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', leadPayload)
-            .pipe(
-                switchMap(() => this.leadService.sendOtp({
-                    mobileNumber: formValue.mobile,
-                    countryCode: '+91'
-                })),
-                takeUntilDestroyed(this.destroyRef)
-            )
-            .subscribe({
-                next: () => {
-                    this.isLoading.set(false);
-                    this.currentStep.set('otp');
-                    this.startTimer(300);
-                    setTimeout(() => {
-                        this.otpInputs?.first?.nativeElement.focus();
-                    }, 100);
-                },
-                error: (err) => {
-                    this.isLoading.set(false);
-                    this.errorMessage.set(err.error?.message || 'Failed to send OTP. Please try again.');
-                }
-            });
-    }
-
-    onOtpVerify() {
-        if (this.otpForm.invalid) return;
-
-        this.isLoading.set(true);
-        this.errorMessage.set('');
-
-        const otp = this.otpDigits.controls.map(c => c.value).join('');
-        const mobile = this.reportForm.get('mobile')?.value;
-
-        this.leadService.verifyOtp({ mobileNumber: mobile, otp: otp })
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-                next: () => {
-                    this.isLoading.set(false);
-                    this.currentStep.set('success');
-                    this.stopTimer();
-
-                    // Track GTM Event
-                    if (typeof (window as any).gtag === 'function') {
-                        (window as any).gtag('event', 'lead_submit', {
-                            form_type: 'report_download',
-                            page_location: window.location.href
-                        });
-                    }
-
-                    // Trigger PDF download after short delay
-                    setTimeout(() => {
-                        window.open('assets/Research-Mantra-Report.pdf', '_blank');
-                    }, 1000);
-                },
-                error: (err) => {
-                    this.isLoading.set(false);
-                    this.errorMessage.set(err.error?.message || 'Invalid OTP. Please try again.');
-                }
-            });
-    }
-
-    // OTP UI Helpers
-    onOtpInput(index: number, event: any) {
-        const input = event.target as HTMLInputElement;
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 1) value = value[0];
-        input.value = value;
-        this.otpDigits.at(index).setValue(value);
-        if (value && index < 5) {
-            this.otpInputs.get(index + 1)?.nativeElement.focus();
-        }
-    }
-
-    onOtpKeyDown(index: number, event: KeyboardEvent) {
-        if (event.key === 'Backspace' && !this.otpDigits.at(index).value && index > 0) {
-            this.otpInputs.get(index - 1)?.nativeElement.focus();
-        }
-    }
-
-    // Timer Logic
-    startTimer(seconds: number) {
-        this.stopTimer();
-        this.timer.set(seconds);
-        this.canResend.set(false);
-        this.timerInterval = setInterval(() => {
-            const current = this.timer();
-            if (current > 0) {
-                this.timer.set(current - 1);
-            } else {
-                this.canResend.set(true);
-                this.stopTimer();
+            // Track GTM Event if needed
+            if (typeof (window as any).gtag === 'function') {
+                (window as any).gtag('event', 'report_download', {
+                    date_from: fromDate,
+                    date_to: toDate
+                });
             }
-        }, 1000);
-    }
-
-    stopTimer() {
-        if (this.timerInterval) {
-            clearInterval(this.timerInterval);
-            this.timerInterval = null;
-        }
-    }
-
-    formatTime(seconds: number): string {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
+        }, 800);
     }
 
     features = signal<FeatureRow[]>([

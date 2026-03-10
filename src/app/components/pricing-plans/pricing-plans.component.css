@@ -7,13 +7,13 @@
     --bg-white: #FFFFFF;
     --navy-blue: #0F172A;
     --border-light: #E2E8F0;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .pricing-section {
     background-color: #f6f7f8;
     padding: 54px 0;
     color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .pricing-container {
@@ -385,6 +385,7 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     animation: modalScale 0.3s ease-out;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 @keyframes modalScale {
@@ -416,16 +417,32 @@
     padding: 40px;
 }
 
+.modal-body h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--navy-blue);
+    letter-spacing: -0.01em;
+}
+
+.modal-body p {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
 .form-group {
     margin-bottom: 24px;
+    min-width: 0;
 }
 
 .form-group label {
     display: block;
     font-size: 14px;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--navy-blue);
     margin-bottom: 8px;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .form-group input,
@@ -438,6 +455,8 @@
     color: #1e293b;
     transition: all 0.2s;
     background: #f8fafc;
+    box-sizing: border-box;
+    font-family: inherit;
 }
 
 .form-group input:focus,
@@ -451,6 +470,20 @@
 .form-group input.error,
 .form-group select.error {
     border-color: #ef4444;
+}
+
+.date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .date-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
 }
 
 .otp-input-wrapper {
@@ -648,5 +681,10 @@
         width: 40px;
         height: 50px;
         font-size: 20px;
+    }
+
+    .date-row {
+        grid-template-columns: 1fr;
+        gap: 0;
     }
 }

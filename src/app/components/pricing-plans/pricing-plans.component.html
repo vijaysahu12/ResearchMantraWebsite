@@ -132,61 +132,30 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
         <button class="modal-close" (click)="closeModal()">&times;</button>
 
-        @if (currentStep() === 'form') {
         <div class="modal-body">
-            <form [formGroup]="reportForm" (ngSubmit)="onSendOtp()">
-                <div class="form-group">
-                    <label>Full name:</label>
-                    <input type="text" formControlName="fullName" placeholder="Enter your full name"
-                        [class.error]="reportForm.get('fullName')?.touched && reportForm.get('fullName')?.invalid">
-                </div>
-
-                <div class="form-group">
-                    <label>Language:</label>
-                    <select formControlName="language"
-                        [class.error]="reportForm.get('language')?.touched && reportForm.get('language')?.invalid">
-                        <option value="" disabled selected>Select</option>
-                        <option value="English">English</option>
-                        <option value="Hindi">Hindi</option>
-                        <option value="Gujarati">Gujarati</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Email address:</label>
-                    <input type="email" formControlName="email" placeholder="example@email.com"
-                        [class.error]="reportForm.get('email')?.touched && reportForm.get('email')?.invalid">
-                </div>
-
-                <div class="form-group">
-                    <label>Number:</label>
-                    <div class="otp-input-wrapper">
-                        <input type="tel" formControlName="mobile" placeholder="Enter mobile number" maxlength="10"
-                            [class.error]="reportForm.get('mobile')?.touched && reportForm.get('mobile')?.invalid">
-                        <button type="button" class="send-otp-btn" (click)="onSendOtp()"
-                            [disabled]="reportForm.get('mobile')?.invalid || isLoading()">
-                            Send OTP
-                        </button>
+            <h3>Download Performance Reports</h3>
+            <p>Select the date range for your report (optional)</p>
+            <form [formGroup]="reportForm" (ngSubmit)="onDownloadDirect()">
+                <div class="date-row">
+                    <div class="form-group">
+                        <label>From Date:</label>
+                        <input type="date" formControlName="fromDate">
+                    </div>
+                    <div class="form-group">
+                        <label>To Date:</label>
+                        <input type="date" formControlName="toDate">
                     </div>
                 </div>
 
-                <div class="terms-group">
-                    <label class="checkbox-container">
-                        <input type="checkbox" formControlName="acceptTerms">
-                        <span class="checkmark"></span>
-                        <span class="terms-text">
-                            I hereby acknowledge and accept all <a href="/terms-conditions" target="_blank">Terms &
-                                Conditions</a>, <a href="/privacy-policy" target="_blank">Privacy Policy</a> and the
-                            Disclaimer & Disclosure.
-                        </span>
-                    </label>
-                </div>
+                @if (isDateRangeInvalid()) {
+                <div class="form-error">To Date cannot be earlier than From Date</div>
+                }
 
                 @if (errorMessage()) {
                 <div class="form-error">{{ errorMessage() }}</div>
                 }
 
-                <button type="submit" class="download-btn" [disabled]="reportForm.invalid || isLoading()">
+                <button type="submit" class="download-btn" [disabled]="isLoading() || isDateRangeInvalid()">
                     @if (isLoading()) {
                     <span class="spinner"></span> Processing...
                     } @else {
@@ -195,53 +164,6 @@
                 </button>
             </form>
         </div>
-        }
-
-        @if (currentStep() === 'otp') {
-        <div class="modal-body otp-step">
-            <h3>Verify Mobile Number</h3>
-            <p>Enter the 6-digit OTP sent to your WhatsApp number</p>
-
-            <form [formGroup]="otpForm" (ngSubmit)="onOtpVerify()">
-                <div class="otp-boxes" formArrayName="otp">
-                    @for (control of otpDigits.controls; track $index) {
-                    <input #otpInput type="tel" [formControlName]="$index" maxlength="1"
-                        (input)="onOtpInput($index, $event)" (keydown)="onOtpKeyDown($index, $event)" class="otp-box" />
-                    }
-                </div>
-
-                <div class="otp-timer">
-                    @if (timer() > 0) {
-                    Expires in {{ formatTime(timer()) }}
-                    } @else {
-                    <button type="button" class="resend-link" (click)="onSendOtp()" [disabled]="isLoading()">Resend
-                        OTP</button>
-                    }
-                </div>
-
-                @if (errorMessage()) {
-                <div class="form-error">{{ errorMessage() }}</div>
-                }
-
-                <button type="submit" class="download-btn" [disabled]="otpForm.invalid || isLoading()">
-                    @if (isLoading()) {
-                    <span class="spinner"></span> Verifying...
-                    } @else {
-                    Submit & Download
-                    }
-                </button>
-            </form>
-        </div>
-        }
-
-        @if (currentStep() === 'success') {
-        <div class="modal-body success-step">
-            <div class="success-icon-large">✓</div>
-            <h3>Thank You!</h3>
-            <p>Your performance report has been generated. It should open in a new tab shortly.</p>
-            <button class="download-btn" (click)="closeModal()">Done</button>
-        </div>
-        }
     </div>
 </div>
 }
