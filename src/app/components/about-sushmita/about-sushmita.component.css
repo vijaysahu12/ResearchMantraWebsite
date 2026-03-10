@@ -89,19 +89,20 @@
 }
 
 .credential-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    justify-content: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .credential-item {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     color: #E2E8F0;
     font-size: 13px;
     font-weight: 500;
-    text-align: left;
 }
 
 .credential-item svg {
@@ -211,9 +212,7 @@
         margin: 0 auto;
     }
 
-    .credential-item {
-        justify-content: center;
-    }
+
 
     .quote-container {
         justify-content: center;
@@ -283,6 +282,6 @@
     }
 
     .credential-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 }

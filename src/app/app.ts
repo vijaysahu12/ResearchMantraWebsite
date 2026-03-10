@@ -8,7 +8,6 @@ import { SeoService } from './services/seo.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',

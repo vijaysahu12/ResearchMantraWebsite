@@ -10,7 +10,6 @@ type Step = 'mobile' | 'name' | 'otp' | 'success';
 
 @Component({
     selector: 'app-rm-intro',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './rm-intro.component.html',
     styleUrl: './rm-intro.component.css',
@@ -39,6 +38,9 @@ export class RmIntroComponent implements OnInit {
     mobileForm: FormGroup;
     nameForm: FormGroup;
     otpForm: FormGroup;
+    enquiryForm: FormGroup;
+    isEnquirySubmitting = signal<boolean>(false);
+    enquirySuccess = signal<string>('');
 
     constructor() {
         this.mobileForm = this.fb.group({
@@ -54,6 +56,13 @@ export class RmIntroComponent implements OnInit {
             otp: this.fb.array(Array(6).fill('').map(() =>
                 this.fb.control('', [Validators.required, Validators.pattern(/^\d$/)])
             ))
+        });
+
+        this.enquiryForm = this.fb.group({
+            name: ['', [Validators.required, Validators.minLength(2)]],
+            mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+            message: [''],
+            acceptTerms: [false, Validators.requiredTrue]
         });
     }
 
@@ -121,6 +130,16 @@ export class RmIntroComponent implements OnInit {
         const value = input.value.replace(/\D/g, '');
         input.value = value;
         this.mobileForm.get('mobile')?.setValue(value, { emitEvent: false });
+        input.setSelectionRange(start, end);
+    }
+
+    onEnquiryMobileNumberInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const value = input.value.replace(/\D/g, '');
+        input.value = value;
+        this.enquiryForm.get('mobile')?.setValue(value, { emitEvent: false });
         input.setSelectionRange(start, end);
     }
 
@@ -393,5 +412,62 @@ export class RmIntroComponent implements OnInit {
             youtubeLink: this.youtubeLink()
         };
         sessionStorage.setItem('leadState', JSON.stringify(state));
+    }
+
+    onEnquirySubmit() {
+        if (this.enquiryForm.invalid) return;
+
+        this.isEnquirySubmitting.set(true);
+        this.enquirySuccess.set('');
+
+        const formValue = this.enquiryForm.value;
+        const now = new Date().toISOString();
+
+        const payload: WebsiteLead = {
+            Id: 0,
+            PublicKey: this.generateGuid(),
+            FullName: formValue.name,
+            Gender: '',
+            CountryCode: '+91',
+            MobileNumber: formValue.mobile,
+            AlternateMobileNumber: '',
+            EmailId: '', // Skipping email field
+            ProfileImage: '',
+            PriorityStatus: 'Normal',
+            AssignedTo: '',
+            ServiceKey: '',
+            LeadTypeKey: '',
+            LeadSourceKey: 'Website Enquiry',
+            Remarks: formValue.message,
+            IsDisabled: 0,
+            IsDelete: 0,
+            CreatedOn: now,
+            CreatedBy: 'Website',
+            IsSpam: 0,
+            IsWon: 0,
+            ModifiedOn: now,
+            ModifiedBy: 'Website',
+            City: '',
+            PinCode: '',
+            StatusId: 1,
+            Favourite: false,
+            PurchaseOrderKey: null
+        };
+
+        this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
+            .subscribe({
+                next: () => {
+                    this.isEnquirySubmitting.set(false);
+                    this.enquirySuccess.set('Successfully Submitted! We will contact you soon.');
+                    this.enquiryForm.reset();
+                    setTimeout(() => this.enquirySuccess.set(''), 5000);
+                },
+                error: (err) => {
+                    console.error('Enquiry submission failed', err);
+                    this.isEnquirySubmitting.set(false);
+                    this.errorMessage.set('Submission failed. Please try again.');
+                    setTimeout(() => this.errorMessage.set(''), 5000);
+                }
+            });
     }
 }

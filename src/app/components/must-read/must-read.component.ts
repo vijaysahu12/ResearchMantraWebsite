@@ -91,5 +91,6 @@ export class MustReadComponent implements OnDestroy {
 
     ngOnDestroy() {
         this.stopAutoPlay();
+        this.currentIndex.set(0);
     }
 }
