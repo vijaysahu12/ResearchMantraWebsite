@@ -108,7 +108,7 @@ export class PricingPlansComponent {
                 if (err.status === 404 || err.status === 204) {
                     this.noRecordsFound.set(true);
                 } else {
-                    this.errorMessage.set('Failed to download report. Please try again later.');
+                    this.errorMessage.set('No Reports Found!');
                 }
             }
         });
