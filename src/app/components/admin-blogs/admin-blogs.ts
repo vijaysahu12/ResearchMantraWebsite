@@ -197,6 +197,7 @@ export class AdminBlogs implements OnInit {
       if (res.statusCode === 200) {
         blog.comments.unshift(res.data);
         blog.commentsCount++;
+        location.reload(); // Force reload to update the UI with the new comment
       }
     });
   }
