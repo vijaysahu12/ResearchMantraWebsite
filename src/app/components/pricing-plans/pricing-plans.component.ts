@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 interface FeatureRow {
     name: string;
@@ -24,6 +25,9 @@ export class PricingPlansComponent {
     isModalOpen = signal(false);
     isLoading = signal(false);
     errorMessage = signal('');
+    noRecordsFound = signal(false);
+
+    private http = inject(HttpClient);
 
     // Form
     reportForm: FormGroup;
@@ -38,6 +42,7 @@ export class PricingPlansComponent {
     openReportModal() {
         this.isModalOpen.set(true);
         this.errorMessage.set('');
+        this.noRecordsFound.set(false);
         this.reportForm.reset({ fromDate: '', toDate: '' });
     }
 
@@ -63,25 +68,50 @@ export class PricingPlansComponent {
 
         this.isLoading.set(true);
         this.errorMessage.set('');
+        this.noRecordsFound.set(false);
 
         const fromDate = this.reportForm.get('fromDate')?.value || '';
         const toDate = this.reportForm.get('toDate')?.value || '';
         const apiUrl = `https://crmapi.researchmantra.in/api/PdfReports/generate?fromDate=${fromDate}&toDate=${toDate}`;
 
-        // Short delay to show spinner
-        setTimeout(() => {
-            this.isLoading.set(false);
-            window.open(apiUrl, '_blank');
-            this.closeModal();
+        this.http.get(apiUrl, { responseType: 'blob', observe: 'response' }).subscribe({
+            next: (response) => {
+                this.isLoading.set(false);
 
-            // Track GTM Event if needed
-            if (typeof (window as any).gtag === 'function') {
-                (window as any).gtag('event', 'report_download', {
-                    date_from: fromDate,
-                    date_to: toDate
-                });
+                // Check if the response is actually a PDF
+                if (response.body && response.body.type === 'application/pdf') {
+                    const blob = new Blob([response.body], { type: 'application/pdf' });
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `PerformanceReport_${fromDate}_to_${toDate}.pdf`;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                    this.closeModal();
+                } else {
+                    // If not a PDF, it might be an empty body or JSON message
+                    this.noRecordsFound.set(true);
+                }
+
+                if (typeof (window as any).gtag === 'function') {
+                    (window as any).gtag('event', 'report_download_success', {
+                        date_from: fromDate,
+                        date_to: toDate
+                    });
+                }
+            },
+            error: (err) => {
+                this.isLoading.set(false);
+                console.error('Download failed', err);
+
+                // Many times 404 or 204 is returned when no records exist
+                if (err.status === 404 || err.status === 204) {
+                    this.noRecordsFound.set(true);
+                } else {
+                    this.errorMessage.set('Failed to download report. Please try again later.');
+                }
             }
-        }, 800);
+        });
     }
 
     features = signal<FeatureRow[]>([

@@ -34,6 +34,12 @@
                         <td class="popular-bg">{{ row.fatafatOptions }}</td>
                         <td>{{ row.huntingFuture }}</td>
                     </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 40px; color: #64748b;">
+                            No records found.
+                        </td>
+                    </tr>
                     }
                     <tr class="price-row">
                         <td class="feature-name">Price per Month</td>
@@ -67,6 +73,8 @@
                         <span class="label">{{ row.name }}</span>
                         <span class="value">{{ row.fatafatOptions }}</span>
                     </div>
+                    } @empty {
+                    <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
                     }
                 </div>
                 <button class="btn primary full-width" routerLink="/contact">Get Started</button>
@@ -84,6 +92,8 @@
                         <span class="label">{{ row.name }}</span>
                         <span class="value">{{ row.cashPositional }}</span>
                     </div>
+                    } @empty {
+                    <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
                     }
                 </div>
                 <button class="btn secondary full-width" routerLink="/contact">Contact Us</button>
@@ -101,6 +111,8 @@
                         <span class="label">{{ row.name }}</span>
                         <span class="value">{{ row.huntingFuture }}</span>
                     </div>
+                    } @empty {
+                    <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
                     }
                 </div>
                 <button class="btn secondary full-width" routerLink="/contact">Get Started</button>
@@ -149,6 +161,17 @@
 
                 @if (isDateRangeInvalid()) {
                 <div class="form-error">To Date cannot be earlier than From Date</div>
+                }
+
+                @if (noRecordsFound()) {
+                <div class="no-records-msg">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    No records found for the selected date range.
+                </div>
                 }
 
                 @if (errorMessage()) {
