@@ -25,7 +25,7 @@ export class AdminBlogs implements OnInit {
   private router = inject(Router);
 
   // ✅ FIXED: Loader starts TRUE, becomes FALSE when data loads
-  isLoadingInitial = signal<boolean>(false);  // ← START WITH TRUE
+  isLoadingInitial = signal<boolean>(false); // ← START WITH TRUE
   // pageLoading = signal<boolean>(true);
 
   // Define state variable
@@ -35,7 +35,7 @@ export class AdminBlogs implements OnInit {
   blogs = this.blogService.getBlogs();
 
   searchQuery = signal<string>('');
-  isSearching = signal<boolean>(false);
+  // isSearching = signal<boolean>(false);
   private searchTimeout: any;
 
   // 🟢 Track current image index per blog
@@ -44,41 +44,44 @@ export class AdminBlogs implements OnInit {
 
   constructor(private adminBlogService: AdminBlogService) {
     // ✅ FIXED EFFECT: Hide loader when blogs load
-     effect(() => {
-    console.log('Effect: Blogs changed:', this.blogs()?.length);
+    effect(
+      () => {
+        const blogs = this.blogs();
 
-    // Auto-hide loader when data loads
-    if (this.blogs() && this.blogs().length > 0) {
-      setTimeout(() => {
-        this.isLoadingInitial.set(false);
-        console.log('🟢 Loader hidden by effect');
-      }, 500);
-    }
-  }, { allowSignalWrites: true });
+        console.log('Effect triggered. Blogs:', blogs);
+
+        // Stop loader whenever blogs signal updates
+        if (blogs !== undefined && blogs !== null) {
+          this.isLoadingInitial.set(false);
+          console.log('🟢 Loader hidden');
+        }
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   ngOnInit(): void {
-  console.log('🟢 [Component] ngOnInit: Forcing fresh data fetch.');
-  this.isLoadingInitial.set(true);
-  this.refreshBlogs();
-}
+    console.log('🟢 [Component] ngOnInit: Forcing fresh data fetch.');
+    this.isLoadingInitial.set(true);
+    this.refreshBlogs();
+  }
 
-private refreshBlogs(): void {
-  // We don't check if (blogs.length > 0) here anymore.
-  // We ALWAYS call the service.
-  console.log('🚀 [Action] Calling service.loadBlogs() now...');
+  private refreshBlogs(): void {
+    // We don't check if (blogs.length > 0) here anymore.
+    // We ALWAYS call the service.
+    console.log('🚀 [Action] Calling service.loadBlogs() now...');
 
-  this.blogService.loadBlogs();
+    this.blogService.loadBlogs();
 
-  // If you are using the 'effect' we previously set up,
-  // it will detect when the Signal updates and set isLoadingInitial(false).
-  // Otherwise, you can add a manual timeout for safety:
-  /*
+    // If you are using the 'effect' we previously set up,
+    // it will detect when the Signal updates and set isLoadingInitial(false).
+    // Otherwise, you can add a manual timeout for safety:
+    /*
   setTimeout(() => {
      if (this.isLoadingInitial()) this.isLoadingInitial.set(false);
   }, 5000); // Safety fallback
   */
-}
+  }
 
   filteredBlogs = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -88,8 +91,7 @@ private refreshBlogs(): void {
 
     return blogs.filter(
       (blog) =>
-        blog.title?.toLowerCase().includes(query) ||
-        blog.slug?.toLowerCase().includes(query),
+        blog.title?.toLowerCase().includes(query) || blog.slug?.toLowerCase().includes(query),
     );
   });
 
@@ -102,10 +104,10 @@ private refreshBlogs(): void {
     }
 
     this.searchTimeout = setTimeout(() => {
-      this.isSearching.set(true);
+      this.isLoadingInitial.set(true);
       setTimeout(() => {
         this.searchQuery.set(value);
-        this.isSearching.set(false);
+        this.isLoadingInitial.set(false);
       }, 300);
     }, 400);
   }
@@ -113,10 +115,10 @@ private refreshBlogs(): void {
   clearSearch() {
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
-    this.isSearching.set(true);
+    this.isLoadingInitial.set(true);
     setTimeout(() => {
       this.searchQuery.set('');
-      this.isSearching.set(false);
+      this.isLoadingInitial.set(false);
     }, 300);
   }
 
@@ -161,26 +163,26 @@ private refreshBlogs(): void {
     }
   }
 
-loadCommentsForBlog(blog: any) {
-  this.blogService.getComments(blog.id).subscribe({
-    next: (res: any) => {
-      if (res.statusCode === 200) {
-        // We create a NEW array and a NEW object reference for the specific blog
-        const updatedBlogs = this.blogs().map(b => {
-          if (b.id === blog.id) {
-            return {
-              ...b,
-              comments: res.data // Use 'data' from your API response
-            };
-          }
-          return b;
-        });
+  loadCommentsForBlog(blog: any) {
+    this.blogService.getComments(blog.id).subscribe({
+      next: (res: any) => {
+        if (res.statusCode === 200) {
+          // We create a NEW array and a NEW object reference for the specific blog
+          const updatedBlogs = this.blogs().map((b) => {
+            if (b.id === blog.id) {
+              return {
+                ...b,
+                comments: res.data, // Use 'data' from your API response
+              };
+            }
+            return b;
+          });
 
-        this.blogs.set(updatedBlogs);
-      }
-    }
-  });
-}
+          this.blogs.set(updatedBlogs);
+        }
+      },
+    });
+  }
 
   submitComment(blog: any, text: string) {
     if (!text.trim()) return;
@@ -199,49 +201,50 @@ loadCommentsForBlog(blog: any) {
     });
   }
 
-// Add a local tracking set
-private processingLikes = new Set<string>();
+  // Add a local tracking set
+  private processingLikes = new Set<string>();
 
-toggleLike(blog: any, event: Event) {
-  event.stopPropagation();
+  toggleLike(blog: any, event: Event) {
+    event.stopPropagation();
 
-  // 1. If we are already waiting for a response for THIS blog, ignore new clicks
-  if (this.processingLikes.has(blog.id)) {
-    console.log('⏳ Still processing previous click, ignoring...');
-    return;
+    // 1. If we are already waiting for a response for THIS blog, ignore new clicks
+    if (this.processingLikes.has(blog.id)) {
+      console.log('⏳ Still processing previous click, ignoring...');
+      return;
+    }
+
+    // 2. Mark as processing
+    this.processingLikes.add(blog.id);
+
+    // 3. Optimistic Update
+    const wasLiked = blog.isLiked;
+    blog.isLiked = !blog.isLiked;
+    blog.likesCount = blog.isLiked ? blog.likesCount + 1 : Math.max(0, blog.likesCount - 1);
+
+    this.blogService.toggleLike(blog.id, this.userId).subscribe({
+      next: (res: any) => {
+        // 4. Update with server data
+        const updatedBlogs = this.blogs().map((b) =>
+          b.id === blog.id
+            ? { ...b, isLiked: res.data.isLiked, likesCount: res.data.totalLikes }
+            : b,
+        );
+        this.blogs.set(updatedBlogs);
+
+        // 5. Release the lock
+        this.processingLikes.delete(blog.id);
+      },
+      error: (err) => {
+        // Revert on error and release lock
+        blog.isLiked = wasLiked;
+        blog.likesCount = blog.isLiked ? blog.likesCount + 1 : blog.likesCount - 1;
+        this.processingLikes.delete(blog.id);
+      },
+    });
   }
 
-  // 2. Mark as processing
-  this.processingLikes.add(blog.id);
-
-  // 3. Optimistic Update
-  const wasLiked = blog.isLiked;
-  blog.isLiked = !blog.isLiked;
-  blog.likesCount = blog.isLiked ? (blog.likesCount + 1) : Math.max(0, blog.likesCount - 1);
-
-  this.blogService.toggleLike(blog.id, this.userId).subscribe({
-    next: (res: any) => {
-      // 4. Update with server data
-      const updatedBlogs = this.blogs().map(b =>
-        b.id === blog.id ? { ...b, isLiked: res.data.isLiked, likesCount: res.data.totalLikes } : b
-      );
-      this.blogs.set(updatedBlogs);
-
-      // 5. Release the lock
-      this.processingLikes.delete(blog.id);
-    },
-    error: (err) => {
-      // Revert on error and release lock
-      blog.isLiked = wasLiked;
-      blog.likesCount = blog.isLiked ? (blog.likesCount + 1) : (blog.likesCount - 1);
-      this.processingLikes.delete(blog.id);
-    }
-  });
-}
-
-// Add a helper for the HTML
-isBlogSyncing(id: string): boolean {
-  return this.processingLikes.has(id);
-}
-
+  // Add a helper for the HTML
+  isBlogSyncing(id: string): boolean {
+    return this.processingLikes.has(id);
+  }
 }

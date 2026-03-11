@@ -11,8 +11,8 @@
 
     <!-- Search Filter -->
     <div class="search-container">
-      <div class="search-wrapper" [class.loading]="isSearching()">
-        @if (isSearching()) {
+      <div class="search-wrapper" [class.loading]="isLoadingInitial()">
+        @if (isLoadingInitial()) {
           <div class="search-loader">
             <div class="spinner"></div>
           </div>
@@ -37,7 +37,7 @@
           (input)="onSearch($event)"
           aria-label="Search blogs"
         />
-        @if (searchQuery() && !isSearching()) {
+        @if (searchQuery() && !isLoadingInitial()) {
           <button class="clear-button" (click)="clearSearch()" aria-label="Clear search">
             <svg
               viewBox="0 0 24 24"
