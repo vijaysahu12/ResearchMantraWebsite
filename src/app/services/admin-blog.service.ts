@@ -1264,15 +1264,27 @@ private blogs = signal<any[]>([]);
 //   return this.blogs().find(blog => blog.slug === slug);
 // }
 
-loadBlogs(page = 1, size = 10, search = '') {
+loadBlogs(page = 1, size = 10) {
+  console.log('🧹 [Service] Clearing existing data...');
+  // 1. Clear the signal immediately
+  this.blogs.set([]);
 
+  console.log(`🚀 [Service] API Call started - Page: ${page}`);
+
+  // 2. Call the API
   this.http.get<any>(
     `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}`
   )
-  .subscribe(res => {
-      this.blogs.set(res.data);
+  .subscribe({
+    next: (res) => {
+      console.log('📥 [Service] API Success. Updating signal with fresh data.');
+      this.blogs.set(res.data || []);
+    },
+    error: (err) => {
+      console.error('❌ [Service] API Error:', err);
+      this.blogs.set([]); // Ensure it stays empty on error
+    }
   });
-
 }
 
    getBlogs() {
