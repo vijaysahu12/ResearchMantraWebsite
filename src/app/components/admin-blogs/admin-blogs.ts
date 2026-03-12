@@ -184,24 +184,67 @@ export class AdminBlogs implements OnInit {
     });
   }
 
+  // submitComment(blog: any, text: string) {
+  //   if (!text.trim()) return;
+
+  //   const request = {
+  //     blogId: blog.id,
+  //     comment: text,
+  //     parentCommentId: null,
+  //   };
+
+  //   this.blogService.addComment(request).subscribe((res: any) => {
+  //     if (res.statusCode === 200) {
+  //       blog.comments.unshift(res.data);
+  //       blog.commentsCount++;
+  //       location.reload(); // Force reload to update the UI with the new comment
+  //     }
+  //   });
+  // }
+
   submitComment(blog: any, text: string) {
-    if (!text.trim()) return;
 
-    const request = {
-      blogId: blog.id,
-      comment: text,
-      parentCommentId: null,
-    };
+  if (!text.trim()) return;
 
-    this.blogService.addComment(request).subscribe((res: any) => {
-      if (res.statusCode === 200) {
-        blog.comments.unshift(res.data);
-        blog.commentsCount++;
-        location.reload(); // Force reload to update the UI with the new comment
-      }
-    });
-  }
+  const request = {
+    blogId: blog.id,
+    comment: text,
+    parentCommentId: null
+  };
 
+  this.blogService.addComment(request).subscribe((res: any) => {
+
+    if (res.statusCode === 200) {
+
+      const newComment = {
+        id: res.data.id,
+        content: res.data.content,
+        authorName: res.data.authorName,
+        createdOn: res.data.createdOn
+      };
+
+      this.blogs.update((blogs) =>
+        blogs.map((b) => {
+          if (b.id === blog.id) {
+
+            const comments = b.comments || [];
+
+            return {
+              ...b,
+              comments: [newComment, ...comments],
+              commentsCount: (b.commentsCount || 0) + 1
+            };
+          }
+
+          return b;
+        })
+      );
+
+    }
+
+  });
+
+}
   // Add a local tracking set
   private processingLikes = new Set<string>();
 
