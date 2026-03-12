@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface BlogPost {
-    id: number;
+    id: number | string;
     slug: string;
     title: string;
     excerpt: string;

@@ -37,6 +37,82 @@ import { SeoService } from '../../services/seo.service';
                             <h2 class="article-inner-title">{{ blog()?.title }}</h2>
                             <div class="content-wrapper" [innerHTML]="sanitizedContent()"></div>
 
+                            <!-- Interaction Bar (Likes & Comments Count) -->
+                            @if (isApiBlog()) {
+                                <div class="blog-interactions">
+                                    <button
+                                        type="button"
+                                        class="interaction-btn"
+                                        [class.liked]="isLiked()"
+                                        [disabled]="isSyncingLike()"
+                                        (click)="toggleLike()">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" [attr.fill]="isLiked() ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                        <span>{{ isSyncingLike() ? '...' : (likesCount() || 0) }}</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="interaction-btn"
+                                        [class.active]="showComments()"
+                                        (click)="toggleComments()">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                        </svg>
+                                        <span>{{ commentsCount() || 0 }} Comments</span>
+                                    </button>
+                                </div>
+
+                                <!-- Comments Section (Toggleable) -->
+                                @if (showComments()) {
+                                    <section class="comments-section">
+                                        <div class="comments-header-row">
+                                            <h3 class="comments-title">Discussion ({{ commentsCount() }})</h3>
+                                            <button class="close-comments" (click)="toggleComments()">✕</button>
+                                        </div>
+                                        
+                                        <div class="comment-form">
+                                            <textarea #commentInput 
+                                                      (input)="0"
+                                                      placeholder="Write your comment here..."
+                                                      rows="3"></textarea>
+                                            <div class="form-footer">
+                                                <p class="form-tip">Please keep the discussion professional.</p>
+                                                <button type="button" 
+                                                        class="post-btn"
+                                                        [disabled]="isSubmittingComment() || !commentInput.value.trim()"
+                                                        (click)="submitComment(commentInput.value); commentInput.value = ''">
+                                                    {{ isSubmittingComment() ? 'Posting...' : 'Post Comment' }}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="comments-list">
+                                            @for (comment of comments(); track comment.id) {
+                                                <div class="comment-item">
+                                                    <div class="comment-header">
+                                                        <div class="author-info">
+                                                            <div class="author-avatar">{{ comment.authorName?.charAt(0) || 'U' }}</div>
+                                                            <span class="author">{{ comment.authorName }}</span>
+                                                        </div>
+                                                        <span class="date">{{ comment.createdOn | date:'mediumDate' }}</span>
+                                                    </div>
+                                                    <p class="comment-body">{{ comment.content }}</p>
+                                                </div>
+                                            } @empty {
+                                                <div class="no-comments">
+                                                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                                                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                                    </svg>
+                                                    <p>Be the first to join the conversation.</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </section>
+                                }
+                            }
+
                             <!-- Back to Blogs -->
                             <div class="article-footer">
                                 <a routerLink="/blogs" class="back-link">
@@ -269,6 +345,231 @@ import { SeoService } from '../../services/seo.service';
                 margin-top: -60px;
             }
         }
+
+        /* Interactions & Comments Styles */
+        .blog-interactions {
+            display: flex;
+            gap: 16px;
+            padding: 30px 0;
+            margin: 50px 0 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .interaction-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            color: #475569;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .interaction-btn:not([disabled]):hover {
+            border-color: #1e3a8a;
+            color: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .interaction-btn.active, .interaction-btn.liked {
+            background-color: #f1f5f9;
+            border-color: #1e3a8a;
+            color: #1e3a8a;
+        }
+
+        .interaction-btn.liked {
+            color: #ef4444;
+            border-color: #fee2e2;
+            background-color: #fef2f2;
+        }
+
+        .interaction-btn.liked svg {
+            fill: #ef4444;
+            stroke: #ef4444;
+        }
+
+        .comments-section {
+            margin-top: 24px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .comments-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .comments-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin: 0;
+        }
+
+        .close-comments {
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .close-comments:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .comment-form {
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.05);
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-tip {
+            font-size: 13px;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .post-btn {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2);
+        }
+
+        .post-btn:hover:not([disabled]) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+        }
+
+        .post-btn:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .comment-item {
+            padding: 24px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .comment-header .author {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .comment-header .date {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .comment-body {
+            line-height: 1.7;
+            color: #334155;
+            padding-left: 48px;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .no-comments svg {
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -282,8 +583,25 @@ export class BlogDetailsComponent implements OnInit {
     /** Current blog data (hardcoded or from API) */
     blog = signal<BlogPost | undefined>(undefined);
 
-    /** Loading state — true while checking hardcoded + API */
+    /** Computed check to identify dynamically loaded API blogs with GUID IDs */
+    isApiBlog = computed(() => {
+        const id = this.blog()?.id;
+        return typeof id === 'string' && id.length > 20;
+    });
+
+    /** Interactions state */
+    comments = signal<any[]>([]);
+    commentsCount = signal<number>(0);
+    likesCount = signal<number>(0);
+    isLiked = signal<boolean>(false);
+    showComments = signal<boolean>(false);
+    
+    /** Async states */
     loading = signal<boolean>(true);
+    isSyncingLike = signal<boolean>(false);
+    isSubmittingComment = signal<boolean>(false);
+
+    private userId = '00000000-0000-0000-0000-000000000000'; // Placeholder for actual user ID
 
     sanitizedContent = computed(() => {
         const content = this.blog()?.content;
@@ -339,6 +657,12 @@ export class BlogDetailsComponent implements OnInit {
 
                         this.blog.set(mappedBlog);
                         this.updateSeoTags(mappedBlog);
+
+                        // Fetch comments and likes for dynamic blogs
+                        this.commentsCount.set(apiData.commentsCount || 0);
+                        this.likesCount.set(apiData.likesCount || 0);
+                        this.isLiked.set(apiData.isLiked || false);
+                        this.loadComments(apiData.id);
                     }
                     // If res.data is null/undefined, blog stays undefined → shows 404
                     this.loading.set(false);
@@ -350,6 +674,79 @@ export class BlogDetailsComponent implements OnInit {
                     window.scrollTo(0, 0);
                 }
             });
+        });
+    }
+
+    private loadComments(blogId: any) {
+        if (!blogId) return;
+        this.adminBlogService.getComments(blogId).subscribe({
+            next: (res: any) => {
+                if (res.statusCode === 200) {
+                    this.comments.set(res.data || []);
+                }
+            }
+        });
+    }
+
+    toggleComments() {
+        this.showComments.update(show => !show);
+        if (this.showComments() && this.comments().length === 0 && this.blog()?.id) {
+            this.loadComments(this.blog()?.id);
+        }
+    }
+
+    submitComment(text: string) {
+        const currentBlog = this.blog();
+        if (!text.trim() || !currentBlog?.id) return;
+
+        this.isSubmittingComment.set(true);
+        const request = {
+            blogId: currentBlog.id,
+            comment: text,
+            parentCommentId: null
+        };
+
+        this.adminBlogService.addComment(request).subscribe({
+            next: (res: any) => {
+                if (res.statusCode === 200) {
+                    const newComment = {
+                        id: res.data.id,
+                        content: res.data.content,
+                        authorName: res.data.authorName,
+                        createdOn: res.data.createdOn
+                    };
+                    this.comments.update(prev => [newComment, ...prev]);
+                    this.commentsCount.update(count => count + 1);
+                }
+                this.isSubmittingComment.set(false);
+            },
+            error: () => this.isSubmittingComment.set(false)
+        });
+    }
+
+    toggleLike() {
+        const currentBlog = this.blog();
+        if (!currentBlog?.id || this.isSyncingLike()) return;
+
+        this.isSyncingLike.set(true);
+        const wasLiked = this.isLiked();
+        
+        // Optimistic update
+        this.isLiked.set(!wasLiked);
+        this.likesCount.update(count => wasLiked ? count - 1 : count + 1);
+
+        this.adminBlogService.toggleLike(currentBlog.id.toString(), this.userId).subscribe({
+            next: (res: any) => {
+                this.isLiked.set(res.data.isLiked);
+                this.likesCount.set(res.data.totalLikes);
+                this.isSyncingLike.set(false);
+            },
+            error: () => {
+                // Revert on error
+                this.isLiked.set(wasLiked);
+                this.likesCount.update(count => wasLiked ? count + 1 : count - 1);
+                this.isSyncingLike.set(false);
+            }
         });
     }
 

@@ -18,7 +18,6 @@ import { TermsConditionsComponent } from './components/terms-conditions/terms-co
 import { BlogsComponent } from './components/blogs/blogs.component';
 import { BlogDetailsComponent } from './components/blog-details/blog-details.component';
 import { AdminBlogs } from './components/admin-blogs/admin-blogs';
-import { AdminBlogDetails } from './components/admin-blog-details/admin-blog-details';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const routes: Routes = [
@@ -57,8 +56,7 @@ export const routes: Routes = [
 
     // Root-level Blog Detail Catch-all
     { path: 'blog/:slug', redirectTo: ':slug', pathMatch: 'full' },
-    // { path: 'admin/blog-details/:slug', redirectTo: ':slug', pathMatch: 'full' },
-      { path: 'admin/blog-details/:slug', component: AdminBlogDetails },
+    { path: 'admin/blog-details/:slug', redirectTo: ':slug', pathMatch: 'full' },
     { path: ':slug', component: BlogDetailsComponent },
 
     { path: '**', redirectTo: '' }

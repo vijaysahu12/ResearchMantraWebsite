@@ -10,10 +10,6 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server
   },
   {
-    path: 'admin/blog-details/:slug',
-    renderMode: RenderMode.Client
-  },
-  {
     path: '**',
     renderMode: RenderMode.Prerender
   }
