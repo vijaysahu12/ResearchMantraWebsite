@@ -14,7 +14,7 @@ import { MustReadComponent } from '../must-read/must-read.component';
   selector: 'app-home',
   imports: [
     RmIntroComponent,
-    // TradeSetupsComponent,
+    TradeSetupsComponent,
     WhyChooseRmComponent,
     PricingPlansComponent,
     AboutSushmitaComponent,
@@ -25,7 +25,7 @@ import { MustReadComponent } from '../must-read/must-read.component';
   ],
   template: `
     <app-rm-intro></app-rm-intro>
-    <!-- <app-trade-setups></app-trade-setups> -->
+    <app-trade-setups></app-trade-setups>
     <app-why-choose-rm></app-why-choose-rm>
     <app-pricing-plans></app-pricing-plans>
     <app-about-sushmita></app-about-sushmita>
