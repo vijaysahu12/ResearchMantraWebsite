@@ -1,42 +1,49 @@
-@if (blog()) {
-            <article class="blog-detail-container">
-                <!-- Hero Section -->
-                <header class="blog-hero" [style.backgroundImage]="blog()?.image ? 'url(' + blog()?.image + ')' : 'none'">
-                    <div class="hero-overlay"></div>
-                    <div class="hero-content">
-                        <h1 class="blog-title">{{ blog()?.title }}</h1>
-                    </div>
-
-                    <div class="bg-text-overlay">
-                        {{ blog()?.title }}
-                    </div>
-                </header>
-
-                <div class="content-layout">
-                    <!-- Main Content -->
-                    <main class="article-body">
-                        <div class="content-card">
-                            <h2 class="article-inner-title">{{ blog()?.title }}</h2>
-                            <div class="content-wrapper" [innerHTML]="sanitizedContent()"></div>
-
-                            <!-- Back to Blogs -->
-                            <div class="article-footer">
-                                <a routerLink="/admin/blogs" class="back-link">
-                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                                        <polyline points="12 19 5 12 12 5"></polyline>
-                                    </svg>
-                                    Back to All Blogs
-                                </a>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            </article>
-        } @else {
-            <div class="loading-state" style="padding: 100px; text-align: center;">
-                <h2>Post Not Found</h2>
-                <p>The blog post you are looking for doesn't exist or is still loading.</p>
-                <a routerLink="/blogs" class="btn-outline" style="display: inline-block; margin-top: 20px;">Back to Blogs</a>
+<!-- Loading state while checking hardcoded blogs and API -->
+@if (loading()) {
+    <div class="loading-state" style="padding: 100px; text-align: center;">
+        <div class="spinner" aria-label="Loading blog post"></div>
+        <p>Loading blog post...</p>
+    </div>
+} @else if (blog()) {
+    <article class="blog-detail-container">
+        <!-- Hero Section -->
+        <header class="blog-hero" [style.backgroundImage]="blog()?.image ? 'url(' + blog()?.image + ')' : 'none'">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="blog-title">{{ blog()?.title }}</h1>
             </div>
-        }
+
+            <div class="bg-text-overlay">
+                {{ blog()?.title }}
+            </div>
+        </header>
+
+        <div class="content-layout">
+            <!-- Main Content -->
+            <main class="article-body">
+                <div class="content-card">
+                    <h2 class="article-inner-title">{{ blog()?.title }}</h2>
+                    <div class="content-wrapper" [innerHTML]="sanitizedContent()"></div>
+
+                    <!-- Back to Blogs -->
+                    <div class="article-footer">
+                        <a routerLink="/admin/blogs" class="back-link">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Back to All Blogs
+                        </a>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </article>
+} @else {
+    <!-- 404: slug not found in hardcoded blogs OR API -->
+    <div class="loading-state" style="padding: 100px; text-align: center;">
+        <h2>Post Not Found</h2>
+        <p>The blog post you are looking for doesn't exist.</p>
+        <a routerLink="/blogs" class="btn-outline" style="display: inline-block; margin-top: 20px;">Back to Blogs</a>
+    </div>
+}

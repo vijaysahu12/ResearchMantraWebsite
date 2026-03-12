@@ -38,6 +38,13 @@ export class SeoService {
     }
 
     setMetaTags(config: { title?: string, description?: string, keywords?: string, image?: string, type?: string }) {
+        // Set og:url to the current canonical URL for proper SEO indexing
+        const currentUrl = this.baseUrl + this.router.url.split('?')[0].split('#')[0];
+        this.metaService.updateTag({ property: 'og:url', content: currentUrl });
+
+        // Set twitter:card for rich social media previews
+        this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+
         if (config.title) {
             this.titleService.setTitle(config.title);
             this.metaService.updateTag({ property: 'og:title', content: config.title });

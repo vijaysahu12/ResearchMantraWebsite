@@ -3,14 +3,20 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BlogService, BlogPost } from '../../services/blog.service';
+import { AdminBlogService } from '../../services/admin-blog.service';
 import { SeoService } from '../../services/seo.service';
 
 @Component({
     selector: 'app-blog-details',
-    standalone: true,
     imports: [CommonModule, RouterLink],
     template: `
-        @if (blog()) {
+        <!-- Loading state while checking hardcoded blogs and API -->
+        @if (loading()) {
+            <div class="loading-state" style="padding: 100px; text-align: center;">
+                <div class="spinner" aria-label="Loading blog post"></div>
+                <p>Loading blog post...</p>
+            </div>
+        } @else if (blog()) {
             <article class="blog-detail-container">
                 <!-- Hero Section -->
                 <header class="blog-hero" [style.backgroundImage]="blog()?.image ? 'url(' + blog()?.image + ')' : 'none'">
@@ -46,9 +52,10 @@ import { SeoService } from '../../services/seo.service';
                 </div>
             </article>
         } @else {
+            <!-- 404: slug not found in hardcoded blogs OR API -->
             <div class="loading-state" style="padding: 100px; text-align: center;">
                 <h2>Post Not Found</h2>
-                <p>The blog post you are looking for doesn't exist or is still loading.</p>
+                <p>The blog post you are looking for doesn't exist.</p>
                 <a routerLink="/blogs" class="btn-outline" style="display: inline-block; margin-top: 20px;">Back to Blogs</a>
             </div>
         }
@@ -268,10 +275,16 @@ import { SeoService } from '../../services/seo.service';
 export class BlogDetailsComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private blogService = inject(BlogService);
+    private adminBlogService = inject(AdminBlogService);
     private sanitizer = inject(DomSanitizer);
     private seoService = inject(SeoService);
 
+    /** Current blog data (hardcoded or from API) */
     blog = signal<BlogPost | undefined>(undefined);
+
+    /** Loading state — true while checking hardcoded + API */
+    loading = signal<boolean>(true);
+
     sanitizedContent = computed(() => {
         const content = this.blog()?.content;
         return content ? this.sanitizer.bypassSecurityTrustHtml(content) : '';
@@ -281,19 +294,69 @@ export class BlogDetailsComponent implements OnInit {
         this.route.params.subscribe(params => {
             const slugValue = params['slug'];
 
-            if (slugValue) {
-                const foundBlog = this.blogService.getBlogBySlug(slugValue);
-                this.blog.set(foundBlog);
-
-                if (foundBlog) {
-                    this.updateSeoTags(foundBlog);
-                }
-
-                window.scrollTo(0, 0);
+            if (!slugValue) {
+                this.loading.set(false);
+                return;
             }
+
+            // Step 1: Check hardcoded blogs first
+            const foundBlog = this.blogService.getBlogBySlug(slugValue);
+
+            if (foundBlog) {
+                // Step 2: Hardcoded blog found — load normally
+                this.blog.set(foundBlog);
+                this.updateSeoTags(foundBlog);
+                this.loading.set(false);
+                window.scrollTo(0, 0);
+                return;
+            }
+
+            // Step 3: Not in hardcoded blogs — call the admin API
+            this.loading.set(true);
+            this.adminBlogService.getBlogDetails(slugValue).subscribe({
+                next: (res: any) => {
+                    if (res?.data) {
+                        // Step 4: API returned blog — map to BlogPost with fallback values
+                        const apiData = res.data;
+                        const mappedBlog: BlogPost = {
+                            id: apiData.id ?? 0,
+                            slug: apiData.slug ?? slugValue,
+                            title: apiData.title ?? '',
+                            excerpt: apiData.excerpt ?? '',
+                            // Process HTML content for safe rendering (handles link targets)
+                            content: this.adminBlogService['processBlogContent'](apiData.content ?? ''),
+                            category: apiData.category ?? '',
+                            date: apiData.date ?? '',
+                            // Fallback values for fields the API may not return
+                            author: apiData.author ?? 'Research Mantra',
+                            readTime: apiData.readTime ?? '5 min read',
+                            image: apiData.image ?? 'assets/default-blog.jpg',
+                            // SEO fallback chain: metaTitle → title, metaDescription → excerpt, keywords → category
+                            metaTitle: apiData.metaTitle || apiData.title || '',
+                            metaDescription: apiData.metaDescription || apiData.excerpt || '',
+                            keywords: apiData.keywords || apiData.category || ''
+                        };
+
+                        this.blog.set(mappedBlog);
+                        this.updateSeoTags(mappedBlog);
+                    }
+                    // If res.data is null/undefined, blog stays undefined → shows 404
+                    this.loading.set(false);
+                    window.scrollTo(0, 0);
+                },
+                error: () => {
+                    // Step 5: API error — show 404
+                    this.loading.set(false);
+                    window.scrollTo(0, 0);
+                }
+            });
         });
     }
 
+    /**
+     * Sets all SEO meta tags for the current blog post.
+     * Works identically for both hardcoded and API-sourced blogs.
+     */
     private updateSeoTags(blog: BlogPost) {
         const pageTitle = blog.metaTitle || blog.title;
         const description = blog.metaDescription || blog.excerpt;
