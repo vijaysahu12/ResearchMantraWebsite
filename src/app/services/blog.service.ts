@@ -17,6 +17,7 @@ export interface BlogPost {
     metaTitle?: string;
     metaDescription?: string;
     keywords?: string;
+    enableComments?: boolean;
 }
 
 @Injectable({

@@ -76,7 +76,8 @@ export class AdminBlogDetails implements OnInit {
                         // SEO fallback chain: metaTitle → title, metaDescription → excerpt, keywords → category
                         metaTitle: apiData.metaTitle || apiData.title || '',
                         metaDescription: apiData.metaDescription || apiData.excerpt || '',
-                        keywords: apiData.keywords || apiData.category || ''
+                        keywords: apiData.keywords || apiData.category || '',
+                        enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true'
                     };
 
                     this.blog.set(mappedBlog);

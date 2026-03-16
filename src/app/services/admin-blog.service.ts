@@ -18,10 +18,10 @@ export interface BlogPost {
     metaTitle?: string;
     metaDescription?: string;
     keywords?: string;
-    commentsCount?: number;
     likesCount?: number;
     isLiked?: boolean;
     comments?: any[];
+    enableComments?: boolean;
 }
 
 @Injectable({
@@ -102,8 +102,11 @@ loadBlogs(page = 1, size = 10) {
     }
   ).subscribe({
     next: (res) => {
-      console.log('📥 [Service] API Success. Updating signal with fresh data.');
-      this.blogs.set(res?.data ?? []);
+      const mappedData = (res?.data ?? []).map((b: any) => ({
+        ...b,
+        enableComments: b.enableComments === true || String(b.enableComments).toLowerCase() === 'true'
+      }));
+      this.blogs.set(mappedData);
     },
     error: (err) => {
       console.error('❌ [Service] API Error:', err);

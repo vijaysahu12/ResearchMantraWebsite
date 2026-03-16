@@ -52,20 +52,22 @@ import { SeoService } from '../../services/seo.service';
                                         <span>{{ isSyncingLike() ? '...' : (likesCount() || 0) }}</span>
                                     </button>
 
-                                    <button
-                                        type="button"
-                                        class="interaction-btn"
-                                        [class.active]="showComments()"
-                                        (click)="toggleComments()">
-                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                                        </svg>
-                                        <span>{{ commentsCount() || 0 }} Comments</span>
-                                    </button>
+                                    @if (blog()?.enableComments) {
+                                        <button
+                                            type="button"
+                                            class="interaction-btn"
+                                            [class.active]="showComments()"
+                                            (click)="toggleComments()">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                            </svg>
+                                            <span>{{ commentsCount() || 0 }} Comments</span>
+                                        </button>
+                                    }
                                 </div>
 
                                 <!-- Comments Section (Toggleable) -->
-                                @if (showComments()) {
+                                @if (blog()?.enableComments && showComments()) {
                                     <section class="comments-section">
                                         <div class="comments-header-row">
                                             <h3 class="comments-title">Discussion ({{ commentsCount() }})</h3>
@@ -652,7 +654,8 @@ export class BlogDetailsComponent implements OnInit {
                             // SEO fallback chain: metaTitle → title, metaDescription → excerpt, keywords → category
                             metaTitle: apiData.metaTitle || apiData.title || '',
                             metaDescription: apiData.metaDescription || apiData.excerpt || '',
-                            keywords: apiData.keywords || apiData.category || ''
+                            keywords: apiData.keywords || apiData.category || '',
+                            enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true'
                         };
 
                         this.blog.set(mappedBlog);
@@ -662,7 +665,9 @@ export class BlogDetailsComponent implements OnInit {
                         this.commentsCount.set(apiData.commentsCount || 0);
                         this.likesCount.set(apiData.likesCount || 0);
                         this.isLiked.set(apiData.isLiked || false);
-                        this.loadComments(apiData.id);
+                        if (apiData.enableComments) {
+                            this.loadComments(apiData.id);
+                        }
                     }
                     // If res.data is null/undefined, blog stays undefined → shows 404
                     this.loading.set(false);
