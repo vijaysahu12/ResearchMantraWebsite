@@ -117,12 +117,12 @@ import { SeoService } from '../../services/seo.service';
 
                             <!-- Back to Blogs -->
                             <div class="article-footer">
-                                <a routerLink="/blogs" class="back-link">
+                                <a href="javascript:void(0)" (click)="goBack($event)" class="back-link">
                                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                                         <line x1="19" y1="12" x2="5" y2="12"></line>
                                         <polyline points="12 19 5 12 12 5"></polyline>
                                     </svg>
-                                    Back to All Blogs
+                                    Back to Blogs
                                 </a>
                             </div>
                         </div>
@@ -582,6 +582,11 @@ export class BlogDetailsComponent implements OnInit {
     private sanitizer = inject(DomSanitizer);
     private seoService = inject(SeoService);
 
+    goBack(event: Event) {
+        event.preventDefault();
+        window.history.back();
+    }
+
     /** Current blog data (hardcoded or from API) */
     blog = signal<BlogPost | undefined>(undefined);
 
@@ -664,7 +669,15 @@ export class BlogDetailsComponent implements OnInit {
                         // Fetch comments and likes for dynamic blogs
                         this.commentsCount.set(apiData.commentsCount || 0);
                         this.likesCount.set(apiData.likesCount || 0);
-                        this.isLiked.set(apiData.isLiked || false);
+                        
+                        // Check local storage for liked status for admin blogs
+                        const localLiked = localStorage.getItem(`blog_liked_${apiData.id}`);
+                        if (localLiked === 'true') {
+                            this.isLiked.set(true);
+                        } else {
+                            this.isLiked.set(apiData.isLiked || false);
+                        }
+                        
                         if (apiData.enableComments) {
                             this.loadComments(apiData.id);
                         }
@@ -737,8 +750,18 @@ export class BlogDetailsComponent implements OnInit {
         const wasLiked = this.isLiked();
         
         // Optimistic update
-        this.isLiked.set(!wasLiked);
+        const newLikedState = !wasLiked;
+        this.isLiked.set(newLikedState);
         this.likesCount.update(count => wasLiked ? count - 1 : count + 1);
+        
+        // Save to local storage for admin blogs
+        if (this.isApiBlog()) {
+            if (newLikedState) {
+                localStorage.setItem(`blog_liked_${currentBlog.id}`, 'true');
+            } else {
+                localStorage.removeItem(`blog_liked_${currentBlog.id}`);
+            }
+        }
 
         this.adminBlogService.toggleLike(currentBlog.id.toString(), this.userId).subscribe({
             next: (res: any) => {
@@ -750,6 +773,16 @@ export class BlogDetailsComponent implements OnInit {
                 // Revert on error
                 this.isLiked.set(wasLiked);
                 this.likesCount.update(count => wasLiked ? count + 1 : count - 1);
+                
+                // Revert local storage
+                if (this.isApiBlog()) {
+                    if (wasLiked) {
+                        localStorage.setItem(`blog_liked_${currentBlog.id}`, 'true');
+                    } else {
+                        localStorage.removeItem(`blog_liked_${currentBlog.id}`);
+                    }
+                }
+                
                 this.isSyncingLike.set(false);
             }
         });
