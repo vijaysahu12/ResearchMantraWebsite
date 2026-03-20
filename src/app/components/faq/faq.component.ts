@@ -36,8 +36,8 @@ export class FaqComponent {
         },
         {
             id: 4,
-            question: 'How will I receive the trade recommendations?',
-            answer: 'You\'ll receive all trade ideas through our mobile app (available on Android and iOS) with instant push notifications. We also send SMS alerts for time-sensitive trades. Premium members get WhatsApp support as well.'
+            question: 'How will I receive the trade recommendations of Research Mantra?',
+            answer: 'You\'ll receive all trade ideas through our mobile app Research Mantra (available on Android and iOS) with instant push notifications. We also send SMS alerts for time-sensitive trades. Premium members get WhatsApp support as well.'
         },
         {
             id: 5,
@@ -47,7 +47,7 @@ export class FaqComponent {
         {
             id: 6,
             question: 'Can I try before I subscribe?',
-            answer: 'Absolutely! We offer 3 free trade ideas when you sign up with your mobile number. This helps you experience our research quality before committing to a paid plan.'
+            answer: 'Absolutely! We offer 3 free trade ideas when you sign up with your mobile number in Research Mantra App. This helps you experience our research quality before committing to a paid plan.'
         },
         {
             id: 7,
@@ -96,8 +96,8 @@ export class FaqComponent {
         },
         {
             id: 16,
-            question: 'What type of stock trading tips do you provide?',
-            answer: 'I share stock trading tips, including intraday, swing, positional, and options-based tips with clear entry, exit, target, and stop-loss for safe and disciplined trading'
+            question: 'What type of stock trading tips does Research Mantra provide?',
+            answer: 'Research Mantra provides stock trading tips, including intraday, swing, positional, and options-based tips with clear entry, exit, target, and stop-loss for safe and disciplined trading'
         },
         {
             id: 17,
