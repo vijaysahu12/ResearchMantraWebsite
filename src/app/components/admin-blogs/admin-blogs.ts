@@ -171,6 +171,13 @@ export class AdminBlogs implements OnInit {
     blog.isLiked = !blog.isLiked;
     blog.likesCount = blog.isLiked ? blog.likesCount + 1 : Math.max(0, blog.likesCount - 1);
 
+    // Sync UI optimistic state with local storage so detail page doesn't revert
+    if (blog.isLiked) {
+      localStorage.setItem(`blog_liked_${blog.id}`, 'true');
+    } else {
+      localStorage.removeItem(`blog_liked_${blog.id}`);
+    }
+
     this.blogService.toggleLike(blog.id, this.userId).subscribe({
       next: (res: any) => {
         // 4. Update with server data
@@ -181,6 +188,13 @@ export class AdminBlogs implements OnInit {
         );
         this.blogs.set(updatedBlogs);
 
+        // Optional: Keep storage matched with final server source of truth
+        if (res.data.isLiked) {
+          localStorage.setItem(`blog_liked_${blog.id}`, 'true');
+        } else {
+          localStorage.removeItem(`blog_liked_${blog.id}`);
+        }
+
         // 5. Release the lock
         this.processingLikes.delete(blog.id);
       },
@@ -188,6 +202,14 @@ export class AdminBlogs implements OnInit {
         // Revert on error and release lock
         blog.isLiked = wasLiked;
         blog.likesCount = blog.isLiked ? blog.likesCount + 1 : blog.likesCount - 1;
+        
+        // Revert local storage
+        if (wasLiked) {
+          localStorage.setItem(`blog_liked_${blog.id}`, 'true');
+        } else {
+          localStorage.removeItem(`blog_liked_${blog.id}`);
+        }
+        
         this.processingLikes.delete(blog.id);
       },
     });

@@ -41,6 +41,7 @@ export class RmIntroComponent implements OnInit {
     enquiryForm: FormGroup;
     isEnquirySubmitting = signal<boolean>(false);
     enquirySuccess = signal<string>('');
+    activeFormTab = signal<'telegram' | 'enquiry'>('telegram');
 
     constructor() {
         this.mobileForm = this.fb.group({

@@ -13,7 +13,7 @@
     width: 100%;
     min-height: 500px;
     background: linear-gradient(90deg, var(--hero-bg-left) 0%, var(--hero-bg-right) 100%);
-    padding: 80px 0;
+    padding: 50px 0 80px;
     color: #FFFFFF;
     font-family: 'Inter', system-ui, sans-serif;
     overflow: hidden;
@@ -230,6 +230,152 @@
     color: #64748B;
     padding-left: 20px;
 }
+
+/* Telegram Left Call To Action Box */
+.telegram-left-cta {
+    margin-top: 24px;
+    margin-bottom: 32px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tl-cta-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tl-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.tl-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 136, 204, 0.15);
+    color: #0088cc;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tl-title-wrap h4 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.tl-stats {
+    font-size: 13px;
+    color: #10B981;
+    font-weight: 600;
+}
+
+.integrated-desc {
+    margin-bottom: 0 !important;
+    font-size: 16px !important;
+    color: #E2E8F0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 16px;
+}
+
+.tl-benefits-box {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.tl-benefits-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #E2E8F0;
+    margin-bottom: 12px;
+}
+
+.tl-benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.tl-benefits-list li {
+    font-size: 14px;
+    color: #CBD5E1;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.tl-benefits-list li svg {
+    color: #14B8A6;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.tl-badges-row {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tl-daily-badge {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.15);
+    color: #FBBF24;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tl-join-btn-small {
+    background-color: #0088cc;
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.tl-join-btn-small:hover {
+    background-color: #0077b5;
+    transform: translateY(-2px);
+}
+
+.tl-join-btn {
+    background-color: #0088cc;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.tl-join-btn:hover {
+    background-color: #0077b5;
+}
+
+/* Base styles for form components continue below... */
 
 /* Terms Checkbox Styling */
 .terms-wrapper {
@@ -574,22 +720,48 @@
     transform: translateY(-5px);
 }
 
-.enquiry-card .card-header {
-    padding: 13px 21px 14px;
-    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+.tabs-header {
+    display: flex;
+    background: #F8FAFC;
     border-bottom: 1px solid #E2E8F0;
-    position: relative;
 }
 
-.enquiry-card .card-header::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 32px;
-    right: 32px;
-    height: 2px;
-    background: var(--accent-teal);
-    border-radius: 2px;
+.tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #475569;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: var(--accent-teal);
+    background: #FFFFFF;
+    border-bottom-color: var(--accent-teal);
+}
+
+.tab-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+    color: #0F172A;
+}
+
+.telegram-tab {
+    color: #0088cc;
+}
+
+.card-title-section {
+    padding: 24px 24px 0;
+    background: #FFFFFF;
 }
 
 .enquiry-card .card-title {
@@ -611,7 +783,7 @@
 }
 
 .enquiry-body {
-    padding: 24px;
+    padding: 16px 24px 24px;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -758,6 +930,100 @@
 .submit-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Telegram Tab UI */
+.telegram-tab-content {
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+    background: #FFFFFF;
+}
+
+.telegram-graphics {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+
+.rm-logo-large {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    z-index: 2;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 10px;
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(0, 136, 204, 0.15);
+    animation: ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    z-index: 1;
+}
+
+.pulse-ring.delay-1 {
+    animation-delay: 0.8s;
+}
+
+.pulse-ring.delay-2 {
+    animation-delay: 1.6s;
+}
+
+@keyframes ping {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2.2);
+        opacity: 0;
+    }
+}
+
+.telegram-text h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 12px 0;
+}
+
+.telegram-text p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #475569;
+    margin: 0;
+}
+
+.telegram-join-btn {
+    background-color: #0088cc !important;
+    font-size: 18px !important;
+    padding: 20px !important;
+    box-shadow: 0 10px 20px -5px rgba(0, 136, 204, 0.4);
+    text-decoration: none;
+}
+
+.telegram-join-btn:hover {
+    background-color: #0077b5 !important;
+    box-shadow: 0 15px 25px -5px rgba(0, 136, 204, 0.5) !important;
+    transform: translateY(-2px);
 }
 
 .success-msg {
@@ -1074,5 +1340,37 @@
     .otp-box {
         width: 36px;
         height: 44px;
+    }
+}
+
+/* Restored Bottom Badges and Glow Action */
+.bottom-badges-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.glow-free {
+    color: #FACC15;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 20px rgba(250, 204, 21, 0.6);
+    font-weight: 800;
+    margin-left: 6px;
+    display: inline-block;
+    animation: freePulse 1.5s infinite ease-in-out;
+}
+
+@keyframes freePulse {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 20px rgba(250, 204, 21, 0.6);
+        transform: scale(1);
+    }
+    50% {
+        text-shadow: 0 0 30px rgba(250, 204, 21, 1), 0 0 60px rgba(250, 204, 21, 0.9), 0 0 90px rgba(250, 204, 21, 0.8);
+        transform: scale(1.25);
     }
 }

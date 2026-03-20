@@ -113,7 +113,7 @@ interface WebsiteLead {
   styles: [`
     .floating-btn {
       position: fixed;
-      right: -45px;
+      right: -70px;
       top: 35%;
       transform: translateY(-50%) rotate(-90deg);
       z-index: 1000;
@@ -136,7 +136,7 @@ interface WebsiteLead {
     }
 
     .floating-btn:hover {
-      right: -40px;
+      right: -55px;
       background: #000;
     }
 

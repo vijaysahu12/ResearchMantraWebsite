@@ -4,40 +4,54 @@
         <div class="hero-content">
             <span class="eyebrowText">Research-backed trade ideas</span>
             <h1 class="headline">Trade ideas built on research, not noise</h1>
-            <p class="description">
-                Daily intraday, F&O, stocks, MCX, and investing ideas with clear levels and discipline.
-            </p>
+            <div class="telegram-left-cta fade-in">
+                <p class="description integrated-desc">
+                    Daily intraday, F&O, stocks, MCX, and investing ideas with clear levels and discipline.
+                </p>
+                <div class="tl-cta-header">
+                    <div class="tl-header-left">
+                        <div class="tl-icon-wrapper">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                            </svg>
+                        </div>
+                        <div class="tl-title-wrap">
+                            <h4>Get instant updates on Telegram</h4>
+                            <span class="tl-stats">🏆 4,500+ traders already joined</span>
+                        </div>
+                    </div>
+                    <a href="https://t.me/ReasearchMantra" target="_blank" class="cta-button tl-join-btn-small">
+                        Join Telegram
+                    </a>
+                </div>
 
-            <ul class="bullet-list">
-                <li>
-                    <span class="check-icon">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </span>
-                    Clear entry & target
-                </li>
-                <li>
-                    <span class="check-icon">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </span>
-                    Defined risk per trade
-                </li>
-                <li>
-                    <span class="check-icon">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </span>
-                    Structured analysis
-                </li>
-            </ul>
+                <div class="tl-benefits-box">
+                    <div class="tl-benefits-title">📢 What You’ll Get:</div>
+                    <ul class="tl-benefits-list">
+                        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Sudarshan Strategy Video</li>
+                        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Entry, Target & Stop Loss</li>
+                        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Daily Intraday Trade Ideas</li>
+                        <li><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg> Instant Market Updates</li>
+                    </ul>
+                    <div class="tl-badges-row">
+                        <div class="tl-daily-badge">✨ Daily free signals shared</div>
 
+                    </div>
+                </div>
+            </div>
             <div class="cta-section">
                 <!-- Step 1: Mobile Input -->
                 @if (currentStep() === 'mobile') {
@@ -55,7 +69,7 @@
                             maxlength="10" (input)="onMobileNumberInput($event)" aria-label="Mobile Number" />
                     </div>
                     <button type="submit" class="cta-button" [disabled]="mobileForm.invalid">
-                        Unlock Sudarshan Strategy
+                        Unlock Sudarshan Strategy for <span class="glow-free">FREE</span>
                     </button>
                 </form>
                 }
@@ -181,17 +195,58 @@
                 @if (currentStep() === 'mobile') {
                 <span class="disclaimer">No tips. No guarantees.</span>
                 }
+
+
             </div>
         </div>
 
         <!-- Right Column: Enquiry Form -->
         <div class="hero-visual">
             <div class="enquiry-card">
-                <div class="card-header">
+                <div class="tabs-header">
+                    <button type="button" class="tab-btn telegram-tab" [class.active]="activeFormTab() === 'telegram'"
+                        (click)="activeFormTab.set('telegram')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                        </svg>
+                        Join on Telegram
+                    </button>
+                    <button type="button" class="tab-btn" [class.active]="activeFormTab() === 'enquiry'"
+                        (click)="activeFormTab.set('enquiry')">
+                        Enquiry Form
+                    </button>
+                </div>
+
+                @if (activeFormTab() === 'telegram') {
+                <div class="telegram-tab-content fade-in">
+                    <div class="telegram-graphics">
+                        <div class="pulse-ring delay-2"></div>
+                        <div class="pulse-ring delay-1"></div>
+                        <div class="pulse-ring"></div>
+                        <img src="assets/RM_Logo.png" alt="Research Mantra" class="rm-logo-large"
+                            onerror="this.style.display='none'">
+                    </div>
+                    <div class="telegram-text">
+                        <h3>Join The Community</h3>
+                        <p>Get daily market updates, free trade ideas, and connect with other top traders.</p>
+                    </div>
+                    <a href="https://t.me/ReasearchMantra" target="_blank" class="submit-button telegram-join-btn">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                        </svg>
+                        Join Now on Telegram
+                    </a>
+                </div>
+                }
+
+                @if (activeFormTab() === 'enquiry') {
+                <div class="card-title-section fade-in">
                     <span class="card-title">Enquiry Form</span>
                     <h2 class="card-headline">Request a Free Demo</h2>
                 </div>
-                <form [formGroup]="enquiryForm" (ngSubmit)="onEnquirySubmit()" class="enquiry-body">
+                <form [formGroup]="enquiryForm" (ngSubmit)="onEnquirySubmit()" class="enquiry-body fade-in">
                     <div class="form-group">
                         <label for="name">Full Name*</label>
                         <input type="text" id="name" formControlName="name" placeholder="Enter your name"
@@ -237,8 +292,15 @@
                     <div class="success-msg fade-in">{{ enquirySuccess() }}</div>
                     }
                 </form>
+                }
             </div>
         </div>
+    </div>
+
+    <!-- Centered Badges Across Entire Hero Section -->
+    <div class="bottom-badges-container fade-in">
+        <div class="tl-daily-badge">⏳ Limited free access available</div>
+        <div class="tl-daily-badge">🔒 Strategy shared only with registered users</div>
     </div>
 
     <!-- Trust Section -->
