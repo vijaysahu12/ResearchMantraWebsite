@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Services | Terms & Conditions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f2f5f9;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.55;
+            color: #1a2634;
+            padding: 2rem 1rem;
+        }
+
+        /* Main container – mimics a legal document card */
+        .terms-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        /* Header styling */
+        .document-header {
+            background: linear-gradient(105deg, #0b2b3f 0%, #123d55 100%);
+            padding: 2rem 2rem 1.8rem 2rem;
+            border-bottom: 4px solid #eab308;
+        }
+
+        .document-header h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .document-header .subhead {
+            color: #cbdde9;
+            font-size: 0.95rem;
+            font-weight: 400;
+            border-left: 3px solid #eab308;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* inner content padding */
+        .terms-content {
+            padding: 2rem 2rem 2.5rem 2rem;
+        }
+
+        /* section styling */
+        .section {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e6edf4;
+            padding-bottom: 1.25rem;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #0f3b4f;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 5px solid #eab308;
+            padding-left: 1rem;
+        }
+
+        .section-sub {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem 0;
+            color: #1e4a6b;
+        }
+
+        .text-body {
+            color: #2c3e45;
+            margin-bottom: 0.75rem;
+        }
+
+        .legal-list {
+            margin: 0.6rem 0 0.8rem 2rem;
+            list-style-type: decimal;
+        }
+
+        .legal-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.3rem;
+        }
+
+        .legal-list-alpha {
+            list-style-type: lower-alpha;
+            margin-left: 2rem;
+            margin-top: 0.3rem;
+        }
+
+        .legal-list-roman {
+            list-style-type: lower-roman;
+            margin-left: 2rem;
+        }
+
+        .nested-list {
+            list-style-type: circle;
+            margin-left: 2rem;
+            margin-top: 0.3rem;
+        }
+
+        .bullet-list {
+            list-style-type: disc;
+            margin: 0.6rem 0 0.8rem 2rem;
+        }
+
+        .bullet-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.3rem;
+        }
+
+        .highlight-badge {
+            background: #fef9e6;
+            border-left: 4px solid #eab308;
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            border-radius: 12px;
+        }
+
+        .contact-details {
+            background: #f8fafc;
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            margin: 0.75rem 0;
+            border: 1px solid #e2edf2;
+        }
+
+        .grievance-steps {
+            background: #f9fbfd;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            margin: 0.8rem 0;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border: none;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .small-note {
+            font-size: 0.85rem;
+            color: #4b6a7a;
+            margin-top: 0.25rem;
+        }
+
+        .disclaimer-box {
+            background: #fef2e0;
+            padding: 0.8rem 1.2rem;
+            border-radius: 14px;
+            margin: 1rem 0;
+            font-weight: 500;
+            border: 1px solid #ffe2b5;
+        }
+
+        .footer-consent {
+            margin-top: 2rem;
+            background: #f0f6fa;
+            padding: 1.2rem 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 1px solid #cbdde9;
+        }
+
+        @media (max-width: 700px) {
+            .terms-content {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .document-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .legal-list {
+                margin-left: 1rem;
+            }
+
+            .bullet-list {
+                margin-left: 1rem;
+            }
+        }
+
+        a {
+            color: #1e6f9f;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            color: #0c4a6e;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="terms-container">
+        <div class="document-header">
+            <h1>📄 TERMS AND CONDITIONS OF RESEARCH SERVICES</h1>
+            <div class="subhead">SEBI Registered Research Analyst – governing framework & client agreement</div>
+        </div>
+        <div class="terms-content">
+            <!-- Parties section - updated with bullet points, removed i, ii, iii -->
+            <div class="section">
+                <div class="section-title">⚖️ Parties to these Terms and Conditions</div>
+                <ul class="bullet-list">
+                    <li><strong>Research Analyst:</strong> Susmita Sahoo is a SEBI Registered Research Analyst having
+                        its registered office address at 1605 Crystal nearby Yashoda HI Tech, city Aurorealty Kohinoor
+                        Hyderabad, Hyderabad, Telangana, 500085.</li>
+                    <li>Hereinafter referred to as the "Research Analyst" or “RA”.</li>
+                    <li><strong>Client:</strong> The individual or entity subscribing to or availing research services
+                        provided by the Research Analyst, hereinafter referred to as the "Client."</li>
+                </ul>
+            </div>
+
+            <!-- 1. Availing The Services -->
+            <div class="section">
+                <div class="section-title">1. Availing The Services</div>
+                <div class="text-body">The Client hereby accepts the research services and confirms to avail the
+                    research services on its own discretion provided by the Research Analyst (“RA”), and the Research
+                    Analyst agrees to provide such services in accordance with the terms and conditions set forth
+                    underneath.</div>
+            </div>
+
+            <!-- 2. Obligations on RA and Client -->
+            <div class="section">
+                <div class="section-title">2. Obligations on RA and Client</div>
+                <div class="text-body">The client and the Research Analyst shall be bound by all applicable regulations,
+                    rules, circulars, and amendments issued by SEBI, including the SEBI (Research Analysts) Regulations,
+                    2014 and all the other notifications of the Government, if any from time to time.</div>
+            </div>
+
+            <!-- 3. Client Information and KYC -->
+            <div class="section">
+                <div class="section-title">3. Client Information and KYC</div>
+                <div class="text-body">The client is bound, upon acceptance of services, to submit all requisite
+                    documents as requested by the research analyst and help the RA to complete the KYC process.</div>
+                <div class="highlight-badge">“The client hereby gives consent to the research analyst to fetch his KYC
+                    documents from the KYC Registration Agency (KRA).”</div>
+            </div>
+
+            <!-- 4. Standard Terms of Service -->
+            <div class="section">
+                <div class="section-title">4. Standard Terms of Service</div>
+                <div class="text-body">The Client acknowledges and gives his consent to be bound by the terms set forth
+                    herewith, as well as any applicable amendments or updates provided by the Research Analyst.</div>
+                <div class="text-body" style="font-weight: 600; margin-top: 0.75rem;">The client hereby agrees:</div>
+                <ol class="legal-list">
+                    <li>I have read and understood the terms and conditions applicable to a research analyst as defined
+                        under regulation 2(1)(u) of the SEBI (Research Analyst) Regulations, 2014, including the fee
+                        structure.</li>
+                    <li>I am subscribing to the research services for my own benefit and consumption, and any reliance
+                        placed on the research report provided by the Research Analyst shall be based on my own judgment
+                        and assessment of the conclusions contained in the research report.</li>
+                </ol>
+                <div class="text-body" style="font-weight: 600;">I understand that:</div>
+                <ul class="nested-list">
+                    <li>Any investment made based on the recommendations in the research report is subject to market
+                        risk.</li>
+                    <li>Recommendations in the research report do not provide any assurance of returns.</li>
+                    <li>There is no recourse to claim any losses incurred on investments made based on the
+                        recommendations in the research report.</li>
+                </ul>
+                <div class="section-sub">• Declaration by Research Analyst:</div>
+                <div class="text-body">The Research Analyst further declares that,</div>
+                <ol class="legal-list">
+                    <li>It is duly registered with SEBI as an RA having Registration No.: INH000019150, Date of
+                        Registration: 17th December 2024.</li>
+                    <li>It has registration and qualifications required to render the services contemplated under the RA
+                        Regulations, and the same are valid and subsisting.</li>
+                    <li>The services provided by the RA do not conflict with or violate any provision of law, rule,
+                        regulation, contract, or other instrument to which it is a party or to which any of its property
+                        is or may be subject.</li>
+                    <li>The maximum fee that may be charged by the RA is ₹1.51 lakhs per annum per family of clients.
+                    </li>
+                    <li>The recommendations provided by the RA do not provide any assurance of returns.</li>
+                </ol>
+            </div>
+
+            <!-- 5. Consideration And Mode of Payment -->
+            <div class="section">
+                <div class="section-title">5. Consideration And Mode of Payment</div>
+                <ol class="legal-list">
+                    <li>The client shall duly pay the fees to the RA of the invoice raised or for any agreed amount
+                        either written/oral within 2 days.</li>
+                    <li>The Client agrees to make all payments via: UPI/Net banking/Payment Gateway or any other
+                        verified banking channel. Client shall not pay any fees in cash.</li>
+                    <li>The Client hereby agrees to pay the fees in the Bank account of Research Analyst only. The RA
+                        shall not be liable for any payment made to third party account.</li>
+                </ol>
+            </div>
+
+            <!-- 6. Risk Factors -->
+            <div class="section">
+                <div class="section-title">6. Risk Factors</div>
+                <div class="text-body">The Client understands that the services provided by the Research Analyst involve
+                    inherent risks, and the Client agrees to bear full responsibility for any financial or other
+                    consequences arising from the use of these services. Investment in the market is subject to market
+                    risk, and is also subject to the following:</div>
+                <ol class="legal-list">
+                    <li>Trading in equities, derivatives, and other securities are subject to market risks and there is
+                        no assurance or guarantee of returns.</li>
+                    <li>Past performance does not indicate future performance.</li>
+                    <li>Research recommendations may not always be profitable, as actual market movements may differ
+                        from anticipated trends.</li>
+                    <li>The Research Analyst is not responsible or liable for any losses resulting from research
+                        recommendations.</li>
+                    <li>Investment in securities market are subject to market risks. Read all the related documents
+                        carefully before investing.</li>
+                    <li>Registration granted by SEBI, Enlistment as RA with Exchange, and certification from NISM do not
+                        guarantees the performance of the intermediary or provide any assurance of returns to investors.
+                    </li>
+                </ol>
+            </div>
+
+            <!-- 7. Conflict of Interest -->
+            <div class="section">
+                <div class="section-title">7. Conflict of Interest</div>
+                <div class="text-body">The RA shall adhere to the applicable regulations/circulars/directions specified
+                    by SEBI from time to time in relation to disclosure and mitigation of any actual or potential
+                    conflict of interest. Some of disclosures are as follows:</div>
+                <ol class="legal-list">
+                    <li>The Research Analyst or any of its officer/employee does not trade in securities which are
+                        subject matter of recommendation.</li>
+                    <li>There are no actual or potential conflicts of interest arising from any connection to or
+                        association with any issuer of products/ securities, including any material information or facts
+                        that might compromise its objectivity or independence in the carrying on of Research Analyst
+                        services. Such conflict of interest shall be disclosed to the client as and when they arise.
+                    </li>
+                    <li>Research Analyst or its employee or its associates have not received any compensation from the
+                        company which is subject matter of recommendation.</li>
+                </ol>
+                <div class="text-body">Client is advised to refer the detailed disclosure provided on our website.</div>
+            </div>
+
+            <!-- 8. Termination of Service and Refund of Fees -->
+            <div class="section">
+                <div class="section-title">8. Termination of Service and Refund of Fees</div>
+                <div class="text-body">The Agreement may be terminated by the client, if the Research Analyst fails to
+                    provide the research recommendations. However, the client cannot terminate the agreement solely
+                    based on not achieving the desired returns or incurring the losses from trading on the
+                    recommendations or the client discontinues the services without a valid reason, or in case of force
+                    majeure.</div>
+                <div class="text-body">The RA may suspend or terminate rendering of research services to client on
+                    account of suspension/cancellation of registration of RA by SEBI and shall refund the residual
+                    amount to the client.</div>
+                <div class="text-body">In case of suspension of certificate of registration of the RA for more than 60
+                    (sixty) days or cancellation of the RA registration, RA shall refund the fees, on a pro rata basis
+                    for the period from the effective date of cancellation/ suspension to end of the subscription
+                    period.</div>
+            </div>
+
+            <!-- 9. Grievance Redressal -->
+            <div class="section">
+                <div class="section-title">9. Grievance Redressal</div>
+                <div class="text-body">In the event of grievances related to non-receipt of the research report, missing
+                    content, or deficiencies in services, the Client may raise a grievance. The Research Analyst will
+                    ensure Redressal within 7 days of such complaint.</div>
+                <div class="text-body">The client is required to follow the following procedure for any grievance:</div>
+                <div class="grievance-steps">
+                    ➤ Step 1: The client should first contact the RA at the contact details mentioned below:<br>
+                    <div class="contact-details">
+                        Contact No.: +91___________________________<br>
+                        Mail ID: _________________________________
+                    </div>
+                    ➤ Step 2: In case, if the client is unsatisfied, he can lodge a complaint with the SEBI through
+                    SEBI’s SCORES platform at <a href="https://www.scores.sebi.gov.in"
+                        target="_blank">www.scores.sebi.gov.in</a>.<br>
+                    ➤ Step 3: The client can also consider to seek resolution through the Online Dispute Resolution
+                    (ODR) mechanism through SMART ODR Portal: <a href="https://smartodr.in"
+                        target="_blank">https://smartodr.in</a>.
+                </div>
+                <div class="disclaimer-box">
+                    <strong>DISCLAIMER:</strong> The client is strictly required to follow the procedure as mentioned
+                    above, otherwise the RA shall not be liable delay in resolution of the grievance.
+                </div>
+                <div class="small-note">
+                    NOTE: Clients are advised to read the Do's and Don’ts for dealing with the Research Analyst, as
+                    mentioned in SEBI Master Circular No. SEBI/HO/MIRSD-POD-1/P/CIR/2024/49 dated May 21, 2024, or any
+                    updates provided by SEBI in the future.<br>
+                    The clients are requested to go through all the Disclaimers, Disclosures, Refund Policy and
+                    information as mentioned on its website.
+                </div>
+            </div>
+
+            <!-- 10. Most Important Terms and Conditions -->
+            <div class="section">
+                <div class="section-title">10. Most Important Terms and Conditions</div>
+                <ol class="legal-list">
+                    <li>These terms and conditions, and consent thereon are for the research services provided by the
+                        Research Analyst (RA) and RA cannot execute/carry out any trade (purchase/sell transaction) on
+                        behalf of, the client. Thus, the clients are advised not to permit RA to execute any trade on
+                        their behalf.</li>
+                    <li>The fee charged by RA to the client will be subject to the maximum of amount prescribed by SEBI/
+                        Research Analyst Administration and Supervisory Body (RAASB) from time to time (applicable only
+                        for Individual and HUF Clients).<br>
+                        Note:<br>
+                        2.1. The current fee limit is Rs 1,51,000/- per annum per family of client for all research
+                        services of the RA.<br>
+                        2.2. The fee limit does not include statutory charges.<br>
+                        2.3. The fee limits do not apply to a non-individual client / accredited investor.
+                    </li>
+                    <li>RA may charge fees in advance if agreed by the client. Such advance shall not exceed the period
+                        stipulated by SEBI; presently it is one year. In case of pre-mature termination of the RA
+                        services by either the client or the RA, the client shall be entitled to seek refund of
+                        proportionate fees only for unexpired period.</li>
+                    <li>Fees to RA may be paid by the client through any of the specified modes like cheque, online bank
+                        transfer, UPI, etc. Cash payment is not allowed. Optionally the client can make payments through
+                        Centralized Fee Collection Mechanism (CeFCoM) managed by BSE Limited (i.e. currently recognized
+                        RAASB).</li>
+                    <li>The RA is required to abide by the applicable regulations/ circulars/ directions specified by
+                        SEBI and RAASB from time to time in relation to disclosure and mitigation of any actual or
+                        potential conflict of interest. The RA will endeavor to promptly inform the client of any
+                        conflict of interest that may affect the services being rendered to the client.</li>
+                    <li>Any assured/guaranteed/fixed returns schemes or any other schemes of similar nature are
+                        prohibited by law. No scheme of this nature shall be offered to the client by the RA.</li>
+                    <li>The RA cannot guarantee returns, profits, accuracy, or risk-free investments from the use of the
+                        RA’s research services. All opinions, projections, estimates of the RA are based on the analysis
+                        of available data under certain assumptions as of the date of preparation/publication of
+                        research report.</li>
+                    <li>Any investment made based on recommendations in research reports are subject to market risks,
+                        and recommendations do not provide any assurance of returns. There is no recourse to claim any
+                        losses incurred on the investments made based on the recommendations in the research report. Any
+                        reliance placed on the research report provided by the RA shall be as per the client’s own
+                        judgement and assessment of the conclusions contained in the research report.</li>
+                    <li>Registration granted by SEBI, Enlistment as RA with Exchange, and certification from NISM do not
+                        guarantees the performance of the intermediary or provide any assurance of returns to investors.
+                    </li>
+                    <li>For any grievances, <br>
+                        Step 1: the client should first contact the RA using the details mentioned herewith: <br>
+                        Step 2: If the resolution is unsatisfactory, the client can also lodge grievances through SEBI’s
+                        SCORES platform at <a href="https://www.scores.sebi.gov.in"
+                            target="_blank">www.scores.sebi.gov.in</a><br>
+                        Step 3: The client may also consider the Online Dispute Resolution (ODR) through the Smart ODR
+                        portal at <a href="https://smartodr.in" target="_blank">https://smartodr.in</a>.
+                    </li>
+                    <li>Clients are required to keep contact details, including email id and mobile number/s updated
+                        with the RA at all times.</li>
+                    <li>The RA shall never ask for the client’s login credentials and OTPs for the client’s Trading
+                        Account Demat Account and Bank Account. Never share such information with anyone including RA.
+                    </li>
+                </ol>
+            </div>
+
+            <!-- 11. Optional Centralised Fee Collection Mechanism -->
+            <div class="section">
+                <div class="section-title">11. Optional Centralised Fee Collection Mechanism</div>
+                <div class="text-body">There is an optional ‘Centralized Fee Collection Mechanism for Investment
+                    Advisors and Research Analysts’ (CeFCoM) for fee payments. The Research Analyst has presently not
+                    opted for the same and once the Research Analyst gets registered for it, then thereafter said
+                    mechanism will be available for the client.</div>
+            </div>
+
+            <!-- 12. Confidentiality -->
+            <div class="section">
+                <div class="section-title">12. Confidentiality</div>
+                <div class="text-body">Client shall not share any confidential information with third party without
+                    prior consent from the RA which has come to its knowledge.</div>
+            </div>
+
+            <!-- 13. Dispute -->
+            <div class="section">
+                <div class="section-title">13. Dispute</div>
+                <div class="text-body">No suit, prosecution or other legal proceeding shall lie against the Research
+                    Analyst for any damage caused or likely to be caused by anything which is done in good faith or
+                    intended to be done under the provisions of the Securities and Exchange Board of India (Research
+                    Analyst) Regulations, 2014.</div>
+                <div class="text-body">Any Disputes between the parties shall be resolved through arbitration or other
+                    methods mutually agreed upon, in accordance with applicable legal and regulatory guidelines.</div>
+            </div>
+
+            <!-- 14. Severability -->
+            <div class="section">
+                <div class="section-title">14. Severability</div>
+                <div class="text-body">If any provision of this Terms and Conditions is found to be invalid, illegal, or
+                    unenforceable, the remaining provisions will remain in full effect, provided the essential purpose
+                    of the Terms and Conditions is not undermined.</div>
+            </div>
+
+            <!-- 15. Force majeure -->
+            <div class="section">
+                <div class="section-title">15. Force majeure</div>
+                <div class="text-body">Neither party shall be held liable for failure or delay in performance under this
+                    Terms and Conditions due to circumstances beyond their reasonable control, including but not limited
+                    to natural disasters, government actions, or other unforeseen events.</div>
+            </div>
+
+            <!-- Final client agreement line -->
+            <div class="footer-consent">
+                ✅ The client hereby agrees to abide with the terms and conditions of the research services.
+            </div>
+            <div class="small-note" style="text-align: center; margin-top: 1.5rem;">
+                SEBI Registration No.: INH000019150 | Registered Address: 1605 Crystal nearby Yashoda HI Tech, city
+                Aurorealty Kohinoor Hyderabad, Hyderabad, Telangana, 500085
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
