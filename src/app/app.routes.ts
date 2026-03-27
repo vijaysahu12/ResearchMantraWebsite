@@ -29,7 +29,7 @@ export const routes: Routes = [
     { path: 'about', component: AboutSushmitaComponent },
     { path: 'testimonials', component: TestimonialsComponent },
     { path: 'faq', component: FaqComponent },
-    { path: 'contactUs', component: ContactComponent },
+    { path: 'contact', component: ContactComponent },
     { path: 'complaint-data', component: ComplaintDataComponent },
     { path: 'compliance-audit', component: ComplianceAuditComponent },
     { path: 'grievance-redressal', component: GrievanceRedressalComponent },

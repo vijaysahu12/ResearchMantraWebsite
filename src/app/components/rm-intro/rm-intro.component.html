@@ -214,7 +214,7 @@
                     </button>
                     <button type="button" class="tab-btn" [class.active]="activeFormTab() === 'enquiry'"
                         (click)="activeFormTab.set('enquiry')">
-                        Enquiry Form
+                        Request a Free Demo
                     </button>
                 </div>
 
@@ -249,8 +249,8 @@
                 <form [formGroup]="enquiryForm" (ngSubmit)="onEnquirySubmit()" class="enquiry-body fade-in">
                     <div class="form-group">
                         <label for="name">Full Name*</label>
-                        <input type="text" id="name" formControlName="name" placeholder="Enter your name"
-                            (input)="onNameInput($event)">
+                        <input type="text" id="name" formControlName="name" placeholder="Enter your name" minlength="1"
+                            maxlength="50" (input)="onNameInput($event)">
                     </div>
 
                     <div class="form-group">
@@ -264,7 +264,7 @@
 
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="message" formControlName="message" rows="3"
+                        <textarea id="message" formControlName="message" rows="3" minlength="1" maxlength="300"
                             placeholder="How can we help you?"></textarea>
                     </div>
 
@@ -331,7 +331,7 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <span class="stat-value">SEBI Registered Research Analyst - INH000019150</span>
+                        <h2 class="stat-value">SEBI Registered Research Analyst - INH000019150</h2>
                     </div>
                 </div>
             </div>

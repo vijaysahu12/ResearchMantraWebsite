@@ -13,7 +13,7 @@
     width: 100%;
     min-height: 500px;
     background: linear-gradient(90deg, var(--hero-bg-left) 0%, var(--hero-bg-right) 100%);
-    padding: 50px 0 80px;
+    padding: 25px 0 80px;
     color: #FFFFFF;
     font-family: 'Inter', system-ui, sans-serif;
     overflow: hidden;
@@ -47,7 +47,7 @@
     font-size: 56px;
     font-weight: 800;
     line-height: 1.1;
-    margin: 0 0 32px 0;
+    margin: 0 0 10px 0;
     letter-spacing: -0.02em;
 }
 
@@ -233,7 +233,7 @@
 
 /* Telegram Left Call To Action Box */
 .telegram-left-cta {
-    margin-top: 24px;
+    margin-top: 18px;
     margin-bottom: 32px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1068,7 +1068,7 @@
     display: flex;
     justify-content: center;
     gap: 32px;
-    margin-bottom: 80px;
+    margin-bottom: 20px;
 }
 
 .stat-item {
@@ -1365,10 +1365,13 @@
 }
 
 @keyframes freePulse {
-    0%, 100% {
+
+    0%,
+    100% {
         text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 20px rgba(250, 204, 21, 0.6);
         transform: scale(1);
     }
+
     50% {
         text-shadow: 0 0 30px rgba(250, 204, 21, 1), 0 0 60px rgba(250, 204, 21, 0.9), 0 0 90px rgba(250, 204, 21, 0.8);
         transform: scale(1.25);
