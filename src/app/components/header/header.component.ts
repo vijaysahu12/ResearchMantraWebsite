@@ -1,6 +1,7 @@
 import { Component, signal, ChangeDetectionStrategy, HostListener, ElementRef, inject } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
+import { AccessibilityService } from '../../services/accessibility.service';
 
 @Component({
     selector: 'app-header',
@@ -14,7 +15,12 @@ export class HeaderComponent {
     isMenuOpen = signal(false);
     isBlogsOpen = signal(false);
     isComplianceOpen = signal(false);
-private elementRef = inject(ElementRef);
+    private elementRef = inject(ElementRef);
+    private readonly a11yService = inject(AccessibilityService);
+
+    openAccessibilityPanel(): void {
+        this.a11yService.openPanel();
+    }
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: PointerEvent) {
         // If the click is NOT inside the header component, close everything

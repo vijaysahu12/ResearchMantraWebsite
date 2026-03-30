@@ -54,3 +54,24 @@ section[id] {
         scroll-margin-top: 90px;
     }
 }
+
+/* =============================================================
+   Accessibility: High Contrast Mode
+   Uses CSS filter inversion so no individual component styles
+   need to be touched. Images/videos are re-inverted to stay
+   visually correct.
+   ============================================================= */
+body.high-contrast {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+body.high-contrast img,
+body.high-contrast video,
+body.high-contrast iframe,
+body.high-contrast canvas,
+body.high-contrast [style*="background-image"] {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Font size is applied directly via inline style on <html> and <body>
+   by app.ts — no static classes needed. */

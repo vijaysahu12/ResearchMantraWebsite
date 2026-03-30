@@ -1,0 +1,85 @@
+@if (panelOpen()) {
+  <!-- Backdrop: click outside to close -->
+  <div
+    class="a11y-backdrop"
+    (click)="closePanel()"
+    aria-hidden="true">
+  </div>
+
+  <!-- Settings panel -->
+  <div
+    #panel
+    class="a11y-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="a11y-title"
+    (keydown)="onPanelKeydown($event)">
+
+    <div class="a11y-panel-header">
+      <h2 id="a11y-title" class="a11y-panel-title">
+        <span aria-hidden="true">♿</span> Accessibility
+      </h2>
+      <button
+        class="a11y-close-btn"
+        type="button"
+        (click)="closePanel()"
+        aria-label="Close accessibility settings">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="a11y-panel-body">
+
+      <!-- High Contrast Toggle -->
+      <div class="a11y-setting-row">
+        <div class="a11y-label">
+          <span class="a11y-setting-name">High Contrast</span>
+          <span class="a11y-setting-desc">Invert colours for better visibility</span>
+        </div>
+        <button
+          class="a11y-toggle"
+          type="button"
+          role="switch"
+          [attr.aria-checked]="isHighContrast()"
+          [attr.aria-label]="'High contrast ' + (isHighContrast() ? 'on' : 'off')"
+          (click)="toggleContrast()">
+          <span class="a11y-toggle-thumb"></span>
+        </button>
+      </div>
+
+      <!-- Font Size – / value / + -->
+      <div class="a11y-setting-row">
+        <div class="a11y-label">
+          <span class="a11y-setting-name" id="font-size-label">Text Size</span>
+          <span class="a11y-setting-desc">Increase or decrease text across the site</span>
+        </div>
+        <div class="a11y-font-controls" role="group" aria-labelledby="font-size-label">
+          <button
+            class="a11y-size-btn"
+            type="button"
+            (click)="decreaseFontSize()"
+            [disabled]="atMin()"
+            aria-label="Decrease text size">
+            A<sup>−</sup>
+          </button>
+          <span
+            class="a11y-size-display"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label="Current text size: {{ fontSizeLabel() }}">
+            {{ fontSizeLabel() }}
+          </span>
+          <button
+            class="a11y-size-btn a11y-size-btn--plus"
+            type="button"
+            (click)="increaseFontSize()"
+            [disabled]="atMax()"
+            aria-label="Increase text size">
+            A<sup>+</sup>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /a11y-panel-body -->
+  </div><!-- /a11y-panel -->
+}
