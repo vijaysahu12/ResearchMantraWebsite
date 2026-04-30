@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -12,14 +12,24 @@ interface FeatureRow {
 
 @Component({
     selector: 'app-pricing-plans',
-    standalone: true,
-    imports: [RouterLink, ReactiveFormsModule],
+    imports: [ReactiveFormsModule],
     templateUrl: './pricing-plans.component.html',
     styleUrl: './pricing-plans.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PricingPlansComponent {
     private fb = inject(FormBuilder);
+    private router = inject(Router);
+
+    scrollToContact(event: Event): void {
+        event.preventDefault();
+        const scroll = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        if (this.router.url === '/') {
+            scroll();
+        } else {
+            this.router.navigate(['/']).then(() => setTimeout(scroll, 100));
+        }
+    }
 
     // Modal State
     isModalOpen = signal(false);

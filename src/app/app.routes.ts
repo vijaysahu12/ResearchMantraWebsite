@@ -5,7 +5,6 @@ import { PricingPlansComponent } from './components/pricing-plans/pricing-plans.
 import { AboutSushmitaComponent } from './components/about-sushmita/about-sushmita.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { TestimonialsComponent } from './components/testimonials/testimonials.component';
-import { ContactComponent } from './components/contact/contact.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { RefundPolicyComponent } from './components/refund-policy/refund-policy.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -29,7 +28,6 @@ export const routes: Routes = [
     { path: 'about', component: AboutSushmitaComponent },
     { path: 'testimonials', component: TestimonialsComponent },
     { path: 'faq', component: FaqComponent },
-    { path: 'contact', component: ContactComponent },
     { path: 'complaint-data', component: ComplaintDataComponent },
     { path: 'compliance-audit', component: ComplianceAuditComponent },
     { path: 'grievance-redressal', component: GrievanceRedressalComponent },

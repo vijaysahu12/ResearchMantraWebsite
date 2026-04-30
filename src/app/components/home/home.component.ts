@@ -9,6 +9,7 @@ import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { FaqComponent } from '../faq/faq.component';
 import { ComplaintsSummaryComponent } from '../complaints-summary/complaints-summary.component';
 import { MustReadComponent } from '../must-read/must-read.component';
+import { ContactComponent } from '../contact/contact.component';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +22,8 @@ import { MustReadComponent } from '../must-read/must-read.component';
     TestimonialsComponent,
     ComplaintsSummaryComponent,
     MustReadComponent,
-    FaqComponent
+    FaqComponent,
+    ContactComponent
   ],
   template: `
     <app-rm-intro></app-rm-intro>
@@ -33,6 +35,9 @@ import { MustReadComponent } from '../must-read/must-read.component';
     <app-complaints-summary></app-complaints-summary>
     <app-must-read></app-must-read>
     <app-faq></app-faq>
+    <div id="contact">
+      <app-contact></app-contact>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

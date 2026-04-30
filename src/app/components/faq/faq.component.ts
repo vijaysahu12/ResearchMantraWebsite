@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 interface FaqItem {
     id: number;
@@ -9,14 +9,24 @@ interface FaqItem {
 
 @Component({
     selector: 'app-faq',
-    standalone: true,
-    imports: [RouterLink],
+    imports: [],
     templateUrl: './faq.component.html',
     styleUrl: './faq.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaqComponent {
+    private router = inject(Router);
     expandedItemId = signal<number | null>(null);
+
+    scrollToContact(event: Event): void {
+        event.preventDefault();
+        const scroll = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        if (this.router.url === '/') {
+            scroll();
+        } else {
+            this.router.navigate(['/']).then(() => setTimeout(scroll, 100));
+        }
+    }
 
     faqs = signal<FaqItem[]>([
         {

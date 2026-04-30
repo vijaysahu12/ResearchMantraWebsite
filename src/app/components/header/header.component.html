@@ -13,16 +13,12 @@
 
     <nav class="center-section" [class.mobile-open]="isMenuOpen()" aria-label="Main Navigation">
       <ul class="nav-links">
-        <li><a [routerLink]="['/']" fragment="home" (click)="isMenuOpen.set(false)"><strong>Home</strong></a>
-        </li>
-        <li><a [routerLink]="['/']" fragment="features" (click)="isMenuOpen.set(false)"><strong>Features</strong></a>
-        </li>
-        <li><a [routerLink]="['/']" fragment="pricing" (click)="isMenuOpen.set(false)"><strong>Services</strong></a>
-        </li>
-        <li><a [routerLink]="['/']" fragment="about" (click)="isMenuOpen.set(false)"><strong>About</strong></a></li>
-        <li><a [routerLink]="['/']" fragment="testimonials"
-            (click)="isMenuOpen.set(false)"><strong>Testimonials</strong></a></li>
-        <li><a [routerLink]="['/']" fragment="faq" (click)="isMenuOpen.set(false)"><strong>FAQ</strong></a></li>
+        <li><a href="#home" (click)="scrollToSection($event, 'home')"><strong>Home</strong></a></li>
+        <li><a href="#features" (click)="scrollToSection($event, 'features')"><strong>Features</strong></a></li>
+        <li><a href="#pricing" (click)="scrollToSection($event, 'pricing')"><strong>Services</strong></a></li>
+        <li><a href="#about" (click)="scrollToSection($event, 'about')"><strong>About</strong></a></li>
+        <li><a href="#testimonials" (click)="scrollToSection($event, 'testimonials')"><strong>Testimonials</strong></a></li>
+        <li><a href="#faq" (click)="scrollToSection($event, 'faq')"><strong>FAQ</strong></a></li>
         <!-- <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li> -->
         <li class="dropdown" [class.open]="isComplianceOpen()">
           <a class="dropdown-toggle" (click)="toggleCompliance($event)">
@@ -39,7 +35,7 @@
           </ul>
         </li>
 
-        <li><a [routerLink]="['/contact']" (click)="isMenuOpen.set(false)"><strong>Contact</strong></a></li>
+        <li><a href="#contact" (click)="scrollToSection($event, 'contact')"><strong>Contact</strong></a></li>
 
         <!-- RA Compliance Dropdown -->
         <li class="dropdown" [class.open]="isBlogsOpen()">

@@ -49,10 +49,10 @@
                     </tr>
                     <tr class="cta-row">
                         <td></td>
-                        <td><button class="btn secondary" routerLink="/contact">Contact Us</button></td>
-                        <td class="popular-bg"><button class="btn primary" routerLink="/contact">Get Started</button>
+                        <td><button class="btn secondary" (click)="scrollToContact($event)">Contact Us</button></td>
+                        <td class="popular-bg"><button class="btn primary" (click)="scrollToContact($event)">Get Started</button>
                         </td>
-                        <td><button class="btn secondary" routerLink="/contact">Get Started</button></td>
+                        <td><button class="btn secondary" (click)="scrollToContact($event)">Get Started</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -77,7 +77,7 @@
                     <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
                     }
                 </div>
-                <button class="btn primary full-width" routerLink="/contact">Get Started</button>
+                <button class="btn primary full-width" (click)="scrollToContact($event)">Get Started</button>
             </div>
 
             <!-- Cash Positional -->
@@ -96,7 +96,7 @@
                     <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
                     }
                 </div>
-                <button class="btn secondary full-width" routerLink="/contact">Contact Us</button>
+                <button class="btn secondary full-width" (click)="scrollToContact($event)">Contact Us</button>
             </div>
 
             <!-- Hunting Future -->
@@ -115,7 +115,7 @@
                     <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
                     }
                 </div>
-                <button class="btn secondary full-width" routerLink="/contact">Get Started</button>
+                <button class="btn secondary full-width" (click)="scrollToContact($event)">Get Started</button>
             </div>
         </div>
 

@@ -34,7 +34,7 @@
         <!-- Footer CTA -->
         <div class="faq-footer">
             <p class="footer-text">Still have questions?</p>
-            <a [routerLink]="['/contact']" class="contact-link">Contact our support team &rarr;</a>
+            <a href="#contact" (click)="scrollToContact($event)" class="contact-link">Contact our support team &rarr;</a>
         </div>
     </div>
 </section>
