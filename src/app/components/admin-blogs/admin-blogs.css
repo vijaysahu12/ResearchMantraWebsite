@@ -627,28 +627,59 @@
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 26px;
+    font-size: 22px;
   }
 
   .content-wrapper {
-    padding: 0 16px 60px;
+    padding: 0 12px 60px;
+  }
+
+  .blogs-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .cta-banner {
-    padding: 28px 20px;
-    border-radius: 16px;
+    padding: 24px 16px;
+    border-radius: 14px;
+  }
+
+  .cta-heading {
+    font-size: 20px;
   }
 
   .seo-block {
-    padding: 28px 16px;
-    border-radius: 16px;
+    padding: 24px 14px;
+    border-radius: 14px;
+  }
+
+  .card-image {
+    height: 200px;
   }
 
   .card-body {
-    padding: 18px 16px 14px;
+    padding: 14px 14px 12px;
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: 15px;
+  }
+
+  .top-cta-bar {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .top-cta-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .top-cta-text strong {
+    font-size: 14px;
+  }
+
+  .top-cta-text span {
+    font-size: 12px;
   }
 }

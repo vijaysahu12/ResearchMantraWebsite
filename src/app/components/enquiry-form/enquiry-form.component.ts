@@ -365,13 +365,35 @@ interface WebsiteLead {
       to { transform: translateX(0); }
     }
 
+    @media (max-width: 768px) {
+      .floating-btn {
+        right: 0;
+        top: 120px;
+        transform: rotate(0deg);
+        padding: 12px 8px;
+        border-radius: 8px 0 0 8px;
+        flex-direction: column;
+        gap: 0;
+        box-shadow: -2px 0 15px rgba(0,0,0,0.3);
+      }
+
+      .floating-btn:hover {
+        right: 0;
+        background: #000;
+      }
+
+      .btn-text {
+        display: none;
+      }
+
+      .btn-icon {
+        transform: none;
+      }
+    }
+
     @media (max-width: 480px) {
       .enquiry-panel {
         max-width: 100%;
-      }
-      .floating-btn {
-        right: -48px;
-        padding: 10px 20px;
       }
     }
   `],

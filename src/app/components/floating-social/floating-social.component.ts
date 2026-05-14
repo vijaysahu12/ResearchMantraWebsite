@@ -78,17 +78,33 @@ import { NgOptimizedImage } from '@angular/common';
     }
     @media (max-width: 768px) {
       .floating-container {
-        bottom: 1.5rem;
-        right: 1.5rem;
-        gap: 0.8rem;
+        bottom: 1rem;
+        right: 0.75rem;
+        gap: 0.6rem;
       }
       .social-icon {
-        width: 48px;
-        height: 48px;
+        width: 42px;
+        height: 42px;
       }
       .social-icon img {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .floating-container {
+        bottom: 0.75rem;
+        right: 0.5rem;
+        gap: 0.5rem;
+      }
+      .social-icon {
+        width: 36px;
+        height: 36px;
+      }
+      .social-icon img {
+        width: 20px;
+        height: 20px;
       }
     }
   `],

@@ -107,3 +107,29 @@
         margin-bottom: 32px;
     }
 }
+
+@media (max-width: 480px) {
+    .complaints-section {
+        padding: 40px 0;
+    }
+
+    .container {
+        padding: 0 14px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .update-note {
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    .complaints-table th,
+    .complaints-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+}
