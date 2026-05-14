@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BlogService, BlogPost } from '../../services/blog.service';
@@ -15,12 +15,11 @@ import { AdminBlogService } from '../../services/admin-blog.service';
 })
 export class AdminBlogDetails implements OnInit {
     private route = inject(ActivatedRoute);
-    // Hardcoded blog service — checked first to preserve Google-indexed blogs
     private hardcodedBlogService = inject(BlogService);
-    // Admin API blog service — used as fallback
     private adminBlogService = inject(AdminBlogService);
     private sanitizer = inject(DomSanitizer);
     private seoService = inject(SeoService);
+    private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     /** Current blog data (hardcoded or from API) */
     blog = signal<BlogPost | undefined>(undefined);
@@ -45,11 +44,10 @@ export class AdminBlogDetails implements OnInit {
         const foundBlog = this.hardcodedBlogService.getBlogBySlug(slugValue);
 
         if (foundBlog) {
-            // Step 2: Hardcoded blog found — load normally
             this.blog.set(foundBlog);
             this.updateSeoTags(foundBlog);
             this.loading.set(false);
-            window.scrollTo(0, 0);
+            if (this.isBrowser) window.scrollTo(0, 0);
             return;
         }
 
@@ -85,12 +83,11 @@ export class AdminBlogDetails implements OnInit {
                 }
                 // If res.data is null/undefined, blog stays undefined → shows 404
                 this.loading.set(false);
-                window.scrollTo(0, 0);
+                if (this.isBrowser) window.scrollTo(0, 0);
             },
             error: () => {
-                // Step 5: API error — show 404
                 this.loading.set(false);
-                window.scrollTo(0, 0);
+                if (this.isBrowser) window.scrollTo(0, 0);
             }
         });
     }

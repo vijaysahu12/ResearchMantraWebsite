@@ -6,19 +6,11 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://researchmantra.in/features</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://researchmantra.in/pricing</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://researchmantra.in/about</loc>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://researchmantra.in/contact</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://researchmantra.in/stock-market-analysis-and-nifty-updates</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -69,6 +61,23 @@
   </url>
   <url>
     <loc>https://researchmantra.in/free-intraday-tips-for-beginners</loc>
+    <priority>0.7</priority>
+  </url>
+  <!-- Admin Blog Posts -->
+  <url>
+    <loc>https://researchmantra.in/nifty-future-roadmap-for-17-april-2026-yes-above-24270-for-48-hr-bull-story-will-run-just-relax-play-in-small-qty-go-long</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://researchmantra.in/nifty-future-roadmap-for-29-april-2026-yes-below-23947-who-will-save-next-48-hrs-very-crucial-for-market-just-relax-play-in-small-qty-any-dead-cat-bounce-again-go-for-short</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://researchmantra.in/taril-deep-research-report-nse-taril-price-320-market-cap-9600-cr</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://researchmantra.in/nifty-future-roadmap-for-27-april-2026-yes-above-23930-next-72-hrs-very-crucial-for-market-just-relax-play-in-small-qty-any-dead-cat-bounce-again-go-for-shorta</loc>
     <priority>0.7</priority>
   </url>
 </urlset>

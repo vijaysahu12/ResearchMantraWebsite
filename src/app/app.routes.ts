@@ -41,7 +41,8 @@ export const routes: Routes = [
     { path: 'terms-conditions', component: TermsConditionsComponent },
     { path: 'mobile-terms-condition', component: MobileTermsCondition },
     { path: 'blogs', component: BlogsComponent },
-    { path: 'admin/blogs', component: AdminBlogs },
+    { path: 'stock-market-analysis-and-nifty-updates', component: AdminBlogs },
+    { path: 'admin/blogs', redirectTo: 'stock-market-analysis-and-nifty-updates', pathMatch: 'full' },
 
     // Blog Redirects (Old to New)
     { path: 'top-share-market-advisory-services-india-2025-e', redirectTo: 'best-share-market-advisory-services', pathMatch: 'full' },

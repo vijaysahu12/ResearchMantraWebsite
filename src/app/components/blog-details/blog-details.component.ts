@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BlogService, BlogPost } from '../../services/blog.service';
@@ -581,10 +581,11 @@ export class BlogDetailsComponent implements OnInit {
     private adminBlogService = inject(AdminBlogService);
     private sanitizer = inject(DomSanitizer);
     private seoService = inject(SeoService);
+    private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     goBack(event: Event) {
         event.preventDefault();
-        window.history.back();
+        if (this.isBrowser) window.history.back();
     }
 
     /** Current blog data (hardcoded or from API) */
@@ -628,11 +629,10 @@ export class BlogDetailsComponent implements OnInit {
             const foundBlog = this.blogService.getBlogBySlug(slugValue);
 
             if (foundBlog) {
-                // Step 2: Hardcoded blog found — load normally
                 this.blog.set(foundBlog);
                 this.updateSeoTags(foundBlog);
                 this.loading.set(false);
-                window.scrollTo(0, 0);
+                if (this.isBrowser) window.scrollTo(0, 0);
                 return;
             }
 
@@ -670,26 +670,19 @@ export class BlogDetailsComponent implements OnInit {
                         this.commentsCount.set(apiData.commentsCount || 0);
                         this.likesCount.set(apiData.likesCount || 0);
                         
-                        // Check local storage for liked status for admin blogs
-                        const localLiked = localStorage.getItem(`blog_liked_${apiData.id}`);
-                        if (localLiked === 'true') {
-                            this.isLiked.set(true);
-                        } else {
-                            this.isLiked.set(apiData.isLiked || false);
-                        }
+                        const localLiked = this.isBrowser ? localStorage.getItem(`blog_liked_${apiData.id}`) : null;
+                        this.isLiked.set(localLiked === 'true' ? true : (apiData.isLiked || false));
                         
                         if (apiData.enableComments) {
                             this.loadComments(apiData.id);
                         }
                     }
-                    // If res.data is null/undefined, blog stays undefined → shows 404
                     this.loading.set(false);
-                    window.scrollTo(0, 0);
+                    if (this.isBrowser) window.scrollTo(0, 0);
                 },
                 error: () => {
-                    // Step 5: API error — show 404
                     this.loading.set(false);
-                    window.scrollTo(0, 0);
+                    if (this.isBrowser) window.scrollTo(0, 0);
                 }
             });
         });

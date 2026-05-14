@@ -6,15 +6,17 @@ import {
   computed,
   OnInit,
   effect,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
 import { AdminBlogService } from '../../services/admin-blog.service';
+import { SeoService } from '../../services/seo.service';
+import { EnquiryStateService } from '../../services/enquiry-state.service';
 
 @Component({
   selector: 'app-admin-blogs',
-  standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './admin-blogs.html',
   styleUrl: './admin-blogs.css',
@@ -23,15 +25,15 @@ import { AdminBlogService } from '../../services/admin-blog.service';
 export class AdminBlogs implements OnInit {
   private blogService = inject(AdminBlogService);
   private router = inject(Router);
+  private seoService = inject(SeoService);
+  private enquiryState = inject(EnquiryStateService);
+  private platformId = inject(PLATFORM_ID);
+  private get isBrowser() { return isPlatformBrowser(this.platformId); }
 
-  // ✅ FIXED: Loader starts TRUE, becomes FALSE when data loads
-  isLoadingInitial = signal<boolean>(false); // ← START WITH TRUE
-  // pageLoading = signal<boolean>(true);
+  isLoadingInitial = signal<boolean>(false);
 
-  // Define state variable
   public activeCommentBlogId: string | number | null = null;
 
-  // signal from service
   blogs = this.blogService.getBlogs();
 
   searchQuery = signal<string>('');
@@ -44,43 +46,30 @@ export class AdminBlogs implements OnInit {
 
   constructor(private adminBlogService: AdminBlogService) {
     // ✅ FIXED EFFECT: Hide loader when blogs load
-    effect(
-      () => {
-        const blogs = this.blogs();
-
-        console.log('Effect triggered. Blogs:', blogs);
-
-        // Stop loader whenever blogs signal updates
-        if (blogs !== undefined && blogs !== null) {
-          this.isLoadingInitial.set(false);
-          console.log('🟢 Loader hidden');
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const blogs = this.blogs();
+      if (blogs !== undefined && blogs !== null) {
+        this.isLoadingInitial.set(false);
+      }
+    });
   }
 
   ngOnInit(): void {
-    console.log('🟢 [Component] ngOnInit: Forcing fresh data fetch.');
+    this.seoService.setMetaTags({
+      title: 'Stock Market Analysis & Nifty Updates 2026 | Insights',
+      description: 'Get the latest stock market analysis, nifty updates, support & resistance levels and trading strategies. Stay ahead with expert insights and smarter decisions.',
+      keywords: 'stock market analysis, nifty analysis, nifty updates, nifty support resistance, trading strategies india, stock market tips, nifty outlook, intraday trading tips, stock market india',
+    });
+    this.seoService.updateCanonicalUrl('https://researchmantra.in/stock-market-analysis-and-nifty-updates');
+
+    if (!this.isBrowser) return;
+
     this.isLoadingInitial.set(true);
     this.refreshBlogs();
   }
 
   private refreshBlogs(): void {
-    // We don't check if (blogs.length > 0) here anymore.
-    // We ALWAYS call the service.
-    console.log('🚀 [Action] Calling service.loadBlogs() now...');
-
     this.blogService.loadBlogs();
-
-    // If you are using the 'effect' we previously set up,
-    // it will detect when the Signal updates and set isLoadingInitial(false).
-    // Otherwise, you can add a manual timeout for safety:
-    /*
-  setTimeout(() => {
-     if (this.isLoadingInitial()) this.isLoadingInitial.set(false);
-  }, 5000); // Safety fallback
-  */
   }
 
   filteredBlogs = computed(() => {
@@ -94,6 +83,7 @@ export class AdminBlogs implements OnInit {
         blog.title?.toLowerCase().includes(query) || blog.slug?.toLowerCase().includes(query),
     );
   });
+
 
   onSearch(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -171,16 +161,16 @@ export class AdminBlogs implements OnInit {
     blog.isLiked = !blog.isLiked;
     blog.likesCount = blog.isLiked ? blog.likesCount + 1 : Math.max(0, blog.likesCount - 1);
 
-    // Sync UI optimistic state with local storage so detail page doesn't revert
-    if (blog.isLiked) {
-      localStorage.setItem(`blog_liked_${blog.id}`, 'true');
-    } else {
-      localStorage.removeItem(`blog_liked_${blog.id}`);
+    if (this.isBrowser) {
+      if (blog.isLiked) {
+        localStorage.setItem(`blog_liked_${blog.id}`, 'true');
+      } else {
+        localStorage.removeItem(`blog_liked_${blog.id}`);
+      }
     }
 
     this.blogService.toggleLike(blog.id, this.userId).subscribe({
       next: (res: any) => {
-        // 4. Update with server data
         const updatedBlogs = this.blogs().map((b) =>
           b.id === blog.id
             ? { ...b, isLiked: res.data.isLiked, likesCount: res.data.totalLikes }
@@ -188,35 +178,39 @@ export class AdminBlogs implements OnInit {
         );
         this.blogs.set(updatedBlogs);
 
-        // Optional: Keep storage matched with final server source of truth
-        if (res.data.isLiked) {
-          localStorage.setItem(`blog_liked_${blog.id}`, 'true');
-        } else {
-          localStorage.removeItem(`blog_liked_${blog.id}`);
+        if (this.isBrowser) {
+          if (res.data.isLiked) {
+            localStorage.setItem(`blog_liked_${blog.id}`, 'true');
+          } else {
+            localStorage.removeItem(`blog_liked_${blog.id}`);
+          }
         }
 
-        // 5. Release the lock
         this.processingLikes.delete(blog.id);
       },
       error: (err) => {
-        // Revert on error and release lock
         blog.isLiked = wasLiked;
         blog.likesCount = blog.isLiked ? blog.likesCount + 1 : blog.likesCount - 1;
-        
-        // Revert local storage
-        if (wasLiked) {
-          localStorage.setItem(`blog_liked_${blog.id}`, 'true');
-        } else {
-          localStorage.removeItem(`blog_liked_${blog.id}`);
+
+        if (this.isBrowser) {
+          if (wasLiked) {
+            localStorage.setItem(`blog_liked_${blog.id}`, 'true');
+          } else {
+            localStorage.removeItem(`blog_liked_${blog.id}`);
+          }
         }
-        
+
         this.processingLikes.delete(blog.id);
       },
     });
   }
 
-  // Add a helper for the HTML
   isBlogSyncing(id: string): boolean {
     return this.processingLikes.has(id);
+  }
+
+  openEnquiry() {
+    this.router.navigate(['/']);
+    this.enquiryState.open();
   }
 }

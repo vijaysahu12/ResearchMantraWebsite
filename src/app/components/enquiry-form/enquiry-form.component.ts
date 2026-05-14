@@ -1,8 +1,9 @@
-import { Component, signal, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
+import { EnquiryStateService } from '../../services/enquiry-state.service';
 
 interface WebsiteLead {
   Id: number;
@@ -379,8 +380,18 @@ interface WebsiteLead {
 export class EnquiryFormComponent {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
+  private enquiryState = inject(EnquiryStateService);
 
   isOpen = signal(false);
+
+  constructor() {
+    effect(() => {
+      if (this.enquiryState.shouldOpen()) {
+        this.isOpen.set(true);
+        this.enquiryState.reset();
+      }
+    });
+  }
   isSubmitting = signal(false);
   successMessage = signal('');
 
