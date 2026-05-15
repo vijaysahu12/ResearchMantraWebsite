@@ -300,6 +300,9 @@
     font-weight: 700;
     color: #E2E8F0;
     margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .tl-benefits-list {
@@ -315,14 +318,14 @@
     font-size: 14px;
     color: #CBD5E1;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
+    line-height: 1.4;
 }
 
 .tl-benefits-list li svg {
     color: #14B8A6;
     flex-shrink: 0;
-    margin-top: 2px;
 }
 
 .tl-badges-row {
@@ -1340,6 +1343,31 @@
     .otp-box {
         width: 36px;
         height: 44px;
+    }
+
+    .telegram-left-cta {
+        padding: 16px;
+        gap: 14px;
+    }
+
+    .tl-cta-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .tl-join-btn-small {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .tl-benefits-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .tl-title-wrap h4 {
+        font-size: 16px;
     }
 }
 
