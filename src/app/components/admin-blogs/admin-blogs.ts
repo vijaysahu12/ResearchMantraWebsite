@@ -11,11 +11,14 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
 import { AdminBlogService } from '../../services/admin-blog.service';
+import { LeadService } from '../../services/lead.service';
+import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
+import { ShareModalComponent } from '../share-modal/share-modal.component';
 
 @Component({
   selector: 'app-admin-blogs',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LeadCaptureModalComponent, ShareModalComponent],
   templateUrl: './admin-blogs.html',
   styleUrl: './admin-blogs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +26,7 @@ import { AdminBlogService } from '../../services/admin-blog.service';
 export class AdminBlogs implements OnInit {
   private blogService = inject(AdminBlogService);
   private router = inject(Router);
+  private leadService = inject(LeadService);
 
   // ✅ FIXED: Loader starts TRUE, becomes FALSE when data loads
   isLoadingInitial = signal<boolean>(false); // ← START WITH TRUE
@@ -41,6 +45,37 @@ export class AdminBlogs implements OnInit {
   // 🟢 Track current image index per blog
   imageIndexes: { [key: string]: number } = {};
   userId: any = '00000000-0000-0000-0000-000000000000'; // Replace with actual user ID logic
+
+  // Category tabs
+  readonly categories = ['ALL', 'Nifty', 'Options', 'F&O', 'Stocks', 'Investment', 'Portfolio', 'Market', 'Sector', 'Levels', 'Education', 'Others'];
+  selectedCategory = signal<string>('ALL');
+
+  onCategorySelect(category: string) {
+    if (this.selectedCategory() === category) return;
+    this.selectedCategory.set(category);
+    this.searchQuery.set('');
+    this.isLoadingInitial.set(true);
+    this.blogService.loadBlogs(1, 10, category);
+  }
+
+  // Lead capture modal
+  showLeadModal = signal(false);
+  private pendingSlug = signal<string | null>(null);
+
+  // Share modal
+  shareModalBlog = signal<{ url: string; title: string } | null>(null);
+
+  openShare(blog: any, event: Event) {
+    event.stopPropagation();
+    this.shareModalBlog.set({
+      url: `https://researchmantra.in/${blog.slug}`,
+      title: blog.title,
+    });
+  }
+
+  closeShare() {
+    this.shareModalBlog.set(null);
+  }
 
   constructor(private adminBlogService: AdminBlogService) {
     // ✅ FIXED EFFECT: Hide loader when blogs load
@@ -67,11 +102,7 @@ export class AdminBlogs implements OnInit {
   }
 
   private refreshBlogs(): void {
-    // We don't check if (blogs.length > 0) here anymore.
-    // We ALWAYS call the service.
-    console.log('🚀 [Action] Calling service.loadBlogs() now...');
-
-    this.blogService.loadBlogs();
+    this.blogService.loadBlogs(1, 10, this.selectedCategory());
 
     // If you are using the 'effect' we previously set up,
     // it will detect when the Signal updates and set isLoadingInitial(false).
@@ -148,7 +179,26 @@ export class AdminBlogs implements OnInit {
   }
 
   navigateToBlog(slug: string) {
-    this.router.navigate(['/', slug]);
+    if (this.leadService.hasLeadData()) {
+      this.router.navigate(['/', slug]);
+    } else {
+      this.pendingSlug.set(slug);
+      this.showLeadModal.set(true);
+    }
+  }
+
+  onLeadSubmitted(_data: { name: string; mobile: string }) {
+    this.showLeadModal.set(false);
+    const slug = this.pendingSlug();
+    if (slug) {
+      this.pendingSlug.set(null);
+      this.router.navigate(['/', slug]);
+    }
+  }
+
+  onModalClosed() {
+    this.showLeadModal.set(false);
+    this.pendingSlug.set(null);
   }
 
   // Add a local tracking set

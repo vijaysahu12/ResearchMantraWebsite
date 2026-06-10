@@ -2,13 +2,6 @@
   <div class="blogs-container">
     <!-- Header Area -->
     <div class="section-header">
-      <!-- <div class="blogs-eyebrow">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path
-                        d="M19 5V19H5V5H19ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM14 17H7V15H14V17ZM17 13H7V11H17V13ZM17 9H7V7H17V9Z" />
-                </svg>
-                Insights & Updates
-            </div> -->
       <h2 class="main-heading">Stock Market Blogs & <span class="highlight">Trading Tips – Research Mantra</span></h2>
       <p class="sub-heading">
         Stay ahead with our latest thoughts on market trends, trading strategies, and educational
@@ -65,37 +58,69 @@
       }
     </div>
 
+    <!-- Category Tabs -->
+    <div class="category-tabs-wrapper" role="tablist" aria-label="Filter blogs by category">
+      @for (cat of categories; track cat) {
+        <button
+          type="button"
+          role="tab"
+          class="category-tab"
+          [class.active]="selectedCategory() === cat"
+          [attr.aria-selected]="selectedCategory() === cat"
+          (click)="onCategorySelect(cat)"
+        >{{ cat }}</button>
+      }
+    </div>
+
     <!-- Blogs Grid -->
     <div class="blogs-grid">
       @for (blog of filteredBlogs(); track blog.id) {
-        <article class="blog-card" [routerLink]="['/', blog.slug]" style="cursor: pointer">
+        <article
+          class="blog-card"
+          style="cursor: pointer"
+          (click)="onCardClick(blog.slug, $event)"
+          (keydown.enter)="onCardClick(blog.slug, $event)"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'Read blog: ' + blog.title"
+        >
           <!-- Blog Image -->
           <div class="blog-image">
             <img [src]="getCurrentImage(blog)" [alt]="blog.title" />
-
             <span class="category-badge">{{ blog.category }}</span>
           </div>
 
           <!-- Blog Content -->
- <div class="blog-content">
-  <div class="blog-meta">
-    <span>Author: {{ blog.author }}</span>
-  </div>
+          <div class="blog-content">
+            <div class="blog-meta">
+              <span>Author: {{ blog.author }}</span>
+            </div>
 
-  <h3 class="blog-title">{{ blog.title }}</h3>
-  <p class="blog-excerpt">{{ blog.excerpt }}</p>
+            <h3 class="blog-title">{{ blog.title }}</h3>
+            <p class="blog-excerpt">{{ blog.excerpt }}</p>
 
-                    <div class="blog-footer">
-                        <a class="read-more">
-                            Read More
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
-                        </a>
-                    </div>
-</div>
+            <div class="blog-footer">
+              <a class="read-more" (click)="onCardClick(blog.slug, $event)" role="button">
+                Read More
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+              <button class="share-icon-btn" type="button"
+                      (click)="openShare(blog, $event)"
+                      aria-label="Share this article">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
         </article>
       } @empty {
         <div class="no-results">
@@ -125,17 +150,22 @@
         </div>
       }
     </div>
-
-    <!-- Newsletter CTA -->
-    <!-- <div class="newsletter-cta">
-            <div class="newsletter-content">
-                <h3>Subscribe to our Insights</h3>
-                <p>Get the latest market analysis and trading ideas delivered to your inbox.</p>
-            </div>
-            <form class="newsletter-form" (submit)="$event.preventDefault()">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit" class="btn primary">Subscribe</button>
-            </form>
-        </div> -->
   </div>
 </section>
+
+<!-- Lead Capture Modal -->
+@if (showLeadModal()) {
+  <app-lead-capture-modal
+    (submitted)="onLeadSubmitted($event)"
+    (closed)="onModalClosed()"
+  ></app-lead-capture-modal>
+}
+
+<!-- Share Modal -->
+@if (shareModalBlog()) {
+  <app-share-modal
+    [shareUrl]="shareModalBlog()!.url"
+    [shareTitle]="shareModalBlog()!.title"
+    (closed)="closeShare()"
+  ></app-share-modal>
+}

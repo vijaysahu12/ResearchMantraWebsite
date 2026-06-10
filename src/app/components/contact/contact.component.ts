@@ -58,6 +58,7 @@ export class ContactComponent {
             occupation: ['', [Validators.required]],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
             email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+            investmentCapital: [''],
             message: ['', [Validators.required]],
             acceptTerms: [false, Validators.requiredTrue]
         });
@@ -115,7 +116,7 @@ export class ContactComponent {
                 ServiceKey: '',
                 LeadTypeKey: '',
                 LeadSourceKey: 'Website Contact Form',
-                Remarks: `Occupation: ${formValue.occupation}\nMessage: ${formValue.message}`,
+                Remarks: `Occupation: ${formValue.occupation}\nMessage: ${formValue.message}${formValue.investmentCapital?.trim() ? '\nInvestment Capital: ' + formValue.investmentCapital.trim() : ''}`,
                 IsDisabled: 0,
                 IsDelete: 0,
                 CreatedOn: now,

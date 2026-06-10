@@ -22,6 +22,7 @@ export interface BlogPost {
     isLiked?: boolean;
     comments?: any[];
     enableComments?: boolean;
+    publishedOn?: string;
 }
 
 @Injectable({
@@ -84,16 +85,16 @@ private blogs = signal<any[]>([]);
 //   return this.blogs().find(blog => blog.slug === slug);
 // }
 
-loadBlogs(page = 1, size = 10) {
-  console.log('🧹 [Service] Clearing existing data...');
+loadBlogs(page = 1, size = 10, category = '') {
   this.blogs.set([]);
 
-  const ts = Date.now(); // cache buster
-
-  console.log(`🚀 [Service] API Call started - Page: ${page}`);
+  const ts = Date.now();
+  const categoryParam = category && category !== 'ALL'
+    ? `&category=${encodeURIComponent(category)}`
+    : '';
 
   this.http.get<any>(
-    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}&_=${ts}`,
+    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}${categoryParam}&_=${ts}`,
     {
       headers: {
         'Cache-Control': 'no-cache',
@@ -121,6 +122,13 @@ loadBlogs(page = 1, size = 10) {
 
 getBlogDetails(slug: string) {
   return this.http.get(`${this.apiUrl}/GetBlogBySlug/${slug}`);
+}
+
+getRecentPosts(count = 6): Observable<any> {
+  const ts = Date.now();
+  return this.http.get<any>(
+    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=1&pageSize=${count}&_=${ts}`
+  );
 }
 
   addComment(payload: any) {

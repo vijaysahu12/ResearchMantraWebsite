@@ -77,7 +77,8 @@ export class AdminBlogDetails implements OnInit {
                         metaTitle: apiData.metaTitle || apiData.title || '',
                         metaDescription: apiData.metaDescription || apiData.excerpt || '',
                         keywords: apiData.keywords || apiData.category || '',
-                        enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true'
+                        enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true',
+                        publishedOn: apiData.publishedOn ?? null
                     };
 
                     this.blog.set(mappedBlog);

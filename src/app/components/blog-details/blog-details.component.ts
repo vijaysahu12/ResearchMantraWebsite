@@ -5,10 +5,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BlogService, BlogPost } from '../../services/blog.service';
 import { AdminBlogService } from '../../services/admin-blog.service';
 import { SeoService } from '../../services/seo.service';
+import { LeadService } from '../../services/lead.service';
+import { ShareModalComponent } from '../share-modal/share-modal.component';
 
 @Component({
     selector: 'app-blog-details',
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, ShareModalComponent],
     template: `
         <!-- Loading state while checking hardcoded blogs and API -->
         @if (loading()) {
@@ -23,6 +25,34 @@ import { SeoService } from '../../services/seo.service';
                     <div class="hero-overlay"></div>
                     <div class="hero-content">
                         <h1 class="blog-title">{{ blog()?.title }}</h1>
+                        <div class="hero-tagline">
+                            @if (blog()?.publishedOn ?? blog()?.date) {
+                                <span class="tagline-item">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    {{ (blog()?.publishedOn ?? blog()?.date) | date:'MMMM d, yyyy' }}
+                                </span>
+                                <span class="tagline-dot" aria-hidden="true">·</span>
+                            }
+                            <span class="tagline-item">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                By Susmitha Sahoo
+                            </span>
+                            <span class="tagline-dot" aria-hidden="true">·</span>
+                            <span class="tagline-item tagline-sebi">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                                SEBI Registered
+                            </span>
+                        </div>
                     </div>
 
                     <div class="bg-text-overlay">
@@ -64,6 +94,17 @@ import { SeoService } from '../../services/seo.service';
                                             <span>{{ commentsCount() || 0 }} Comments</span>
                                         </button>
                                     }
+
+                                    <button type="button" class="interaction-btn share-btn" (click)="openShareModal()">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="18" cy="5" r="3"></circle>
+                                            <circle cx="6" cy="12" r="3"></circle>
+                                            <circle cx="18" cy="19" r="3"></circle>
+                                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                        </svg>
+                                        <span>Share</span>
+                                    </button>
                                 </div>
 
                                 <!-- Comments Section (Toggleable) -->
@@ -75,13 +116,19 @@ import { SeoService } from '../../services/seo.service';
                                         </div>
                                         
                                         <div class="comment-form">
-                                            <textarea #commentInput 
+                                            @if (visitorName()) {
+                                                <div class="commenter-identity">
+                                                    <div class="commenter-avatar" aria-hidden="true">{{ visitorName().charAt(0).toUpperCase() }}</div>
+                                                    <span class="commenter-name">Commenting as <strong>{{ visitorName() }}</strong></span>
+                                                </div>
+                                            }
+                                            <textarea #commentInput
                                                       (input)="0"
-                                                      placeholder="Write your comment here..."
+                                                      [placeholder]="visitorName() ? 'Share your thoughts, ' + visitorName() + '...' : 'Write your comment here...'"
                                                       rows="3"></textarea>
                                             <div class="form-footer">
                                                 <p class="form-tip">Please keep the discussion professional.</p>
-                                                <button type="button" 
+                                                <button type="button"
                                                         class="post-btn"
                                                         [disabled]="isSubmittingComment() || !commentInput.value.trim()"
                                                         (click)="submitComment(commentInput.value); commentInput.value = ''">
@@ -115,7 +162,7 @@ import { SeoService } from '../../services/seo.service';
                                 }
                             }
 
-                            <!-- Back to Blogs -->
+                            <!-- Back to Blogs + Share -->
                             <div class="article-footer">
                                 <a href="javascript:void(0)" (click)="goBack($event)" class="back-link">
                                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,6 +171,16 @@ import { SeoService } from '../../services/seo.service';
                                     </svg>
                                     Back to Blogs
                                 </a>
+                                <button type="button" class="footer-share-btn" (click)="openShareModal()">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="18" cy="5" r="3"></circle>
+                                        <circle cx="6" cy="12" r="3"></circle>
+                                        <circle cx="18" cy="19" r="3"></circle>
+                                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                    </svg>
+                                    Share Article
+                                </button>
                             </div>
                         </div>
                     </main>
@@ -136,6 +193,14 @@ import { SeoService } from '../../services/seo.service';
                 <p>The blog post you are looking for doesn't exist.</p>
                 <a routerLink="/blogs" class="btn-outline" style="display: inline-block; margin-top: 20px;">Back to Blogs</a>
             </div>
+        }
+
+        @if (showShareModal()) {
+            <app-share-modal
+                [shareUrl]="blogShareUrl()"
+                [shareTitle]="blog()?.title ?? ''"
+                (closed)="closeShareModal()"
+            ></app-share-modal>
         }
     `,
     styles: [`
@@ -196,8 +261,47 @@ import { SeoService } from '../../services/seo.service';
             font-size: clamp(32px, 5vw, 48px);
             font-weight: 800;
             line-height: 1.2;
-            margin-bottom: 0;
+            margin-bottom: 16px;
             letter-spacing: -0.02em;
+        }
+
+        .hero-tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .tagline-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.90);
+            letter-spacing: 0.01em;
+        }
+
+        .tagline-sebi {
+            color: #fde68a;
+            font-weight: 600;
+        }
+
+        .tagline-dot {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        @media (max-width: 600px) {
+            .hero-tagline {
+                gap: 7px;
+            }
+            .tagline-item {
+                font-size: 12px;
+            }
         }
 
         .content-layout {
@@ -312,6 +416,11 @@ import { SeoService } from '../../services/seo.service';
             margin-top: 60px;
             padding-top: 40px;
             border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .back-link {
@@ -326,6 +435,32 @@ import { SeoService } from '../../services/seo.service';
 
         .back-link:hover {
             color: #EAB308;
+        }
+
+        .footer-share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px -2px rgba(30, 58, 138, 0.35);
+        }
+
+        .footer-share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(30, 58, 138, 0.45);
+        }
+
+        .share-btn {
+            margin-left: auto;
         }
 
         @media (max-width: 768px) {
@@ -451,6 +586,40 @@ import { SeoService } from '../../services/seo.service';
             border-radius: 16px;
             margin-bottom: 40px;
             border: 1px solid #f1f5f9;
+        }
+
+        .commenter-identity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding: 10px 14px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+        }
+
+        .commenter-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .commenter-name {
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+        .commenter-name strong {
+            font-weight: 700;
         }
 
         .comment-form textarea {
@@ -581,6 +750,7 @@ export class BlogDetailsComponent implements OnInit {
     private adminBlogService = inject(AdminBlogService);
     private sanitizer = inject(DomSanitizer);
     private seoService = inject(SeoService);
+    private leadService = inject(LeadService);
 
     goBack(event: Event) {
         event.preventDefault();
@@ -608,7 +778,17 @@ export class BlogDetailsComponent implements OnInit {
     isSyncingLike = signal<boolean>(false);
     isSubmittingComment = signal<boolean>(false);
 
-    private userId = '00000000-0000-0000-0000-000000000000'; // Placeholder for actual user ID
+    private userId = '00000000-0000-0000-0000-000000000000';
+
+    /** Name captured via lead modal — shown in comment form and sent with comment */
+    visitorName = signal<string>(this.leadService.getLeadName());
+
+    /** Share modal */
+    showShareModal = signal(false);
+    blogShareUrl = computed(() => `https://researchmantra.in/${this.blog()?.slug ?? ''}`);
+
+    openShareModal() { this.showShareModal.set(true); }
+    closeShareModal() { this.showShareModal.set(false); }
 
     sanitizedContent = computed(() => {
         const content = this.blog()?.content;
@@ -721,7 +901,8 @@ export class BlogDetailsComponent implements OnInit {
         const request = {
             blogId: currentBlog.id,
             comment: text,
-            parentCommentId: null
+            parentCommentId: null,
+            authorName: this.visitorName() || 'Anonymous',
         };
 
         this.adminBlogService.addComment(request).subscribe({

@@ -60,6 +60,20 @@
       }
     </div>
 
+    <!-- Category Tabs -->
+    <div class="category-tabs-wrapper" role="tablist" aria-label="Filter blogs by category">
+      @for (cat of categories; track cat) {
+        <button
+          type="button"
+          role="tab"
+          class="category-tab"
+          [class.active]="selectedCategory() === cat"
+          [attr.aria-selected]="selectedCategory() === cat"
+          (click)="onCategorySelect(cat)"
+        >{{ cat }}</button>
+      }
+    </div>
+
     <!-- Blogs Grid -->
     <div class="blogs-grid">
 <!-- Replace the loading section with this -->
@@ -162,6 +176,20 @@
               <button class="read-more-arrow" (click)="navigateToBlog(blog.slug); $event.stopPropagation()">
                 Read More
               </button>
+              <button
+                type="button"
+                class="share-icon-btn"
+                (click)="openShare(blog, $event)"
+                aria-label="Share this article"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+              </button>
             </div>
           </div>
         </article>
@@ -203,3 +231,20 @@
         </div> -->
   </div>
 </section>
+
+<!-- Lead Capture Modal -->
+@if (showLeadModal()) {
+  <app-lead-capture-modal
+    (submitted)="onLeadSubmitted($event)"
+    (closed)="onModalClosed()"
+  ></app-lead-capture-modal>
+}
+
+<!-- Share Modal -->
+@if (shareModalBlog()) {
+  <app-share-modal
+    [shareUrl]="shareModalBlog()!.url"
+    [shareTitle]="shareModalBlog()!.title"
+    (closed)="closeShare()"
+  ></app-share-modal>
+}

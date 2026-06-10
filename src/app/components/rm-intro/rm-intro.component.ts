@@ -42,6 +42,7 @@ export class RmIntroComponent implements OnInit {
     isEnquirySubmitting = signal<boolean>(false);
     enquirySuccess = signal<string>('');
     activeFormTab = signal<'telegram' | 'enquiry'>('telegram');
+    showStrategyModal = signal<boolean>(false);
 
     constructor() {
         this.mobileForm = this.fb.group({
@@ -50,6 +51,7 @@ export class RmIntroComponent implements OnInit {
 
         this.nameForm = this.fb.group({
             name: ['', [Validators.required, Validators.minLength(3)]],
+            investmentCapital: [''],
             acceptTerms: [false, Validators.requiredTrue]
         });
 
@@ -62,7 +64,9 @@ export class RmIntroComponent implements OnInit {
         this.enquiryForm = this.fb.group({
             name: ['', [Validators.required, Validators.minLength(2)]],
             mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+            email: ['', [Validators.required, Validators.email]],
             message: [''],
+            investmentCapital: [''],
             acceptTerms: [false, Validators.requiredTrue]
         });
     }
@@ -97,6 +101,9 @@ export class RmIntroComponent implements OnInit {
                 if (state.name) this.userName.set(state.name);
                 if (state.youtubeLink) this.youtubeLink.set(state.youtubeLink);
                 if (state.step) this.currentStep.set(state.step as Step);
+                if (state.step === 'name' || state.step === 'otp') {
+                    this.showStrategyModal.set(true);
+                }
 
             } catch (e) {
                 console.error('Failed to restore state', e);
@@ -168,6 +175,7 @@ export class RmIntroComponent implements OnInit {
         this.userName.set(name);
 
         const now = new Date().toISOString();
+        const ic = this.nameForm.get('investmentCapital')?.value?.trim() || '';
 
         // 1. Prepare WebsiteLead payload
         const leadPayload: WebsiteLead = {
@@ -186,6 +194,7 @@ export class RmIntroComponent implements OnInit {
             LeadTypeKey: '',
             LeadSourceKey: 'Website Whatsapp Enquiry form ',
             Remarks: 'Unlock 3 Free Trade Ideas Flow',
+            InvestmentCapital: ic,
             IsDisabled: 0,
             IsDelete: 0,
             CreatedOn: now,
@@ -434,14 +443,15 @@ export class RmIntroComponent implements OnInit {
             CountryCode: '+91',
             MobileNumber: formValue.mobile,
             AlternateMobileNumber: '',
-            EmailId: '', // Skipping email field
+            EmailId: formValue.email ?? '',
             ProfileImage: '',
             PriorityStatus: 'Normal',
             AssignedTo: '',
             ServiceKey: '',
             LeadTypeKey: '',
             LeadSourceKey: 'Website Enquiry',
-            Remarks: formValue.message,
+            Remarks: formValue.message || '',
+            InvestmentCapital: formValue.investmentCapital?.trim() || '',
             IsDisabled: 0,
             IsDelete: 0,
             CreatedOn: now,
