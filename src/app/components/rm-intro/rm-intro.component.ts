@@ -41,8 +41,11 @@ export class RmIntroComponent implements OnInit {
     enquiryForm: FormGroup;
     isEnquirySubmitting = signal<boolean>(false);
     enquirySuccess = signal<string>('');
-    activeFormTab = signal<'telegram' | 'enquiry'>('telegram');
     showStrategyModal = signal<boolean>(false);
+    activeFormTab = signal<'telegram' | 'enquiry' | 'youtube'>('telegram');
+
+    private readonly TAB_ORDER: Array<'telegram' | 'enquiry' | 'youtube'> = ['telegram', 'enquiry', 'youtube'];
+    private rotationInterval: ReturnType<typeof setInterval> | null = null;
 
     constructor() {
         this.mobileForm = this.fb.group({
@@ -109,6 +112,29 @@ export class RmIntroComponent implements OnInit {
                 console.error('Failed to restore state', e);
                 sessionStorage.removeItem('leadState');
             }
+        }
+
+        this.startTabRotation();
+        this.destroyRef.onDestroy(() => this.stopTabRotation());
+    }
+
+    selectTab(tab: 'telegram' | 'enquiry' | 'youtube') {
+        this.activeFormTab.set(tab);
+        this.stopTabRotation();
+        this.startTabRotation();
+    }
+
+    private startTabRotation() {
+        this.rotationInterval = setInterval(() => {
+            const idx = this.TAB_ORDER.indexOf(this.activeFormTab());
+            this.activeFormTab.set(this.TAB_ORDER[(idx + 1) % this.TAB_ORDER.length]);
+        }, 30000);
+    }
+
+    private stopTabRotation() {
+        if (this.rotationInterval !== null) {
+            clearInterval(this.rotationInterval);
+            this.rotationInterval = null;
         }
     }
 

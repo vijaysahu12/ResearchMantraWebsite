@@ -71,24 +71,31 @@
         </div>
 
         <!-- Right Column: Enquiry Form -->
-        <div class="hero-visual">
+        <div class="hero-visual" id="enquiry">
             <div class="enquiry-card">
                 <div class="tabs-header">
                     <button type="button" class="tab-btn telegram-tab" [class.active]="activeFormTab() === 'telegram'"
-                        (click)="activeFormTab.set('telegram')">
+                        (click)="selectTab('telegram')">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                             <path
                                 d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
                         </svg>
-                        Join on Telegram
+                        Telegram
                     </button>
                     <button type="button" class="tab-btn" [class.active]="activeFormTab() === 'enquiry'"
-                        (click)="activeFormTab.set('enquiry')">
-                        Request a Free Demo
+                        (click)="selectTab('enquiry')">
+                        Free Demo
+                    </button>
+                    <button type="button" class="tab-btn yt-tab" [class.active]="activeFormTab() === 'youtube'"
+                        (click)="selectTab('youtube')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="#FF0000">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        YouTube
                     </button>
                 </div>
 
-                @if (activeFormTab() === 'telegram') {
+@if (activeFormTab() === 'telegram') {
                 <div class="telegram-tab-content fade-in">
                     <div class="telegram-graphics">
                         <div class="pulse-ring delay-2"></div>
@@ -118,17 +125,17 @@
                 </div>
                 <form [formGroup]="enquiryForm" (ngSubmit)="onEnquirySubmit()" class="enquiry-body fade-in">
                     <div class="form-group">
-                        <label for="name">Full Name*</label>
-                        <input type="text" id="name" formControlName="name" placeholder="Enter your name" minlength="1"
+                        <label for="name" class="sr-only">Full Name</label>
+                        <input type="text" id="name" formControlName="name" placeholder="Full Name *" minlength="1"
                             maxlength="50" (input)="onNameInput($event)">
                     </div>
 
                     <div class="form-group">
-                        <label for="mobile">Mobile Number*</label>
+                        <label for="mobile" class="sr-only">Mobile Number</label>
                         <div class="mobile-input-container">
                             <span class="country-prefix">+91</span>
                             <input type="tel" id="mobile" formControlName="mobile" maxlength="10"
-                                placeholder="Enter mobile number" (input)="onEnquiryMobileNumberInput($event)">
+                                placeholder="Mobile Number *" (input)="onEnquiryMobileNumberInput($event)">
                         </div>
                     </div>
 
@@ -174,6 +181,27 @@
                     <div class="success-msg fade-in">{{ enquirySuccess() }}</div>
                     }
                 </form>
+                }
+
+                @if (activeFormTab() === 'youtube') {
+                <div class="youtube-tab-content fade-in">
+                    <a href="https://www.youtube.com/@ResearchMantraOfficial/streams"
+                        target="_blank" rel="noopener noreferrer"
+                        class="youtube-banner-link"
+                        aria-label="Watch Research Mantra live streams on YouTube">
+                        <img src="assets/youtube.jpeg"
+                            alt="Trade Like The Top 1% Every Day – Join NIFTY YouTube Live"
+                            class="youtube-banner-img" />
+                        <div class="youtube-banner-overlay">
+                            <span class="youtube-watch-label">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="#FF0000">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                                Watch Live on YouTube
+                            </span>
+                        </div>
+                    </a>
+                </div>
                 }
             </div>
         </div>

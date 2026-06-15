@@ -60,7 +60,12 @@ export class ContactComponent {
             email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
             investmentCapital: [''],
             message: ['', [Validators.required]],
-            acceptTerms: [false, Validators.requiredTrue]
+            acceptTerms: [false, Validators.requiredTrue],
+            // UI-only fields — not sent to backend
+            website: [''],
+            companyName: [''],
+            productInterest: [''],
+            optInCommunications: [false]
         });
     }
 

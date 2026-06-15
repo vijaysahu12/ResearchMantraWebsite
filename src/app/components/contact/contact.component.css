@@ -10,40 +10,42 @@
 
 .contact-section {
     background-color: var(--bg-white);
-    padding: 100px 0;
+    padding: 20px 0 56px;
     color: var(--text-primary);
     font-family: 'Inter', system-ui, sans-serif;
 }
 
 .contact-container {
-    max-width: 1440px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 32px;
 }
 
+/* ── Section header ── */
 .section-header {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 28px;
 }
 
 .eyebrow {
     display: inline-block;
     background-color: #FEF9C3;
     color: #854D0E;
-    padding: 6px 16px;
+    padding: 5px 14px;
     border-radius: 100px;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
 
 .main-heading {
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 800;
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
     letter-spacing: -0.02em;
+    line-height: 1.15;
 }
 
 .main-heading .highlight {
@@ -51,48 +53,81 @@
 }
 
 .sub-heading {
-    font-size: 18px;
+    font-size: 15px;
     color: var(--text-muted);
-    max-width: 700px;
+    max-width: 560px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.55;
 }
 
+/* ── Card ── */
 .contact-content {
-    max-width: 900px;
+    max-width: 860px;
     margin: 0 auto;
 }
 
 .contact-card {
     background: #FFFFFF;
     border: 1px solid var(--border-light);
-    border-radius: 32px;
-    padding: 48px;
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    padding: 32px 40px 36px;
+    box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.08);
 }
 
+.card-inner-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.card-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+}
+
+.card-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ── Form grid ── */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-bottom: 24px;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.span-full {
+    grid-column: 1 / -1;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
 }
 
-.form-group.full-width {
-    grid-column: span 2;
-    margin-bottom: 32px;
+.message-group {
+    margin-bottom: 12px;
 }
 
-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
+/* visually hidden but accessible to screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .optional-label {
@@ -102,104 +137,92 @@ label {
     margin-left: 4px;
 }
 
+/* ── Inputs / textarea / select ── */
 input,
-textarea {
-    padding: 14px 18px;
-    border: 1px solid var(--border-light);
-    border-radius: 12px;
-    font-size: 15px;
+textarea,
+select {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 14px;
     background-color: #F8FAFC;
-    transition: all 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     font-family: inherit;
     color: var(--text-primary);
+    line-height: 1.4;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #A0AEC0;
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     outline: none;
     border-color: var(--brand-yellow);
     background-color: #FFFFFF;
-    box-shadow: 0 0 0 4px rgba(248, 176, 24, 0.1);
+    box-shadow: 0 0 0 3px rgba(248, 176, 24, 0.12);
 }
 
 input.error,
 textarea.error {
     border-color: var(--error-red);
+    background-color: #FFF8F8;
 }
 
 .error-text {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--error-red);
     font-weight: 500;
 }
 
-.submit-btn {
-    background-color: var(--brand-yellow);
-    color: #000000;
-    border: none;
-    padding: 16px 40px;
-    border-radius: 100px;
-    font-weight: 700;
-    font-size: 16px;
+/* ── Select dropdown ── */
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-color: var(--text-muted) transparent transparent transparent;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
     cursor: pointer;
-    transition: all 0.2s;
-    width: 200px;
+    padding-right: 38px;
 }
 
-.submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(248, 176, 24, 0.2);
-}
-
-.submit-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: center;
-}
-
-.success-message {
-    margin-top: 24px;
-    padding: 16px;
-    background-color: #F0FDF4;
-    border: 1px solid #BBF7D0;
-    border-radius: 12px;
-    color: #166534;
-    font-size: 15px;
-    font-weight: 500;
-    text-align: center;
-}
-
-.error-message {
-    margin-top: 24px;
-    padding: 16px;
-    background-color: #FEF2F2;
-    border: 1px solid #FECACA;
-    border-radius: 12px;
-    color: #991B1B;
-    font-size: 15px;
-    font-weight: 500;
-    text-align: center;
-}
-
-/* Terms Checkbox Styling */
-.terms-group {
-    grid-column: span 2;
-    margin-bottom: 32px;
+/* ── Terms & Opt-in checkboxes ── */
+.terms-group,
+.optin-group {
+    padding-top: 12px;
 }
 
 .checkbox-container {
     display: flex;
     align-items: center;
     position: relative;
-    padding-left: 32px;
+    padding-left: 28px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     user-select: none;
     color: var(--text-muted);
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .checkbox-container input {
@@ -215,45 +238,52 @@ textarea.error {
     top: 50%;
     left: 0;
     transform: translateY(-50%);
-    height: 20px;
-    width: 20px;
+    height: 18px;
+    width: 18px;
     background-color: #F8FAFC;
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
+    border: 1.5px solid var(--border-light);
+    border-radius: 5px;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
-.checkbox-container:hover input~.checkmark {
+.checkmark-top {
+    top: 2px;
+    transform: none;
+}
+
+.checkbox-container:hover input ~ .checkmark {
     border-color: var(--brand-yellow);
 }
 
-.checkbox-container input:checked~.checkmark {
+.checkbox-container input:checked ~ .checkmark {
     background-color: var(--brand-yellow);
     border-color: var(--brand-yellow);
 }
 
-.checkmark:after {
+.checkmark::after {
     content: "";
     position: absolute;
     display: none;
 }
 
-.checkbox-container input:checked~.checkmark:after {
+.checkbox-container input:checked ~ .checkmark::after {
     display: block;
 }
 
-.checkbox-container .checkmark:after {
-    left: 6.5px;
-    top: 2.5px;
-    width: 5px;
-    height: 10px;
+.checkbox-container .checkmark::after {
+    left: 5.5px;
+    top: 2px;
+    width: 4px;
+    height: 9px;
     border: solid #000;
-    border-width: 0 2.5px 2.5px 0;
+    border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
 
 .terms-text {
     font-weight: 500;
+    line-height: 1.45;
 }
 
 .terms-text a {
@@ -266,67 +296,148 @@ textarea.error {
     text-decoration: underline;
 }
 
+/* ── Opt-in section ── */
+.optin-group {
+    margin-bottom: 20px;
+}
+
+.optin-checkbox {
+    align-items: flex-start;
+}
+
+.optin-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0 0 6px 0;
+}
+
+/* ── Submit button ── */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit-btn {
+    background-color: var(--brand-yellow);
+    color: #000000;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(248, 176, 24, 0.35);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Feedback messages ── */
+.success-message {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background-color: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    border-radius: 10px;
+    color: #166534;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.error-message {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 10px;
+    color: #991B1B;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
+    .contact-section {
+        padding: 40px 0 44px;
+    }
+
     .main-heading {
-        font-size: 36px;
+        font-size: 26px;
     }
 
     .contact-card {
-        padding: 32px 24px;
+        padding: 24px 20px 28px;
     }
 
     .form-grid {
         grid-template-columns: 1fr;
     }
 
-    .form-group.full-width {
-        grid-column: span 1;
+    .span-full {
+        grid-column: 1;
+    }
+
+    .form-actions {
+        justify-content: stretch;
     }
 
     .submit-btn {
         width: 100%;
+        justify-content: center;
     }
 }
 
 @media (max-width: 480px) {
-    .contact-section {
-        padding: 60px 0;
-    }
-
     .contact-container {
-        padding: 0 16px;
+        padding: 0 14px;
     }
 
     .main-heading {
-        font-size: 28px;
+        font-size: 22px;
     }
 
     .sub-heading {
-        font-size: 16px;
+        font-size: 13px;
     }
 
     .contact-card {
-        padding: 24px 16px;
-        border-radius: 24px;
+        padding: 20px 16px 24px;
+        border-radius: 18px;
+    }
+
+    .card-title {
+        font-size: 18px;
     }
 
     .eyebrow {
-        font-size: 12px;
-        padding: 5px 14px;
+        font-size: 10px;
+        padding: 4px 12px;
     }
 
     input,
-    textarea {
-        padding: 12px 16px;
-        font-size: 14px;
-    }
-
-    label {
+    textarea,
+    select {
+        padding: 9px 12px;
         font-size: 13px;
     }
 
     .submit-btn {
-        font-size: 15px;
-        padding: 14px 32px;
+        font-size: 14px;
+        padding: 11px 20px;
     }
 }
