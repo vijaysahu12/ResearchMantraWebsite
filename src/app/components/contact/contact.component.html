@@ -11,58 +11,92 @@
         </div>
 
         <div class="contact-content">
-            <!-- Contact Card Container -->
             <div class="contact-card">
+                <div class="card-inner-header">
+                    <h3 class="card-title">Let's Talk</h3>
+                    <p class="card-subtitle">Are you ready to make something memorable? We're ready to help.</p>
+                </div>
+
                 <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
                     <div class="form-grid">
                         <!-- Full Name -->
                         <div class="form-group">
-                            <label for="fullName">Full Name *</label>
+                            <label for="fullName" class="sr-only">Full Name</label>
                             <input type="text" id="fullName" formControlName="fullName"
-                                placeholder="Enter your full name" (input)="onNameInput($event)"
+                                placeholder="Full Name *" (input)="onNameInput($event)"
                                 [class.error]="contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid" />
                             @if (contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid) {
                             <span class="error-text">Name is required</span>
                             }
                         </div>
 
-                        <!-- Occupation -->
+                        <!-- Email -->
                         <div class="form-group">
-                            <label for="occupation">Occupation *</label>
-                            <input type="text" id="occupation" formControlName="occupation"
-                                placeholder="E.g. Trader, Professional, Retired"
-                                [class.error]="contactForm.get('occupation')?.touched && contactForm.get('occupation')?.invalid" />
-                            @if (contactForm.get('occupation')?.touched && contactForm.get('occupation')?.invalid) {
-                            <span class="error-text">Occupation is required</span>
+                            <label for="email" class="sr-only">Email</label>
+                            <input type="email" id="email" formControlName="email" placeholder="Email *"
+                                [class.error]="contactForm.get('email')?.touched && contactForm.get('email')?.invalid" />
+                            @if (contactForm.get('email')?.touched && contactForm.get('email')?.invalid) {
+                            <span class="error-text">Valid email is required</span>
                             }
                         </div>
 
                         <!-- Phone Number -->
                         <div class="form-group">
-                            <label for="phoneNumber">Phone Number *</label>
+                            <label for="phoneNumber" class="sr-only">Phone Number</label>
                             <input type="tel" id="phoneNumber" formControlName="phoneNumber"
-                                placeholder="10-digit mobile number" maxlength="10" (input)="onMobileInput($event)"
+                                placeholder="Phone *" maxlength="10" (input)="onMobileInput($event)"
                                 [class.error]="contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid" />
                             @if (contactForm.get('phoneNumber')?.touched && contactForm.get('phoneNumber')?.invalid) {
                             <span class="error-text">Valid 10-digit number is required</span>
                             }
                         </div>
 
-                        <!-- Email -->
+                        <!-- Occupation -->
                         <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" formControlName="email" placeholder="yourname@example.com"
-                                [class.error]="contactForm.get('email')?.touched && contactForm.get('email')?.invalid" />
-                            @if (contactForm.get('email')?.touched && contactForm.get('email')?.invalid) {
-                            <span class="error-text">Valid email is required</span>
+                            <label for="occupation" class="sr-only">Occupation</label>
+                            <input type="text" id="occupation" formControlName="occupation"
+                                placeholder="Occupation *"
+                                [class.error]="contactForm.get('occupation')?.touched && contactForm.get('occupation')?.invalid" />
+                            @if (contactForm.get('occupation')?.touched && contactForm.get('occupation')?.invalid) {
+                            <span class="error-text">Occupation is required</span>
                             }
+                        </div>
+
+                        <!-- Website (UI only) -->
+                        <div class="form-group">
+                            <label for="website" class="sr-only">Website</label>
+                            <input type="url" id="website" formControlName="website"
+                                placeholder="Website" />
+                        </div>
+
+                        <!-- Company Name (UI only) -->
+                        <div class="form-group">
+                            <label for="companyName" class="sr-only">Company Name</label>
+                            <input type="text" id="companyName" formControlName="companyName"
+                                placeholder="Company Name" />
+                        </div>
+
+                        <!-- Product Interest (UI only, full width) -->
+                        <div class="form-group span-full">
+                            <label for="productInterest" class="sr-only">Product Interest</label>
+                            <div class="select-wrapper">
+                                <select id="productInterest" formControlName="productInterest">
+                                    <option value="">Product Interest *</option>
+                                    <option value="equity">Equity Advisory</option>
+                                    <option value="commodity">Commodity Advisory</option>
+                                    <option value="futures">Futures &amp; Options</option>
+                                    <option value="mutual_funds">Mutual Funds</option>
+                                    <option value="portfolio">Portfolio Management</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Message -->
-                    <div class="form-group full-width">
-                        <label for="message">Message *</label>
-                        <textarea id="message" formControlName="message" rows="5" placeholder="How can we help you?"
+                    <div class="form-group message-group">
+                        <label for="message" class="sr-only">Message</label>
+                        <textarea id="message" formControlName="message" rows="3" placeholder="Message *"
                             [class.error]="contactForm.get('message')?.touched && contactForm.get('message')?.invalid"></textarea>
                         @if (contactForm.get('message')?.touched && contactForm.get('message')?.invalid) {
                         <span class="error-text">Message is required</span>
@@ -70,13 +104,13 @@
                     </div>
 
                     <!-- Terms and Conditions -->
-                    <div class="terms-group full-width">
+                    <div class="terms-group">
                         <label class="checkbox-container">
                             <input type="checkbox" formControlName="acceptTerms">
                             <span class="checkmark"></span>
                             <span class="terms-text">
                                 I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank"
-                                    (click)="$event.stopPropagation()">Terms & Conditions</a>
+                                    (click)="$event.stopPropagation()">Terms &amp; Conditions</a>
                             </span>
                         </label>
                         @if (contactForm.get('acceptTerms')?.touched && contactForm.get('acceptTerms')?.invalid) {
@@ -84,12 +118,31 @@
                         }
                     </div>
 
+                    <!-- Opt-in Communications -->
+                    <div class="optin-group">
+                        <label class="checkbox-container optin-checkbox">
+                            <input type="checkbox" formControlName="optInCommunications">
+                            <span class="checkmark checkmark-top"></span>
+                            <span class="terms-text">
+                                I would like to receive communications from Research Mantra via SMS, Email, WhatsApp
+                                and Google RCS for my services offers and updates.
+                            </span>
+                        </label>
+                    </div>
+
                     <div class="form-actions">
                         <button type="submit" class="submit-btn" [disabled]="contactForm.invalid || isSubmitting()">
                             @if (isSubmitting()) {
                             <span>Sending...</span>
                             } @else {
-                            <span>Contact Us</span>
+                            <span>Send A Message</span>
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
                             }
                         </button>
                     </div>

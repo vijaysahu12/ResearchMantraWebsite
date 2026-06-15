@@ -762,22 +762,106 @@
     color: #0088cc;
 }
 
+.yt-tab {
+    color: #FF0000;
+}
+
+
+/* YouTube banner tab */
+.youtube-tab-content {
+    overflow: hidden;
+    border-radius: 0 0 24px 24px;
+    line-height: 0;
+}
+
+.youtube-banner-link {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 0 0 24px 24px;
+    overflow: hidden;
+}
+
+.youtube-banner-img {
+    width: 100%;
+    display: block;
+    border-radius: 0 0 24px 24px;
+    object-fit: cover;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.youtube-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 20px;
+    border-radius: 0 0 24px 24px;
+    transition: background 0.3s ease;
+}
+
+.youtube-watch-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #0F172A;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 100px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+
+.youtube-banner-link:hover .youtube-banner-img {
+    transform: scale(1.03);
+    filter: brightness(0.88);
+}
+
+.youtube-banner-link:hover .youtube-banner-overlay {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.youtube-banner-link:hover .youtube-watch-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* visually hidden but accessible to screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 .card-title-section {
-    padding: 24px 24px 0;
+    padding: 19px 26px 0;
     background: #FFFFFF;
 }
 
 .enquiry-card .card-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.2em;
     color: var(--accent-teal);
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 9px;
 }
 
 .card-headline {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 800;
     color: #0F172A;
     margin: 0;
@@ -786,33 +870,26 @@
 }
 
 .enquiry-body {
-    padding: 16px 24px 24px;
+    padding: 15px 26px 22px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 14px;
 }
 
 .enquiry-body .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
     text-align: left;
-}
-
-.enquiry-body label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #475569;
-    letter-spacing: 0.05em;
 }
 
 .enquiry-body input,
 .enquiry-body textarea {
     width: 100%;
-    padding: 14px 16px;
+    padding: 13px 16px;
     border: 2px solid #F1F5F9;
-    border-radius: 12px;
-    font-size: 15px;
+    border-radius: 10px;
+    font-size: 14px;
     font-family: inherit;
     transition: all 0.3s ease;
     background: #F8FAFC;
@@ -856,13 +933,13 @@
     border: none;
     background: transparent;
     border-radius: 0;
-    padding: 12px 16px;
+    padding: 10px 14px;
     flex: 1;
     min-width: 0;
 }
 
 .enquiry-card .terms-wrapper {
-    margin: 4px 0;
+    margin: 2px 0;
 }
 
 .enquiry-card .checkbox-container {
@@ -906,18 +983,18 @@
     background-color: #0F172A;
     color: #FFFFFF;
     border: none;
-    padding: 18px;
-    border-radius: 12px;
+    padding: 16px;
+    border-radius: 10px;
     font-weight: 800;
     font-size: 16px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 4px;
 }
 
 .submit-button:hover:not(:disabled) {
@@ -937,35 +1014,35 @@
 
 /* Telegram Tab UI */
 .telegram-tab-content {
-    padding: 32px 24px;
+    padding: 28px 26px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 24px;
+    gap: 22px;
     background: #FFFFFF;
 }
 
 .telegram-graphics {
     position: relative;
-    width: 140px;
-    height: 140px;
+    width: 134px;
+    height: 134px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
-    margin-top: 16px;
+    margin-bottom: 0;
+    margin-top: 8px;
 }
 
 .rm-logo-large {
-    width: 100px;
-    height: 100px;
+    width: 93px;
+    height: 93px;
     object-fit: contain;
     z-index: 2;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     background: white;
-    padding: 10px;
+    padding: 8px;
 }
 
 .pulse-ring {
@@ -973,8 +1050,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100px;
-    height: 100px;
+    width: 105px;
+    height: 105px;
     border-radius: 50%;
     background: rgba(0, 136, 204, 0.15);
     animation: ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -1002,24 +1079,24 @@
 }
 
 .telegram-text h3 {
-    font-size: 22px;
+    font-size: 23px;
     font-weight: 800;
     color: #0F172A;
-    margin: 0 0 12px 0;
+    margin: 0 0 10px 0;
 }
 
 .telegram-text p {
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.55;
     color: #475569;
     margin: 0;
 }
 
 .telegram-join-btn {
     background-color: #0088cc !important;
-    font-size: 18px !important;
-    padding: 20px !important;
-    box-shadow: 0 10px 20px -5px rgba(0, 136, 204, 0.4);
+    font-size: 16px !important;
+    padding: 18px !important;
+    box-shadow: 0 8px 16px -4px rgba(0, 136, 204, 0.4);
     text-decoration: none;
 }
 

@@ -59,7 +59,12 @@ export class ContactComponent {
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
             email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
             message: ['', [Validators.required]],
-            acceptTerms: [false, Validators.requiredTrue]
+            acceptTerms: [false, Validators.requiredTrue],
+            // UI-only fields — not sent to backend
+            website: [''],
+            companyName: [''],
+            productInterest: [''],
+            optInCommunications: [false]
         });
     }
 
