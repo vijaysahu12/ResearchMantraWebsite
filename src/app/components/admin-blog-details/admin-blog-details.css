@@ -188,7 +188,9 @@
 /* Ensure images from Quill/Database never exceed card width */
 .content-wrapper ::ng-deep img {
     max-width: 100% !important;
+    width: auto !important;
     height: auto !important;
+    max-height: 7rem !important;
     border-radius: 12px;
     margin: 20px 0;
 }

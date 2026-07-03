@@ -22,7 +22,7 @@
                         <!-- Full Name -->
                         <div class="form-group">
                             <label for="fullName" class="sr-only">Full Name</label>
-                            <input type="text" id="fullName" formControlName="fullName"
+                            <input type="text" id="fullName" formControlName="fullName" maxlength="50"
                                 placeholder="Full Name *" (input)="onNameInput($event)"
                                 [class.error]="contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid" />
                             @if (contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid) {
@@ -64,9 +64,9 @@
 
                         <!-- Investment Capital (Optional) -->
                         <div class="form-group">
-                            <label for="investmentCapital">Investment Capital <span class="optional-label">(Optional)</span></label>
+                            <!-- <label for="investmentCapital">Investment Capital <span class="optional-label">(Optional)</span></label> -->
                             <input type="text" id="investmentCapital" formControlName="investmentCapital"
-                                placeholder="E.g. ₹1L, ₹5L, ₹10L+" />
+                                placeholder="Investment Capital E.g. ₹1L, ₹5L, ₹10L+" />
                         </div>
                         <!-- Website (UI only) -->
                         <div class="form-group">
@@ -102,7 +102,7 @@
                     <!-- Message -->
                     <div class="form-group message-group">
                         <label for="message" class="sr-only">Message</label>
-                        <textarea id="message" formControlName="message" rows="3" placeholder="Message *"
+                        <textarea id="message" formControlName="message" rows="3" maxlength="300" placeholder="Message *"
                             [class.error]="contactForm.get('message')?.touched && contactForm.get('message')?.invalid"></textarea>
                         @if (contactForm.get('message')?.touched && contactForm.get('message')?.invalid) {
                         <span class="error-text">Message is required</span>

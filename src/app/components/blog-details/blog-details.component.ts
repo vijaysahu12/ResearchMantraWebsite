@@ -1,16 +1,17 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BlogService, BlogPost } from '../../services/blog.service';
 import { AdminBlogService } from '../../services/admin-blog.service';
 import { SeoService } from '../../services/seo.service';
 import { LeadService } from '../../services/lead.service';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
+import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 
 @Component({
     selector: 'app-blog-details',
-    imports: [CommonModule, RouterLink, ShareModalComponent],
+    imports: [CommonModule, RouterLink, ShareModalComponent, LeadCaptureModalComponent],
     template: `
         <!-- Loading state while checking hardcoded blogs and API -->
         @if (loading()) {
@@ -61,6 +62,7 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
                 </header>
 
                 <div class="content-layout">
+                    <div class="content-row">
                     <!-- Main Content -->
                     <main class="article-body">
                         <div class="content-card">
@@ -184,8 +186,91 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
                             </div>
                         </div>
                     </main>
+
+                    <!-- Calendar Sidebar -->
+                    <aside class="blog-sidebar" aria-label="Posts calendar">
+                        <div class="calendar-widget">
+                            <h3 class="cal-title">Posts By Month</h3>
+                            <div class="cal-header">
+                                <button type="button" class="cal-nav" (click)="prevMonth()" aria-label="Previous month">&#8249;</button>
+                                <span class="cal-month-label">{{ calendarMonthLabel() }}</span>
+                                <button type="button" class="cal-nav" (click)="nextMonth()" aria-label="Next month">&#8250;</button>
+                            </div>
+                            <div class="cal-weekdays">
+                                @for (d of weekDays; track d) {
+                                    <span>{{ d }}</span>
+                                }
+                            </div>
+                            <div class="cal-grid">
+                                @if (calendarLoading()) {
+                                    <div class="cal-loading" aria-live="polite">Loading…</div>
+                                } @else {
+                                    @for (cell of calendarCells(); track $index) {
+                                        <div class="cal-cell"
+                                             [class.has-post]="cell.hasPost"
+                                             [class.empty-cell]="!cell.day"
+                                             [class.clickable]="cell.hasPost"
+                                             (click)="onCalendarCellClick(cell)"
+                                             (keydown.enter)="onCalendarCellClick(cell)"
+                                             [attr.role]="cell.hasPost ? 'button' : null"
+                                             [attr.tabindex]="cell.hasPost ? 0 : null"
+                                             [attr.aria-label]="cell.hasPost ? 'View posts from day ' + cell.day : null">
+                                            @if (cell.day) {
+                                                <span class="cal-day-num">{{ cell.day }}</span>
+                                                @if (cell.hasPost) {
+                                                    <span class="cal-dot" aria-hidden="true"></span>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </aside>
+                    </div>
                 </div>
             </article>
+
+            <!-- ===== You May Also Like ===== -->
+            @if (relatedBlogs().length > 0) {
+                <section class="related-section" aria-label="You may also like">
+                    <div class="related-inner">
+                        <h2 class="related-heading">You May Also Like</h2>
+                        <div class="related-grid">
+                            @for (rb of relatedBlogs(); track rb.id) {
+                                <article
+                                    class="rc-card"
+                                    (click)="navigateToRelated(rb.slug)"
+                                    (keydown.enter)="navigateToRelated(rb.slug)"
+                                    tabindex="0"
+                                    role="button"
+                                    [attr.aria-label]="'Read: ' + rb.title"
+                                >
+                                    <div class="rc-img-wrap">
+                                        <img [src]="rb.image || 'assets/default-blog.jpg'" [alt]="rb.imageAlt || rb.title" loading="lazy" />
+                                        @if (rb.category) {
+                                            <span class="rc-cat">{{ rb.category }}</span>
+                                        }
+                                    </div>
+                                    <div class="rc-body">
+                                        <span class="rc-date">{{ rb.date }}</span>
+                                        <h3 class="rc-title">{{ rb.title }}</h3>
+                                        <p class="rc-excerpt">{{ rb.excerpt }}</p>
+                                        <span class="rc-read-more">
+                                            Read More
+                                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                <polyline points="12 5 19 12 12 19"></polyline>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </article>
+                            }
+                        </div>
+                    </div>
+                </section>
+            }
+
         } @else {
             <!-- 404: slug not found in hardcoded blogs OR API -->
             <div class="loading-state" style="padding: 100px; text-align: center;">
@@ -201,6 +286,13 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
                 [shareTitle]="blog()?.title ?? ''"
                 (closed)="closeShareModal()"
             ></app-share-modal>
+        }
+
+        @if (showLeadModal()) {
+            <app-lead-capture-modal
+                (submitted)="onLeadSubmitted($event)"
+                (closed)="onLeadModalClosed()"
+            ></app-lead-capture-modal>
         }
     `,
     styles: [`
@@ -380,7 +472,9 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
 /* Ensure images from Quill/Database never exceed card width */
 .content-wrapper ::ng-deep img {
     max-width: 100% !important;
+    width: auto !important;
     height: auto !important;
+    max-height: 7rem !important;
     border-radius: 12px;
     margin: 20px 0;
 }
@@ -741,11 +835,293 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
             margin-bottom: 16px;
             opacity: 0.5;
         }
+
+        /* ===== Two-column layout ===== */
+        .content-layout {
+            max-width: 1200px;
+        }
+
+        .content-row {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        @media (max-width: 960px) {
+            .content-row {
+                grid-template-columns: 1fr;
+            }
+            .blog-sidebar {
+                position: static;
+            }
+        }
+
+        /* ===== Sidebar ===== */
+        .blog-sidebar {
+            position: sticky;
+            top: 100px;
+        }
+
+        /* ===== Calendar Widget ===== */
+        .calendar-widget {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e2e8f0;
+        }
+
+        .cal-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0 0 14px;
+        }
+
+        .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .cal-nav {
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 18px;
+            line-height: 1;
+            transition: all 0.2s;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .cal-nav:hover {
+            background: #f1f5f9;
+            border-color: #1e3a8a;
+            color: #1e3a8a;
+        }
+
+        .cal-month-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .cal-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 4px;
+        }
+
+        .cal-weekdays span {
+            text-align: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            padding: 4px 0;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .cal-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            padding: 4px 0 3px;
+            min-height: 30px;
+        }
+
+        .cal-cell.has-post {
+            background: #f0fdf4;
+        }
+
+        .cal-day-num {
+            font-size: 11px;
+            font-weight: 500;
+            color: #374151;
+            line-height: 1;
+        }
+
+        .cal-cell.has-post .cal-day-num {
+            color: #15803d;
+            font-weight: 700;
+        }
+
+        .cal-dot {
+            display: block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #16a34a;
+            margin-top: 2px;
+        }
+
+        .cal-loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 16px 0;
+        }
+
+        .cal-cell.clickable {
+            cursor: pointer;
+        }
+
+        .cal-cell.clickable:hover {
+            background: #bbf7d0;
+        }
+
+        /* ── You May Also Like ─────────────────────────── */
+        .related-section {
+            background: #f3f4f6;
+            padding: 56px 20px 64px;
+        }
+
+        .related-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .related-heading {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 32px;
+            text-align: center;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .rc-card {
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            cursor: pointer;
+            transition: transform 0.18s, box-shadow 0.18s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .rc-img-wrap {
+            position: relative;
+            height: 170px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .rc-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+
+        .rc-card:hover .rc-img-wrap img {
+            transform: scale(1.04);
+        }
+
+        .rc-cat {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 3px 10px;
+            background: #16a34a;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .rc-body {
+            padding: 16px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .rc-date {
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .rc-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.4;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .rc-excerpt {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .rc-read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #16a34a;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 900px) {
+            .related-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 540px) {
+            .related-grid { grid-template-columns: 1fr; }
+            .related-heading { font-size: 20px; }
+        }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlogDetailsComponent implements OnInit {
     private route = inject(ActivatedRoute);
+    private router = inject(Router);
     private blogService = inject(BlogService);
     private adminBlogService = inject(AdminBlogService);
     private sanitizer = inject(DomSanitizer);
@@ -784,12 +1160,100 @@ export class BlogDetailsComponent implements OnInit {
     /** Name captured via lead modal — shown in comment form and sent with comment */
     visitorName = signal<string>(this.leadService.getLeadName());
 
+    /** Lead-capture modal shown when a visitor wants to comment but we have no details yet */
+    showLeadModal = signal<boolean>(false);
+    /** Comment text held while the visitor fills in the lead modal, posted right after */
+    private pendingCommentText = signal<string>('');
+
     /** Share modal */
     showShareModal = signal(false);
     blogShareUrl = computed(() => `https://researchmantra.in/${this.blog()?.slug ?? ''}`);
 
     openShareModal() { this.showShareModal.set(true); }
     closeShareModal() { this.showShareModal.set(false); }
+
+    /** Related blogs ("You May Also Like") */
+    relatedBlogs = signal<any[]>([]);
+
+    private loadRelatedBlogs(slug: string) {
+        if (!this.isBrowser) return;
+        this.adminBlogService.getRelatedBlogs(slug).subscribe({
+            next: (res: any) => { this.relatedBlogs.set(res?.data ?? []); },
+            error: () => { this.relatedBlogs.set([]); }
+        });
+    }
+
+    navigateToRelated(slug: string) {
+        this.router.navigate(['/', slug]);
+        if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Calendar
+    calendarYear = signal<number>(0);
+    calendarMonth = signal<number>(0);
+    calendarLoading = signal<boolean>(false);
+    postDays = signal<number[]>([]);
+    readonly weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    readonly monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    calendarMonthLabel = computed(() => {
+        const m = this.calendarMonth();
+        const y = this.calendarYear();
+        return m ? `${this.monthNames[m - 1]} ${y}` : '';
+    });
+
+    calendarCells = computed(() => {
+        const year = this.calendarYear();
+        const month = this.calendarMonth();
+        if (!year || !month) return [];
+        const days = this.postDays();
+        const firstDay = new Date(year, month - 1, 1).getDay();
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const cells: Array<{ day: number | null; hasPost: boolean }> = [];
+        for (let i = 0; i < firstDay; i++) cells.push({ day: null, hasPost: false });
+        for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, hasPost: days.includes(d) });
+        return cells;
+    });
+
+    prevMonth() {
+        const m = this.calendarMonth();
+        const y = this.calendarYear();
+        if (m === 1) { this.calendarMonth.set(12); this.calendarYear.set(y - 1); }
+        else { this.calendarMonth.set(m - 1); }
+        this.loadCalendarDates();
+    }
+
+    nextMonth() {
+        const m = this.calendarMonth();
+        const y = this.calendarYear();
+        if (m === 12) { this.calendarMonth.set(1); this.calendarYear.set(y + 1); }
+        else { this.calendarMonth.set(m + 1); }
+        this.loadCalendarDates();
+    }
+
+    private loadCalendarDates() {
+        if (!this.isBrowser) return;
+        this.calendarLoading.set(true);
+        this.adminBlogService.getCalendarDates(this.calendarYear(), this.calendarMonth()).subscribe({
+            next: (res: any) => {
+                this.postDays.set(res?.data?.days ?? []);
+                this.calendarLoading.set(false);
+            },
+            error: () => {
+                this.postDays.set([]);
+                this.calendarLoading.set(false);
+            }
+        });
+    }
+
+    onCalendarCellClick(cell: { day: number | null; hasPost: boolean }) {
+        if (!cell.hasPost || !cell.day) return;
+        const y = this.calendarYear();
+        const m = this.calendarMonth();
+        const mm = String(m).padStart(2, '0');
+        const dd = String(cell.day).padStart(2, '0');
+        this.router.navigate(['/stock-market-analysis-and-nifty-updates'], { queryParams: { date: `${y}-${mm}-${dd}` } });
+    }
 
     sanitizedContent = computed(() => {
         const content = this.blog()?.content;
@@ -811,7 +1275,9 @@ export class BlogDetailsComponent implements OnInit {
             if (foundBlog) {
                 this.blog.set(foundBlog);
                 this.updateSeoTags(foundBlog);
+                this.loadRelatedBlogs(slugValue);
                 this.loading.set(false);
+                this.ensureVisitorIdentity();
                 if (this.isBrowser) window.scrollTo(0, 0);
                 return;
             }
@@ -845,6 +1311,7 @@ export class BlogDetailsComponent implements OnInit {
 
                         this.blog.set(mappedBlog);
                         this.updateSeoTags(mappedBlog);
+                        this.loadRelatedBlogs(slugValue);
 
                         // Fetch comments and likes for dynamic blogs
                         this.commentsCount.set(apiData.commentsCount || 0);
@@ -856,6 +1323,9 @@ export class BlogDetailsComponent implements OnInit {
                         if (apiData.enableComments) {
                             this.loadComments(apiData.id);
                         }
+
+                        // Check cookie for the visitor's name; if missing, prompt for it.
+                        this.ensureVisitorIdentity();
                     }
                     this.loading.set(false);
                     if (this.isBrowser) window.scrollTo(0, 0);
@@ -866,6 +1336,12 @@ export class BlogDetailsComponent implements OnInit {
                 }
             });
         });
+
+        // Init calendar with current month
+        const now = new Date();
+        this.calendarYear.set(now.getFullYear());
+        this.calendarMonth.set(now.getMonth() + 1);
+        this.loadCalendarDates();
     }
 
     private loadComments(blogId: any) {
@@ -886,7 +1362,61 @@ export class BlogDetailsComponent implements OnInit {
         }
     }
 
+    /**
+     * On the detail page: read the visitor's name from the cookie (falling back to
+     * localStorage). If we already have it, use it; otherwise open the lead-capture
+     * popup so the name + number are ready when they comment.
+     */
+    private ensureVisitorIdentity() {
+        if (!this.isBrowser) return;
+
+        const storedName = this.leadService.getLeadName();
+        if (storedName) {
+            // Found in cookie — refresh the in-memory name, no popup needed.
+            this.visitorName.set(storedName);
+            return;
+        }
+
+        // No details saved yet — prompt for them (only when the blog allows comments).
+        if (this.blog()?.enableComments) {
+            this.showLeadModal.set(true);
+        }
+    }
+
     submitComment(text: string) {
+        const currentBlog = this.blog();
+        if (!text.trim() || !currentBlog?.id) return;
+
+        // We need the visitor's name before posting. If we don't have it yet,
+        // hold the comment and open the lead-capture modal first.
+        if (this.isBrowser && !this.leadService.hasLeadData()) {
+            this.pendingCommentText.set(text);
+            this.showLeadModal.set(true);
+            return;
+        }
+
+        this.postComment(text);
+    }
+
+    /** Called by the lead modal once the visitor submits their name + mobile. */
+    onLeadSubmitted(data: { name: string; mobile: string }) {
+        // The modal already persists the details via LeadService.saveLeadData().
+        this.visitorName.set(data.name);
+        this.showLeadModal.set(false);
+
+        const pending = this.pendingCommentText();
+        if (pending.trim()) {
+            this.pendingCommentText.set('');
+            this.postComment(pending);
+        }
+    }
+
+    onLeadModalClosed() {
+        this.showLeadModal.set(false);
+        this.pendingCommentText.set('');
+    }
+
+    private postComment(text: string) {
         const currentBlog = this.blog();
         if (!text.trim() || !currentBlog?.id) return;
 
@@ -896,6 +1426,7 @@ export class BlogDetailsComponent implements OnInit {
             comment: text,
             parentCommentId: null,
             authorName: this.visitorName() || 'Anonymous',
+            mobileNumber: this.leadService.getLeadMobile() || '',
         };
 
         this.adminBlogService.addComment(request).subscribe({

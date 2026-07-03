@@ -312,6 +312,19 @@
     color: #D1D5DB;
 }
 
+.blog-author {
+    color: #374151;
+    font-weight: 600;
+}
+
+.blog-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #6B7280;
+    font-size: 13px;
+}
+
 .blog-title {
     font-size: 24px;
     font-weight: 700;
@@ -895,10 +908,16 @@ transform:scale(1.2);
   transform: scale(1.05);
 }
 
-.cat-badge {
+.cat-badges {
   position: absolute;
   top: 14px;
   left: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cat-badge {
   background: rgba(15, 23, 42, 0.85);
   color: #FACC15;
   font-size: 11px;
@@ -908,6 +927,7 @@ transform:scale(1.2);
   padding: 4px 12px;
   border-radius: 100px;
   backdrop-filter: blur(4px);
+  white-space: nowrap;
 }
 
 /* Image navigation */
@@ -970,13 +990,31 @@ transform:scale(1.2);
   flex: 1;
 }
 
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
 .card-author {
   font-size: 11px;
   color: #9CA3AF;
   font-weight: 500;
-  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.card-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #9CA3AF;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .card-title {
@@ -1379,4 +1417,339 @@ transform:scale(1.2);
   .top-cta-text span {
     font-size: 12px;
   }
+}
+
+/* ============================================================
+   DATE-FILTER BANNER
+============================================================ */
+.date-filter-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.date-filter-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #166534;
+  font-size: 14px;
+}
+
+.date-filter-info svg { flex-shrink: 0; }
+
+.clear-date-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: #fff;
+  border: 1px solid #16a34a;
+  color: #16a34a;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.clear-date-btn:hover {
+  background: #16a34a;
+  color: #fff;
+}
+
+/* ============================================================
+   DATE-VIEW TWO-COLUMN LAYOUT
+============================================================ */
+.date-view-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 28px;
+  align-items: start;
+}
+
+/* ---- Main (left) ---- */
+.date-view-main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ---- Skeleton ---- */
+.dv-skeleton {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.dv-sk-img {
+  height: 280px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.dv-sk-body { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.dv-sk-line { height: 14px; border-radius: 4px; background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.dv-sk-short { width: 40%; }
+.dv-sk-long  { width: 90%; }
+.dv-sk-med   { width: 70%; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ---- Empty state ---- */
+.dv-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 48px 24px;
+  color: #6b7280;
+}
+.dv-empty h3 { font-size: 18px; color: #374151; margin: 0; }
+.dv-empty p  { margin: 0; font-size: 14px; }
+
+/* ---- Article ---- */
+.dv-article {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.dv-counter {
+  display: inline-block;
+  margin: 16px 20px 0;
+  padding: 3px 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.dv-hero-img {
+  position: relative;
+  width: 100%;
+  max-height: 420px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.dv-hero-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dv-cat-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 12px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+}
+
+.dv-content-card {
+  padding: 28px 32px 36px;
+}
+
+.dv-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.dv-author {
+  font-weight: 600;
+  color: #374151;
+}
+
+.dv-date {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dv-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  margin: 0 0 20px;
+}
+
+.dv-html-content {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.dv-html-content h1,
+.dv-html-content h2,
+.dv-html-content h3 {
+  color: #0f172a;
+  font-weight: 700;
+  margin: 24px 0 10px;
+}
+
+.dv-html-content p     { margin: 0 0 14px; }
+.dv-html-content ul,
+.dv-html-content ol    { padding-left: 22px; margin: 0 0 14px; }
+.dv-html-content li    { margin-bottom: 6px; }
+.dv-html-content img   { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+.dv-html-content a     { color: #16a34a; text-decoration: underline; }
+.dv-html-content blockquote {
+  border-left: 3px solid #16a34a;
+  padding-left: 16px;
+  margin: 16px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ============================================================
+   DATE-VIEW CALENDAR SIDEBAR
+============================================================ */
+.date-view-sidebar {
+  position: sticky;
+  top: 24px;
+}
+
+.dv-cal-widget {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 20px;
+}
+
+.dv-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dv-cal-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.dv-cal-nav {
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.dv-cal-nav:hover { background: #f3f4f6; }
+
+.dv-cal-loading {
+  text-align: center;
+  padding: 20px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.dv-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.dv-cal-wd {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  padding: 4px 0 8px;
+  text-transform: uppercase;
+}
+
+.dv-cal-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #374151;
+  transition: background 0.15s;
+}
+
+.dv-cal-cell.empty { background: transparent; }
+
+.dv-cal-cell.has-post {
+  cursor: pointer;
+  font-weight: 600;
+  color: #15803d;
+}
+.dv-cal-cell.has-post:hover { background: #dcfce7; }
+
+.dv-cal-cell.active {
+  background: #16a34a;
+  color: #fff !important;
+  font-weight: 700;
+}
+.dv-cal-cell.active .dv-cal-dot { background: #fff; }
+
+.dv-cal-dot {
+  position: absolute;
+  bottom: 3px;
+  width: 5px;
+  height: 5px;
+  background: #16a34a;
+  border-radius: 50%;
+}
+
+/* ============================================================
+   DATE-VIEW RESPONSIVE
+============================================================ */
+@media (max-width: 860px) {
+  .date-view-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .date-view-sidebar {
+    position: static;
+    order: -1;
+  }
+
+  .dv-cal-widget {
+    padding: 16px;
+  }
+
+  .dv-hero-img { max-height: 260px; }
+  .dv-content-card { padding: 20px 18px 28px; }
+  .dv-title { font-size: 20px; }
 }

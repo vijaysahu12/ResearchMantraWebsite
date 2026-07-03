@@ -1,4 +1,16 @@
 <section id="testimonials" class="testimonials-section">
+
+    <!-- Decorative background -->
+    <div class="tst-bg" aria-hidden="true">
+        <span class="tst-orb tst-orb--one"></span>
+        <span class="tst-orb tst-orb--two"></span>
+        <span class="tst-star tst-star--1"></span>
+        <span class="tst-star tst-star--2"></span>
+        <span class="tst-star tst-star--3"></span>
+        <span class="tst-star tst-star--4"></span>
+        <span class="tst-star tst-star--5"></span>
+    </div>
+
     <div class="testimonials-container">
         <!-- Header -->
         <div class="section-header">
@@ -10,7 +22,7 @@
                 </svg>
                 Testimonials
             </div>
-            <h2 class="main-heading">Trusted by <span class="highlight">1.72K+</span> Traders</h2>
+            <h2 class="main-heading">Trusted by <span class="highlight">12K+</span> Traders</h2>
             <p class="sub-heading">
                 Don't just take our word for it. Here's what our community has to say about their journey with Research
                 Mantra.
@@ -18,7 +30,7 @@
         </div>
 
         <!-- Grid -->
-        <div class="testimonials-grid">
+        <div class="testimonials-grid" #grid>
             @for (item of testimonials(); track item.id) {
             <div class="testimonial-card">
                 <!-- Quote Icon -->

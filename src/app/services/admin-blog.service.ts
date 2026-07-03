@@ -143,4 +143,16 @@ getRecentPosts(count = 6): Observable<any> {
 toggleLike(blogId: string, userId: string): Observable<any> {
   return this.http.post(`${this.apiUrl}/${blogId}/like`, { userId });
 }
+
+getCalendarDates(year: number, month: number): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/calendar-dates?year=${year}&month=${month}`);
+}
+
+getBlogsByDate(date: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/by-date?date=${date}`);
+}
+
+getRelatedBlogs(slug: string, count = 4): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/related?slug=${encodeURIComponent(slug)}&count=${count}`);
+}
 }

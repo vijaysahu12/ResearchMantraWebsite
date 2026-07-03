@@ -84,8 +84,6 @@ export class TradeSetupsComponent implements AfterViewInit, OnDestroy {
     private setupObserver() {
         if (typeof window === 'undefined') return;
 
-        console.log('DEBUG: Initializing scroll observer...');
-
         const options = {
             root: null, // use viewport
             rootMargin: '0px',
@@ -93,24 +91,13 @@ export class TradeSetupsComponent implements AfterViewInit, OnDestroy {
         };
 
         this.observer = new IntersectionObserver((entries) => {
-            // Log whenever the observer detects ANY movement
-            console.log('DEBUG: Observer callback triggered. Count:', entries.length);
-
             entries.forEach(entry => {
-                const indexAttr = entry.target.getAttribute('data-index');
-                console.log(`DEBUG: Section ${indexAttr} | Intersecting: ${entry.isIntersecting} | Ratio: ${entry.intersectionRatio.toFixed(2)}`);
-
                 if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
-                    const newIndex = Number(indexAttr);
+                    const newIndex = Number(entry.target.getAttribute('data-index'));
                     if (this.activeIndex() !== newIndex) {
-                        console.warn(`DEBUG: Switching to index ${newIndex}`);
-
-                        // Signal updates are fine inside or outside zone, 
-                        // but we need to ensure change detection runs for the template
                         this.zone.run(() => {
                             this.activeIndex.set(newIndex);
                             this.cdr.markForCheck();
-                            this.cdr.detectChanges();
                         });
                     }
                 }
@@ -118,12 +105,6 @@ export class TradeSetupsComponent implements AfterViewInit, OnDestroy {
         }, options);
 
         const targets = this.el.nativeElement.querySelectorAll('.feature-block');
-        console.log('DEBUG: Target blocks identified:', targets.length);
-
-        if (targets.length === 0) {
-            console.error('DEBUG ERROR: No .feature-block elements found in DOM!');
-        }
-
         targets.forEach((target: HTMLElement) => {
             this.observer?.observe(target);
         });

@@ -1,4 +1,71 @@
 <section id="home" class="hero-section">
+
+    <!-- Animated decorative background -->
+    <div class="hero-bg" aria-hidden="true">
+        <span class="hero-orb hero-orb--a"></span>
+        <span class="hero-orb hero-orb--b"></span>
+        <span class="hero-orb hero-orb--c"></span>
+        <svg class="hero-waves" viewBox="0 0 1440 320" preserveAspectRatio="none" fill="none">
+            <path class="wave wave--1"
+                d="M-720 160 Q-540 100 -360 160 T0 160 T360 160 T720 160 T1080 160 T1440 160 T1800 160 T2160 160 T2520 160 T2880 160" />
+            <path class="wave wave--2"
+                d="M-720 160 Q-540 100 -360 160 T0 160 T360 160 T720 160 T1080 160 T1440 160 T1800 160 T2160 160 T2520 160 T2880 160" />
+            <path class="wave wave--3"
+                d="M-720 160 Q-540 100 -360 160 T0 160 T360 160 T720 160 T1080 160 T1440 160 T1800 160 T2160 160 T2520 160 T2880 160" />
+        </svg>
+        <span class="hero-spark hero-spark--1"></span>
+        <span class="hero-spark hero-spark--2"></span>
+        <span class="hero-spark hero-spark--3"></span>
+        <span class="hero-spark hero-spark--4"></span>
+    </div>
+
+    <!-- Full-width limited-offer banner (centered) -->
+    <div class="offer-card" #offerCard>
+        <div class="confetti-layer" [class.burst]="showConfetti()" aria-hidden="true">
+            @for (p of confettiPieces; track $index) {
+                <span class="confetti-piece"
+                    [style.left.%]="p.left"
+                    [style.background]="p.color"
+                    [style.animation-duration.ms]="p.duration"
+                    [style.animation-delay.ms]="p.delay"
+                    [style.--x-end]="p.xEnd"
+                    [style.--rot]="p.rot"></span>
+            }
+        </div>
+
+        <div class="offer-head">
+            <span class="offer-badge">
+                <span class="offer-flame" aria-hidden="true">🔥</span> Limited Offer
+            </span>
+            <div class="offer-timer" role="timer" aria-label="Offer ends in">
+                <span class="offer-timer-label">Ends in</span>
+                <span class="cd-unit">{{ countdown().d }}<i>d</i></span>
+                <span class="cd-sep">:</span>
+                <span class="cd-unit">{{ countdown().h }}<i>h</i></span>
+                <span class="cd-sep">:</span>
+                <span class="cd-unit">{{ countdown().m }}<i>m</i></span>
+                <span class="cd-sep">:</span>
+                <span class="cd-unit">{{ countdown().s }}<i>s</i></span>
+            </div>
+        </div>
+
+        <div class="offer-body">
+            <div class="offer-value">
+                <span class="offer-free">Exclusive Free Trial</span>
+                <span class="offer-save">Grab Now</span>
+            </div>
+            <a routerLink="/mobile" class="offer-install" (mouseenter)="burstConfetti()"
+                aria-label="Install the app — exclusive free trial, limited offer">
+                Install Now
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </div>
+    </div>
+
     <div class="hero-container">
         <!-- Left Column: Content -->
         <div class="hero-content">
@@ -72,7 +139,7 @@
 
         <!-- Right Column: Enquiry Form -->
         <div class="hero-visual" id="enquiry">
-            <div class="enquiry-card">
+            <div class="enquiry-card" (mouseenter)="onCardMouseEnter()" (mouseleave)="onCardMouseLeave()">
                 <div class="tabs-header">
                     <button type="button" class="tab-btn telegram-tab" [class.active]="activeFormTab() === 'telegram'"
                         (click)="selectTab('telegram')">
@@ -119,10 +186,6 @@
                 }
 
                 @if (activeFormTab() === 'enquiry') {
-                <div class="card-title-section fade-in">
-                    <span class="card-title">Enquiry Form</span>
-                    <h2 class="card-headline">Request a Free Demo</h2>
-                </div>
                 <form [formGroup]="enquiryForm" (ngSubmit)="onEnquirySubmit()" class="enquiry-body fade-in">
                     <div class="form-group">
                         <label for="name" class="sr-only">Full Name</label>
@@ -140,20 +203,20 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="enquiry-email">Email Address*</label>
+                        <label for="enquiry-email" class="sr-only">Email Address</label>
                         <input type="email" id="enquiry-email" formControlName="email"
-                            placeholder="example@email.com">
+                            placeholder="Email Address *">
                     </div>
 
                     <div class="form-group">
-                        <label for="enquiry-investment">Investment Capital <span style="font-size:12px;font-weight:400;color:#94a3b8;">(Optional)</span></label>
+                        <label for="enquiry-investment" class="sr-only">Investment Capital</label>
                         <input type="text" id="enquiry-investment" formControlName="investmentCapital"
-                            placeholder="E.g. ₹1L, ₹5L, ₹10L+">
+                            placeholder="Investment Capital – e.g. ₹1L, ₹5L, ₹10L+">
                     </div>
 
                     <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" formControlName="message" rows="3" minlength="1" maxlength="300"
+                        <label for="message" class="sr-only">Message</label>
+                        <textarea id="message" formControlName="message" rows="2" minlength="1" maxlength="300"
                             placeholder="How can we help you?"></textarea>
                     </div>
 
@@ -227,7 +290,7 @@
                 <div class="modal-header">
                     <div class="modal-lock-icon" aria-hidden="true">🔓</div>
                     <h2 id="strategy-modal-title" class="modal-title">Unlock Sudarshan Strategy</h2>
-                    <p class="modal-subtitle">Get 3 free trade ideas with entry, target &amp; stop loss.</p>
+                    <!-- <p class="modal-subtitle">Get 3 free trade ideas with entry, target &amp; stop loss.</p> -->
                 </div>
 
                 <!-- Step 1: Mobile -->
@@ -248,9 +311,13 @@
                 <!-- Step 2: Name + Investment Capital -->
                 @if (currentStep() === 'name') {
                     <form [formGroup]="nameForm" (ngSubmit)="onNameSubmit()" class="modal-form fade-in">
+                        <div class="modal-edit-number">
+                            <span class="modal-edit-number-text">+91 {{ mobileNumber() }}</span>
+                            <button type="button" class="modal-back-link" (click)="goBackToMobile()">Edit</button>
+                        </div>
                         <div class="modal-input-group" [class.field-error]="nameForm.get('name')?.touched && nameForm.get('name')?.invalid">
                             <input type="text" placeholder="Your full name" formControlName="name"
-                                (input)="onNameInput($event)" aria-label="Name" />
+                                maxlength="50" (input)="onNameInput($event)" aria-label="Name" />
                         </div>
                         @if (nameForm.get('name')?.touched && nameForm.get('name')?.invalid) {
                             <span class="modal-field-error">Name must be at least 3 characters.</span>
@@ -290,6 +357,7 @@
                                 </div>
                                 <div class="otp-actions">
                                     <span class="timer">Expires in {{ formatTime(timer()) }}</span>
+                                    <button type="button" class="modal-back-link" (click)="goBackToMobile()">Change number</button>
                                 </div>
                                 <button type="submit" class="modal-submit-btn" [disabled]="otpForm.invalid || isLoading()">
                                     @if (isLoading()) { <span class="spinner"></span> Verifying... } @else { Verify OTP → }

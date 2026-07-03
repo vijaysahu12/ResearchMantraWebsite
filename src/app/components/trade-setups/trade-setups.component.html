@@ -1,12 +1,69 @@
 <section class="feature-section">
+
+    <!-- Decorative background -->
+    <div class="bg-decor" aria-hidden="true">
+        <span class="orb orb--one"></span>
+        <span class="orb orb--two"></span>
+        <span class="orb orb--three"></span>
+        <span class="grid-overlay"></span>
+        <span class="beam beam--one"></span>
+        <span class="beam beam--two"></span>
+
+        <!-- Self-drawing upward trend line -->
+        <svg class="trend-line" viewBox="0 0 1440 400" preserveAspectRatio="none" fill="none">
+            <path class="trend-path"
+                d="M0 340 L180 300 L320 320 L480 230 L640 260 L820 160 L1000 190 L1180 90 L1440 40" />
+            <path class="trend-area"
+                d="M0 340 L180 300 L320 320 L480 230 L640 260 L820 160 L1000 190 L1180 90 L1440 40 L1440 400 L0 400 Z" />
+        </svg>
+
+        <!-- Floating candlesticks -->
+        <span class="candle candle--1"><i class="wick"></i><i class="body up"></i></span>
+        <span class="candle candle--2"><i class="wick"></i><i class="body down"></i></span>
+        <span class="candle candle--3"><i class="wick"></i><i class="body up"></i></span>
+        <span class="candle candle--4"><i class="wick"></i><i class="body up"></i></span>
+
+        <span class="particle particle--1"></span>
+        <span class="particle particle--2"></span>
+        <span class="particle particle--3"></span>
+        <span class="particle particle--4"></span>
+        <span class="particle particle--5"></span>
+    </div>
+
+    <!-- Section header -->
+    <div class="feature-header">
+        <span class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            The Research Mantra App
+        </span>
+        <h2 class="feature-heading">One app for every kind of trader</h2>
+        <p class="feature-subheading">
+            Scroll to explore how research, live trades and smart tools come together
+            in one seamless mobile experience.
+        </p>
+    </div>
+
     <div class="feature-container">
 
         <!-- LEFT SIDE (STICKY PHONE) -->
         <div class="phone-wrapper">
-            <div class="image-stack">
+            <div class="phone-stage">
+                <span class="phone-spotlight" aria-hidden="true"></span>
+                <span class="phone-glow" aria-hidden="true"></span>
+                <span class="phone-ring" aria-hidden="true"></span>
+                <span class="phone-ring phone-ring--inner" aria-hidden="true"></span>
+                <div class="image-stack">
+                    @for (section of sections(); track section.id; let i = $index) {
+                    <img [src]="section.image" [class.active]="i === activeIndex()" alt="Feature screenshot"
+                        class="phone-image">
+                    }
+                </div>
+            </div>
+
+            <!-- Progress rail -->
+            <div class="progress-rail" aria-hidden="true">
                 @for (section of sections(); track section.id; let i = $index) {
-                <img [src]="section.image" [class.active]="i === activeIndex()" alt="Feature screenshot"
-                    class="phone-image">
+                <span class="progress-dot" [class.active]="i === activeIndex()"></span>
                 }
             </div>
         </div>
@@ -14,18 +71,24 @@
         <!-- RIGHT SIDE (SCROLL CONTENT) -->
         <div class="content-wrapper">
             @for (section of sections(); track section.id; let i = $index) {
-            <div class="feature-block" [attr.data-index]="i">
+            <div class="feature-block" [class.is-active]="i === activeIndex()" [attr.data-index]="i">
+
                 <!-- Mobile Visual (Visible only on tablets/mobile) -->
                 <div class="mobile-visual">
                     <img [src]="section.image" alt="Feature screenshot" class="mobile-feature-img">
                 </div>
 
-                <h2 class="section-title">{{ section.title }}</h2>
+                <div class="block-head">
+                    <span class="block-index">0{{ i + 1 }}</span>
+                    <span class="block-line"></span>
+                </div>
+
+                <h3 class="section-title">{{ section.title }}</h3>
                 <ul class="feature-list">
                     @for (item of section.items; track item) {
                     <li>
                         <span class="bullet-icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
                                 stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 18 15 12 9 6"></polyline>
                             </svg>

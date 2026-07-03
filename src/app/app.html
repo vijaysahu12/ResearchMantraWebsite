@@ -1,3 +1,16 @@
+<a routerLink="/mobile" class="top-promo-bar" aria-label="Grab your exclusive free trial on the Research Mantra app — install now">
+    <span class="tpb-flame" aria-hidden="true">🔥</span>
+    <span class="tpb-text">Grab your <strong>Exclusive Free Trial</strong> on the Research Mantra App</span>
+    <span class="tpb-cta">
+        Install Now
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+    </span>
+</a>
+
 <app-header></app-header>
 
 <router-outlet />
@@ -6,4 +19,71 @@
 
 <app-enquiry-form></app-enquiry-form>
 <app-floating-social></app-floating-social>
+<app-install-bottom-bar></app-install-bottom-bar>
 <app-accessibility></app-accessibility>
+
+@if (isPromoOpen()) {
+<div class="promo-overlay" (click)="closePromo()" role="dialog" aria-modal="true" aria-labelledby="promo-title">
+    <div class="promo-content" (click)="$event.stopPropagation()">
+        <button class="promo-close" (click)="closePromo()" aria-label="Close">&times;</button>
+
+        <div class="promo-body">
+            <div class="promo-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5" stroke-linecap="round"></line>
+                </svg>
+            </div>
+
+            <h3 id="promo-title">Download the Research Mantra App</h3>
+            <p>Get <strong>Performance Reports</strong>, live trade alerts, and many more exciting features right on your phone.</p>
+
+            <div class="promo-qr-row">
+                <div class="promo-qr-item">
+                    <div class="promo-qr-frame">
+                        <img ngSrc="/assets/rm_playstore_qr.jpg" width="130" height="130" alt="Scan to download on Android" priority />
+                    </div>
+                    <div class="promo-qr-platform">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                            <path d="M17.523 15.341L19.872 11.1a.514.514 0 0 0-.453-.755H4.58a.514.514 0 0 0-.453.755l2.35 4.241A2.056 2.056 0 0 0 8.28 16.45h7.44a2.056 2.056 0 0 0 1.803-1.109zM15.15 2.4 13.5 5.4H10.5L8.85 2.4a.4.4 0 0 0-.7.4l1.65 3H6.6a.6.6 0 0 0-.6.6v3h12V6.4a.6.6 0 0 0-.6-.6h-3.3l1.65-3a.4.4 0 0 0-.7-.4z"/>
+                        </svg>
+                        Android
+                    </div>
+                    <a class="promo-store-btn promo-store-btn--play"
+                        href="https://play.google.com/store/apps/details?id=com.research_mantra_official"
+                        target="_blank" rel="noopener noreferrer" aria-label="Install from Google Play Store">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                            <path d="M3.6 2.4a1.2 1.2 0 0 0-.62 1.06v17.08c0 .46.24.86.62 1.06l9.86-9.6L3.6 2.4zm11.44 8.02 2.5-2.44-9.5-5.4a1.2 1.2 0 0 0-.5-.14l7.5 7.98zm0 3.16-7.5 7.98c.18-.01.35-.06.5-.14l9.5-5.4-2.5-2.44zm3.72-3.5-2.06 2 2.06 2 2.4-1.36c.6-.34.6-1.3 0-1.64l-2.4-1.36z"/>
+                        </svg>
+                        Install Now
+                    </a>
+                </div>
+
+                <div class="promo-qr-divider" aria-hidden="true"></div>
+
+                <div class="promo-qr-item">
+                    <div class="promo-qr-frame">
+                        <img ngSrc="/assets/rm_appstore_qr.jpg" width="130" height="130" alt="Scan to download on iOS" priority />
+                    </div>
+                    <div class="promo-qr-platform">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                        </svg>
+                        iOS
+                    </div>
+                    <a class="promo-store-btn promo-store-btn--ios"
+                        href="https://apps.apple.com/in/app/research-mantra/id6764504116"
+                        target="_blank" rel="noopener noreferrer" aria-label="Install from Apple App Store">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                        </svg>
+                        Install Now
+                    </a>
+                </div>
+            </div>
+
+            <p class="promo-hint">📲 Scan the QR code, or tap <strong>Install Now</strong> to download the app</p>
+        </div>
+    </div>
+</div>
+}

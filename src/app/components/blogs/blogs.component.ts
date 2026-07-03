@@ -5,10 +5,12 @@ import {
   signal,
   computed,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
+import { AdminBlogService } from '../../services/admin-blog.service';
 import { LeadService } from '../../services/lead.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
@@ -23,8 +25,12 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
 })
 export class BlogsComponent implements OnInit {
   private blogService = inject(BlogService);
+  private adminBlogService = inject(AdminBlogService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
+  private platformId = inject(PLATFORM_ID);
+  private get isBrowser() { return isPlatformBrowser(this.platformId); }
 
   public activeCommentBlogId: string | number | null = null;
 
@@ -40,6 +46,12 @@ export class BlogsComponent implements OnInit {
   // Category tabs
   readonly categories = ['ALL', 'Nifty', 'Options', 'F&O', 'Stocks', 'Investment', 'Portfolio', 'Market', 'Sector', 'Levels', 'Education', 'Others'];
   selectedCategory = signal<string>('ALL');
+
+  // Date filter state
+  activeDateParam = signal<string>('');
+  activeDateLabel = signal<string>('');
+  dateBlogs = signal<any[]>([]);
+  isLoadingDate = signal<boolean>(false);
 
   onCategorySelect(category: string) {
     if (this.selectedCategory() === category) return;
@@ -68,6 +80,48 @@ export class BlogsComponent implements OnInit {
 
   ngOnInit() {
     this.blogService.getBlogs();
+
+    this.route.queryParams.subscribe(params => {
+      const date = params['date'] ?? '';
+      this.activeDateParam.set(date);
+      if (date) {
+        this.activeDateLabel.set(this.formatDateLabel(date));
+        this.loadBlogsByDate(date);
+      } else {
+        this.dateBlogs.set([]);
+        this.isLoadingDate.set(false);
+      }
+    });
+  }
+
+  private formatDateLabel(dateStr: string): string {
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+    const year = parseInt(parts[0], 10);
+    return `${monthNames[month - 1]} ${day}, ${year}`;
+  }
+
+  private loadBlogsByDate(date: string) {
+    if (!this.isBrowser) return;
+    this.isLoadingDate.set(true);
+    this.adminBlogService.getBlogsByDate(date).subscribe({
+      next: (res: any) => {
+        this.dateBlogs.set(res?.data ?? []);
+        this.isLoadingDate.set(false);
+      },
+      error: () => {
+        this.dateBlogs.set([]);
+        this.isLoadingDate.set(false);
+      }
+    });
+  }
+
+  clearDateFilter() {
+    this.router.navigate(['/blogs']);
   }
 
   filteredBlogs = computed(() => {

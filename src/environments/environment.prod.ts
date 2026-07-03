@@ -4,6 +4,6 @@ export const environment = {
   apiurl: 'https://crmapi.researchmantra.in/api/',
   mobilePushNotificationUrl: 'https://product.researchmantra.in/api/',
   mobileBaseUrl: 'https://product.researchmantra.in/api/',
-  gupshupApiKey: '',
+  gupshupApiKey: 'dd2noa4nnfdfmbchbch8mmtm0rr0kzdb',
   azureBlobUrl: 'https://communitypostdata.blob.core.windows.net/mobileapp/'
 };

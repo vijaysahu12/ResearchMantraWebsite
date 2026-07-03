@@ -1,23 +1,26 @@
 import { Component, signal, ChangeDetectionStrategy, inject, effect, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { isPlatformBrowser, DOCUMENT, NgOptimizedImage } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { EnquiryFormComponent } from './components/enquiry-form/enquiry-form.component';
 import { FloatingSocialComponent } from './components/floating-social/floating-social.component';
 import { AccessibilityComponent } from './components/accessibility/accessibility.component';
+import { InstallBottomBarComponent } from './components/install-bottom-bar/install-bottom-bar.component';
+import { RouterLink } from '@angular/router';
 import { SeoService } from './services/seo.service';
 import { AccessibilityService } from './services/accessibility.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent],
+  imports: [RouterOutlet, RouterLink, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent, InstallBottomBarComponent, NgOptimizedImage],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
   protected readonly title = signal('rm-website');
+  readonly isPromoOpen = signal(false);
 
   private readonly seoService = inject(SeoService);
   private readonly accessibilityService = inject(AccessibilityService);
@@ -28,6 +31,19 @@ export class App {
     this.handleDomainRedirect();
     this.seoService.init();
     this.initAccessibilityEffect();
+    this.schedulePromoPopup();
+  }
+
+  closePromo(): void {
+    this.isPromoOpen.set(false);
+  }
+
+  private schedulePromoPopup(): void {
+    if (!this.isBrowser) return;
+    // Show on every page load / refresh, 7s after load.
+    setTimeout(() => {
+      this.isPromoOpen.set(true);
+    }, 7000);
   }
 
   private initAccessibilityEffect(): void {

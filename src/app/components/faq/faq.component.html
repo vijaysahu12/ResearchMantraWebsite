@@ -1,23 +1,63 @@
 <section id="faq" class="faq-section">
+
+    <!-- Decorative background -->
+    <div class="faq-bg" aria-hidden="true">
+        <span class="faq-grid"></span>
+        <span class="faq-blob faq-blob--one"></span>
+        <span class="faq-blob faq-blob--two"></span>
+        <span class="faq-blob faq-blob--three"></span>
+        <span class="faq-watermark faq-watermark--left">?</span>
+        <span class="faq-watermark faq-watermark--center">?</span>
+        <span class="faq-watermark faq-watermark--lower">?</span>
+        <span class="faq-watermark faq-watermark--right">?</span>
+        <span class="faq-ring faq-ring--one"></span>
+        <span class="faq-ring faq-ring--two"></span>
+    </div>
+
     <div class="faq-container">
-        <!-- Header Area -->
-        <div class="section-header">
+
+        <!-- Left: sticky heading + CTA -->
+        <aside class="faq-aside">
+            <div class="eyebrow">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                FAQ
+            </div>
             <h2 class="main-heading">Frequently Asked <span class="highlight">Questions</span></h2>
             <p class="sub-heading">
-                Got questions? We've got answers. If you can't find what you're looking for, feel free to contact us.
+                Got questions? We've got answers. If you can't find what you're looking for, feel free to reach out.
             </p>
-        </div>
 
-        <!-- Accordion List -->
+            <div class="aside-cta">
+                <div class="aside-cta-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="aside-cta-text">
+                    <p class="footer-text">Still have questions?</p>
+                    <a href="#contact" (click)="scrollToContact($event)" class="contact-link">
+                        Contact our support team &rarr;
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right: Accordion List -->
         <div class="faq-list">
             @for (item of faqs(); track item.id) {
             <div class="faq-item" [class.expanded]="expandedItemId() === item.id">
                 <button class="faq-header" (click)="toggleItem(item.id)"
                     [attr.aria-expanded]="expandedItemId() === item.id">
                     <span class="question-text">{{ item.question }}</span>
-                    <span class="toggle-icon">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <span class="toggle-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </span>
@@ -29,12 +69,6 @@
                 </div>
             </div>
             }
-        </div>
-
-        <!-- Footer CTA -->
-        <div class="faq-footer">
-            <p class="footer-text">Still have questions?</p>
-            <a href="#contact" (click)="scrollToContact($event)" class="contact-link">Contact our support team &rarr;</a>
         </div>
     </div>
 </section>

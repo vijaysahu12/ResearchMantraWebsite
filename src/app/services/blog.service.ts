@@ -1309,8 +1309,40 @@ export class BlogService {
                     <li>Consistent guidance</li>
                 </ul>
 
-                <h2>Get Started</h2>
-                <p>If you want to improve your investment decisions and build wealth in the stock market, taking expert guidance can help you move in the right direction.</p>
+                <style>
+                    .rm-cta-row2 { display:flex; align-items:center; justify-content:flex-start; gap:20px; flex-wrap:wrap; margin:28px 0; }
+                    .rm-cta-row2 p { flex:1 1 68%; min-width:240px; margin:0; }
+                    .rm-cta-row2 a {
+                        flex:0 0 auto;
+                        display:inline-flex !important; align-items:center; justify-content:center;
+                        background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%) !important;
+                        color:#ffffff !important; text-decoration:none !important;
+                        font-weight:700 !important; font-size:16px !important;
+                        padding:14px 34px !important; border-radius:10px !important; white-space:nowrap;
+                        border:2px solid rgba(255,255,255,0.65) !important;
+                        box-shadow:0 6px 18px rgba(37,99,235,0.35);
+                        transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+                        animation:rm-heartbeat 1.6s ease-in-out infinite;
+                    }
+                    .rm-cta-row2 a:hover {
+                        transform:translateY(-3px) scale(1.04);
+                        background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%) !important;
+                        box-shadow:0 10px 26px rgba(37,99,235,0.5);
+                        text-decoration:none !important;
+                        animation-play-state:paused;
+                    }
+                    @keyframes rm-heartbeat {
+                        0%, 100% { box-shadow:0 6px 18px rgba(37,99,235,0.35); }
+                        50% { box-shadow:0 6px 22px rgba(37,99,235,0.55), 0 0 0 6px rgba(37,99,235,0.12); }
+                    }
+                    @media (prefers-reduced-motion: reduce) {
+                        .rm-cta-row2 a { animation:none; }
+                    }
+                </style>
+                <div class="rm-cta-row2">
+                    <p>If you want to improve your investment decisions and build wealth in the stock market, taking expert guidance can help you move in the right direction.</p>
+                    <a href="/contact">Get Started</a>
+                </div>
 
                 <h2>Conclusion</h2>
                 <p>The <strong>stock market in India</strong> offers immense opportunities for investors, but success depends on understanding its structure, participants, and influencing factors. With the right knowledge, discipline, and strategy, investors can navigate the market confidently and achieve long-term financial growth.</p>
@@ -1420,8 +1452,40 @@ export class BlogService {
                     <li>Consistent guidance</li>
                 </ul>
 
-                <h2>Get Started Now</h2>
-                <p>Take the first step toward financial growth by connecting with experts and building a strong foundation in the stock market.</p>
+                <style>
+                    .rm-cta-row { display:flex; align-items:center; justify-content:flex-start; gap:20px; flex-wrap:wrap; margin:28px 0; }
+                    .rm-cta-row p { flex:1 1 68%; min-width:240px; margin:0; }
+                    .rm-cta-row a {
+                        flex:0 0 auto;
+                        display:inline-flex !important; align-items:center; justify-content:center;
+                        background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%) !important;
+                        color:#ffffff !important; text-decoration:none !important;
+                        font-weight:700 !important; font-size:16px !important;
+                        padding:14px 34px !important; border-radius:10px !important; white-space:nowrap;
+                        border:2px solid rgba(255,255,255,0.65) !important;
+                        box-shadow:0 6px 18px rgba(37,99,235,0.35);
+                        transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+                        animation:rm-heartbeat 1.6s ease-in-out infinite;
+                    }
+                    .rm-cta-row a:hover {
+                        transform:translateY(-3px) scale(1.04);
+                        background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%) !important;
+                        box-shadow:0 10px 26px rgba(37,99,235,0.5);
+                        text-decoration:none !important;
+                        animation-play-state:paused;
+                    }
+                    @keyframes rm-heartbeat {
+                        0%, 100% { box-shadow:0 6px 18px rgba(37,99,235,0.35); }
+                        50% { box-shadow:0 6px 22px rgba(37,99,235,0.55), 0 0 0 6px rgba(37,99,235,0.12); }
+                    }
+                    @media (prefers-reduced-motion: reduce) {
+                        .rm-cta-row a { animation:none; }
+                    }
+                </style>
+                <div class="rm-cta-row">
+                    <p>Take the first step toward financial growth by connecting with experts and building a strong foundation in the stock market.</p>
+                    <a href="/contact">Get Started</a>
+                </div>
 
                 <h2>Conclusion</h2>
                 <p>The <strong>stock market for beginners</strong> offers great opportunities, but success depends on the right knowledge, strategy, and discipline. If you are just starting, focus on learning the basics, avoiding common mistakes, and following a structured approach. Over time, consistency and smart decision-making will help you build long-term wealth.</p>

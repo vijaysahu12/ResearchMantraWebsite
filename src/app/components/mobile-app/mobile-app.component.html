@@ -1,0 +1,254 @@
+<main class="rm-mobile">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
+        <div class="hero-glow hero-glow--one" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow--two" aria-hidden="true"></div>
+
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <span class="eyebrow">
+                    <span class="eyebrow-dot" aria-hidden="true"></span>
+                    Research Mantra Mobile App
+                </span>
+
+                <h1 class="hero-title">
+                    The stock market,<br>
+                    <span class="hero-accent">right in your pocket</span>
+                </h1>
+
+                <p class="hero-sub">
+                    Get live trade alerts, deeply researched stock ideas, smart financial
+                    tools and daily market updates &mdash; all in one app, backed by a
+                    SEBI Registered Research Analyst.
+                </p>
+
+                <ul class="hero-pills">
+                    @for (pill of heroPills; track pill) {
+                        <li class="pill">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            {{ pill }}
+                        </li>
+                    }
+                </ul>
+
+                <a class="cta-pulse" [href]="primaryDownloadUrl()" target="_blank" rel="noopener noreferrer"
+                    aria-label="Download the Research Mantra app now">
+                    <span class="cta-pulse-ring" aria-hidden="true"></span>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3v12"></path>
+                        <path d="m7 10 5 5 5-5"></path>
+                        <path d="M5 21h14"></path>
+                    </svg>
+                    Download the App Now
+                </a>
+
+                <div class="store-buttons">
+                    <a class="store-badge" [href]="playStoreUrl" target="_blank" rel="noopener noreferrer"
+                        aria-label="Get Research Mantra on Google Play">
+                        <img ngSrc="assets/android.png" width="130" height="47" alt="Get it on Google Play" />
+                    </a>
+                    <a class="store-badge" [href]="appStoreUrl" target="_blank" rel="noopener noreferrer"
+                        aria-label="Download Research Mantra on the App Store">
+                        <img ngSrc="assets/apple.png" width="139" height="47" alt="Download on the App Store" />
+                    </a>
+                </div>
+
+                <dl class="hero-stats">
+                    @for (stat of stats; track stat.label) {
+                        <div class="stat">
+                            <dt class="stat-value">{{ stat.value }}</dt>
+                            <dd class="stat-label">{{ stat.label }}</dd>
+                        </div>
+                    }
+                </dl>
+            </div>
+
+            <div class="hero-visual">
+                <div class="phone-halo" aria-hidden="true"></div>
+
+                <div class="float-badge float-badge--top" aria-hidden="true">
+                    <span class="float-badge-icon float-badge-icon--green">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </span>
+                    <span class="float-badge-text">
+                        <strong>+55,800 pts</strong>
+                        captured in SILVERM
+                    </span>
+                </div>
+
+                <div class="float-badge float-badge--bottom" aria-hidden="true">
+                    <span class="float-badge-icon float-badge-icon--blue">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </span>
+                    <span class="float-badge-text">
+                        <strong>Live Alerts</strong>
+                        the moment it moves
+                    </span>
+                </div>
+
+                <img class="hero-phone" ngSrc="assets/1.png" width="1080" height="1920" priority
+                    alt="Research Mantra app home screen showing strategies and research reports" />
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FEATURES ===================== -->
+    <!-- <section class="features">
+        <div class="section-head">
+            <span class="section-tag">Why Research Mantra</span>
+            <h2 class="section-title">Everything a trader needs, in one app</h2>
+            <p class="section-lead">
+                Perfect for beginners and experienced traders alike &mdash; learn, track and
+                make informed decisions with ease.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            @for (feature of features; track feature.title) {
+                <article class="feature-card">
+                    <span class="feature-icon" aria-hidden="true">
+                        @switch (feature.icon) {
+                            @case ('bell') {
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                            }
+                            @case ('chart') {
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                            }
+                            @case ('trend') {
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                            }
+                            @case ('tools') {
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                                    <line x1="8" y1="6" x2="16" y2="6"></line>
+                                    <line x1="8" y1="10" x2="10" y2="10"></line>
+                                    <line x1="14" y1="10" x2="16" y2="10"></line>
+                                    <line x1="8" y1="14" x2="10" y2="14"></line>
+                                    <line x1="14" y1="14" x2="16" y2="14"></line>
+                                    <line x1="8" y1="18" x2="10" y2="18"></line>
+                                </svg>
+                            }
+                            @case ('news') {
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+                                    <path d="M18 14h-8"></path>
+                                    <path d="M15 18h-5"></path>
+                                    <path d="M10 6h8v4h-8V6Z"></path>
+                                </svg>
+                            }
+                            @case ('shield') {
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                            }
+                        }
+                    </span>
+                    <h3 class="feature-title">{{ feature.title }}</h3>
+                    <p class="feature-text">{{ feature.description }}</p>
+                </article>
+            }
+        </div>
+    </section> -->
+
+    <!-- ===================== SCREENSHOTS ===================== -->
+    <section class="showcase">
+        <div class="section-head">
+            <span class="section-tag">A closer look</span>
+            <h2 class="section-title">Built for clarity and speed</h2>
+            <p class="section-lead">
+                A clean, intuitive experience that puts every insight just a tap away.
+            </p>
+        </div>
+
+        <div class="screen-strip">
+            @for (screen of screens; track screen.src) {
+                <figure class="screen-item">
+                    <img class="screen-img" [ngSrc]="screen.src" width="1080" height="1920"
+                        [alt]="screen.alt" />
+                    <figcaption class="screen-caption">{{ screen.caption }}</figcaption>
+                </figure>
+            }
+        </div>
+    </section>
+
+    <!-- ===================== DOWNLOAD / QR ===================== -->
+    <section class="download">
+        <div class="download-card">
+            <h2 class="download-title">Scan the QR code to download our app</h2>
+            <p class="download-sub">
+                Point your phone camera at the code for your platform and start trading smarter today.
+            </p>
+
+            <div class="qr-row">
+                <div class="qr-item">
+                    <div class="qr-frame">
+                        <img ngSrc="assets/rm_playstore_qr.jpg" width="1024" height="1024"
+                            alt="Scan to download Research Mantra on Android" />
+                    </div>
+                    <a class="store-badge" [href]="playStoreUrl" target="_blank" rel="noopener noreferrer"
+                        aria-label="Get Research Mantra on Google Play">
+                        <img ngSrc="assets/android.png" width="130" height="47" alt="Get it on Google Play" />
+                    </a>
+                </div>
+
+                <div class="qr-divider" aria-hidden="true"></div>
+
+                <div class="qr-item">
+                    <div class="qr-frame">
+                        <img ngSrc="assets/rm_appstore_qr.jpg" width="1024" height="1024"
+                            alt="Scan to download Research Mantra on iOS" />
+                    </div>
+                    <a class="store-badge" [href]="appStoreUrl" target="_blank" rel="noopener noreferrer"
+                        aria-label="Download Research Mantra on the App Store">
+                        <img ngSrc="assets/apple.png" width="139" height="47" alt="Download on the App Store" />
+                    </a>
+                </div>
+            </div>
+
+            <p class="download-hint">Available on Android &amp; iOS &mdash; free to download.</p>
+        </div>
+    </section>
+
+    <!-- ===================== FLOATING DOWNLOAD BUTTON ===================== -->
+    <a class="floating-download" [href]="primaryDownloadUrl()" target="_blank" rel="noopener noreferrer"
+        aria-label="Download the app now">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12"></path>
+            <path d="m7 10 5 5 5-5"></path>
+            <path d="M5 21h14"></path>
+        </svg>
+        <span class="floating-download-text">Download Now</span>
+    </a>
+
+</main>

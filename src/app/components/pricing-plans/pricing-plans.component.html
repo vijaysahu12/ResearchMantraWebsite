@@ -12,110 +12,99 @@
             <p class="sub-heading">Select a plan based on your trading style and capital</p>
         </div>
 
-        <!-- Comparison Table (Desktop/Tablet) -->
-        <div class="table-wrapper">
-            <table class="pricing-table">
-                <thead>
-                    <tr>
-                        <th class="feature-col">Feature</th>
-                        <th>Index HNI</th>
-                        <th class="popular-col">
-                            Fatafat Options
-                            <span class="popular-badge">Most Popular</span>
-                        </th>
-                        <th>Personal Support</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (row of features(); track row.name) {
-                    <tr>
-                        <td class="feature-name">{{ row.name }}</td>
-                        <td>{{ row.cashPositional }}</td>
-                        <td class="popular-bg">{{ row.fatafatOptions }}</td>
-                        <td>{{ row.huntingFuture }}</td>
-                    </tr>
-                    } @empty {
-                    <tr>
-                        <td colspan="4" style="text-align: center; padding: 40px; color: #64748b;">
-                            No records found.
-                        </td>
-                    </tr>
-                    }
-                    <tr class="price-row">
-                        <td class="feature-name">Price per Month</td>
-                        <td class="price-value">Contact for pricing</td>
-                        <td class="price-value popular-bg">₹12,000</td>
-                        <td class="price-value">₹15,000</td>
-                    </tr>
-                    <tr class="cta-row">
-                        <td></td>
-                        <td><button class="btn secondary" (click)="scrollToContact($event)">Contact Us</button></td>
-                        <td class="popular-bg"><button class="btn primary" (click)="scrollToContact($event)">Get Started</button>
-                        </td>
-                        <td><button class="btn secondary" (click)="scrollToContact($event)">Get Started</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- Pinned horizontal-scroll carousel -->
+        <div class="pin-wrap" #pinWrap>
+            <div class="pin-viewport" #viewport tabindex="0" aria-label="Subscription plans">
+                <div class="viewport-inner">
 
-        <!-- Mobile View (Stacked Cards) -->
-        <div class="mobile-plans">
-            <!-- Fatafat Options (Popular) -->
-            <div class="mobile-plan-card popular-card">
-                <div class="card-header">
-                    <span class="popular-badge">Most Popular</span>
-                    <h3>Fatafat Options</h3>
-                    <p class="price">₹12,000 <span>/ month</span></p>
-                </div>
-                <div class="card-features">
-                    @for (row of features(); track row.name) {
-                    <div class="mobile-row">
-                        <span class="label">{{ row.name }}</span>
-                        <span class="value">{{ row.fatafatOptions }}</span>
+                    <!-- Controls + progress -->
+                    <div class="carousel-controls">
+                        <p class="scroll-hint">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 7 3 12l5 5"></path>
+                                <path d="M16 7l5 5-5 5"></path>
+                            </svg>
+                            Keep scrolling to glide through all {{ plans().length }} plans
+                        </p>
+                        <div class="scroll-progress" aria-hidden="true">
+                            <span class="scroll-progress-fill" #progressFill></span>
+                        </div>
+                        <div class="arrows">
+                            <button type="button" class="nav-arrow" aria-label="Previous plans" (click)="nudge(-1)">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                            </button>
+                            <button type="button" class="nav-arrow" aria-label="Next plans" (click)="nudge(1)">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    } @empty {
-                    <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
-                    }
-                </div>
-                <button class="btn primary full-width" (click)="scrollToContact($event)">Get Started</button>
-            </div>
 
-            <!-- Cash Positional -->
-            <div class="mobile-plan-card">
-                <div class="card-header">
-                    <h3>Cash Positional</h3>
-                    <p class="price">Contact Us</p>
-                </div>
-                <div class="card-features">
-                    @for (row of features(); track row.name) {
-                    <div class="mobile-row">
-                        <span class="label">{{ row.name }}</span>
-                        <span class="value">{{ row.cashPositional }}</span>
-                    </div>
-                    } @empty {
-                    <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
-                    }
-                </div>
-                <button class="btn secondary full-width" (click)="scrollToContact($event)">Contact Us</button>
-            </div>
+                    <div class="plans-track" #track>
+                        @for (plan of plans(); track plan.id) {
+                <article class="plan-card">
+                    <header class="plan-card-head">
+                        <span class="plan-tag">{{ plan.category }}</span>
+                        <h3 class="plan-name">{{ plan.name }}</h3>
+                    </header>
 
-            <!-- Hunting Future -->
-            <div class="mobile-plan-card">
-                <div class="card-header">
-                    <h3>Hunting Future</h3>
-                    <p class="price">₹15,000 <span>/ month</span></p>
-                </div>
-                <div class="card-features">
-                    @for (row of features(); track row.name) {
-                    <div class="mobile-row">
-                        <span class="label">{{ row.name }}</span>
-                        <span class="value">{{ row.huntingFuture }}</span>
+                    <ul class="plan-specs">
+                        <li>
+                            <span class="spec-label">Ideal For</span>
+                            <span class="spec-value">{{ plan.idealFor }}</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Trading Focus</span>
+                            <span class="spec-value">{{ plan.tradingFocus }}</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Capital Required</span>
+                            <span class="spec-value">{{ plan.capitalRequired }}</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Trade Frequency</span>
+                            <span class="spec-value">{{ plan.tradeFrequency }}</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Alerts &amp; Support</span>
+                            <span class="spec-value">{{ plan.alertsSupport }}</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Trade Details</span>
+                            <span class="spec-value">{{ plan.tradeDetails }}</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Risk Management</span>
+                            <span class="spec-value">{{ plan.riskManagement }}</span>
+                        </li>
+                    </ul>
+
+                    <div class="plan-pricing">
+                        <span class="pricing-label">Subscription</span>
+                        <ul class="tiers">
+                            @for (tier of plan.pricing; track tier.label) {
+                            <li class="tier" [class.best]="tier.highlight">
+                                <span class="tier-dur">{{ tier.label }}</span>
+                                <span class="tier-amt">&#8377;{{ tier.price }}</span>
+                                @if (tier.highlight) {
+                                <span class="tier-badge">Best value</span>
+                                }
+                            </li>
+                            }
+                        </ul>
                     </div>
-                    } @empty {
-                    <div style="text-align: center; padding: 20px; color: #64748b;">No records found.</div>
-                    }
+
+                    <button class="btn primary full-width" (click)="scrollToContact($event)">Get Started</button>
+                </article>
+                }
+                    </div>
                 </div>
-                <button class="btn secondary full-width" (click)="scrollToContact($event)">Get Started</button>
             </div>
         </div>
 
@@ -138,54 +127,56 @@
     </div>
 </section>
 
-<!-- Report Download Modal -->
+<!-- App Download Modal -->
 @if (isModalOpen()) {
 <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <button class="modal-close" (click)="closeModal()">&times;</button>
+    <div class="modal-content app-dl-modal" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="closeModal()" aria-label="Close">&times;</button>
 
         <div class="modal-body">
-            <h3>Download Performance Reports</h3>
-            <p>Select the date range for your report (optional)</p>
-            <form [formGroup]="reportForm" (ngSubmit)="onDownloadDirect()">
-                <div class="date-row">
-                    <div class="form-group">
-                        <label>From Date:</label>
-                        <input type="date" formControlName="fromDate">
+            <!-- Icon -->
+            <div class="app-dl-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5" stroke-linecap="round"></line>
+                </svg>
+            </div>
+
+            <h3>Download the App</h3>
+            <p>Get <strong>Performance Reports</strong> and many more exciting features right on your phone.</p>
+
+            <!-- QR codes -->
+            <div class="qr-row">
+                <!-- Android -->
+                <div class="qr-item">
+                    <div class="qr-frame">
+                        <img ngSrc="/assets/rm_playstore_qr.jpg" width="150" height="150" alt="Scan to download on Android" priority />
                     </div>
-                    <div class="form-group">
-                        <label>To Date:</label>
-                        <input type="date" formControlName="toDate">
+                    <div class="qr-platform">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                            <path d="M17.523 15.341L19.872 11.1a.514.514 0 0 0-.453-.755H4.58a.514.514 0 0 0-.453.755l2.35 4.241A2.056 2.056 0 0 0 8.28 16.45h7.44a2.056 2.056 0 0 0 1.803-1.109zM15.15 2.4 13.5 5.4H10.5L8.85 2.4a.4.4 0 0 0-.7.4l1.65 3H6.6a.6.6 0 0 0-.6.6v3h12V6.4a.6.6 0 0 0-.6-.6h-3.3l1.65-3a.4.4 0 0 0-.7-.4z"/>
+                        </svg>
+                        Android
                     </div>
                 </div>
 
-                @if (isDateRangeInvalid()) {
-                <div class="form-error">To Date cannot be earlier than From Date</div>
-                }
+                <div class="qr-divider" aria-hidden="true"></div>
 
-                @if (noRecordsFound()) {
-                <div class="no-records-msg">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    No records found for the selected date range.
+                <!-- iOS -->
+                <div class="qr-item">
+                    <div class="qr-frame">
+                        <img ngSrc="/assets/rm_appstore_qr.jpg" width="150" height="150" alt="Scan to download on iOS" priority />
+                    </div>
+                    <div class="qr-platform">
+                        <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                        </svg>
+                        iOS
+                    </div>
                 </div>
-                }
+            </div>
 
-                @if (errorMessage()) {
-                <div class="form-error">{{ errorMessage() }}</div>
-                }
-
-                <button type="submit" class="download-btn" [disabled]="isLoading() || isDateRangeInvalid()">
-                    @if (isLoading()) {
-                    <span class="spinner"></span> Processing...
-                    } @else {
-                    Download PDF
-                    }
-                </button>
-            </form>
+            <p class="qr-hint">Scan the QR code with your phone camera to download</p>
         </div>
     </div>
 </div>

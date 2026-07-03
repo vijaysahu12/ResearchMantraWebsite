@@ -1,6 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface WebsiteLead {
     Id: number;
@@ -55,7 +57,8 @@ export interface ApiResponse<T = unknown> {
 })
 export class LeadService {
     private http = inject(HttpClient);
-    private readonly CRM_API_URL = 'https://crmapi.researchmantra.in/api/Leads';
+    private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+    private readonly CRM_API_URL = `${environment.apiurl}Leads`;
 
     // ─── Cookie key names ───────────────────────────────────────────────────────
     private readonly KEY_NAME   = 'rmLeadName';
@@ -71,14 +74,27 @@ export class LeadService {
      * users who filled the form before cookies were introduced are not asked again.
      */
     hasLeadData(): boolean {
-        return !!(this.readCookie(this.KEY_NAME) || localStorage.getItem(this.KEY_NAME));
+        if (!this.isBrowser) return false;
+        // Cookie is the source of truth; localStorage is only a fallback.
+        return !!(this.readCookie(this.KEY_NAME) || this.readLocal(this.KEY_NAME));
     }
 
     /**
      * Returns the stored visitor name, or an empty string if not captured yet.
+     * Checks the cookie first, then falls back to localStorage.
      */
     getLeadName(): string {
-        return this.readCookie(this.KEY_NAME) || localStorage.getItem(this.KEY_NAME) || '';
+        if (!this.isBrowser) return '';
+        return this.readCookie(this.KEY_NAME) || this.readLocal(this.KEY_NAME) || '';
+    }
+
+    /**
+     * Returns the stored visitor mobile number, or an empty string if not captured yet.
+     * Checks the cookie first, then falls back to localStorage.
+     */
+    getLeadMobile(): string {
+        if (!this.isBrowser) return '';
+        return this.readCookie(this.KEY_MOBILE) || this.readLocal(this.KEY_MOBILE) || '';
     }
 
     /**
@@ -86,11 +102,12 @@ export class LeadService {
      * Called by the lead-capture modal after a successful (or attempted) API save.
      */
     saveLeadData(name: string, mobile: string): void {
+        if (!this.isBrowser) return;
         this.writeCookie(this.KEY_NAME,   name,   this.COOKIE_TTL_DAYS);
         this.writeCookie(this.KEY_MOBILE, mobile, this.COOKIE_TTL_DAYS);
         // localStorage backup — ensures the data survives if cookies are blocked
-        localStorage.setItem(this.KEY_NAME,   name);
-        localStorage.setItem(this.KEY_MOBILE, mobile);
+        this.writeLocal(this.KEY_NAME,   name);
+        this.writeLocal(this.KEY_MOBILE, mobile);
     }
 
     // ─── CRM API calls ───────────────────────────────────────────────────────────
@@ -103,23 +120,79 @@ export class LeadService {
         return this.http.post<ApiResponse<{ youtubeLink: string }>>(`${this.CRM_API_URL}/verify-otp`, data);
     }
 
-    submitWebsiteLead(name: string, mobile: string): Observable<ApiResponse> {
-        const payload = { FullName: name, MobileNumber: mobile, CountryCode: '+91' };
+    submitWebsiteLead(name: string, mobile: string, source = 'Website Blog Read More'): Observable<ApiResponse> {
+        const now = new Date().toISOString();
+        const payload: WebsiteLead = {
+            Id: 0,
+            PublicKey: this.generateGuid(),
+            FullName: name,
+            Gender: '',
+            CountryCode: '+91',
+            MobileNumber: mobile,
+            AlternateMobileNumber: '',
+            EmailId: '',
+            ProfileImage: '',
+            PriorityStatus: 'Normal',
+            AssignedTo: '',
+            ServiceKey: '',
+            LeadTypeKey: '',
+            LeadSourceKey: source,
+            Remarks: '',
+            IsDisabled: 0,
+            IsDelete: 0,
+            CreatedOn: now,
+            CreatedBy: 'Website',
+            IsSpam: 0,
+            IsWon: 0,
+            ModifiedOn: now,
+            ModifiedBy: 'Website',
+            City: '',
+            PinCode: '',
+            StatusId: 1,
+            Favourite: false,
+            PurchaseOrderKey: null
+        };
         return this.http.post<ApiResponse>(`${this.CRM_API_URL}/WebsiteLeads`, payload);
+    }
+
+    private generateGuid(): string {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0;
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
     }
 
     // ─── Cookie utilities (private) ──────────────────────────────────────────────
 
     private writeCookie(name: string, value: string, days: number): void {
+        if (!this.isBrowser) return;
         const expires = new Date(Date.now() + days * 86_400_000).toUTCString();
         document.cookie =
             `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
     }
 
     private readCookie(name: string): string | null {
+        if (!this.isBrowser) return null;
         const match = document.cookie.match(
             new RegExp('(?:^|;\\s*)' + name + '=([^;]*)')
         );
         return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    // localStorage helpers wrapped so a disabled/throwing storage never breaks the cookie check.
+    private readLocal(name: string): string | null {
+        try {
+            return localStorage.getItem(name);
+        } catch {
+            return null;
+        }
+    }
+
+    private writeLocal(name: string, value: string): void {
+        try {
+            localStorage.setItem(name, value);
+        } catch {
+            /* storage blocked (private mode / quota) — cookie still holds the data */
+        }
     }
 }

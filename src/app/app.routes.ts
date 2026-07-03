@@ -15,6 +15,7 @@ import { ComplianceAuditComponent } from './components/compliance-audit/complian
 import { ComplaintDataComponent } from './components/complaint-data/complaint-data.component';
 import { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
 import { BlogsComponent } from './components/blogs/blogs.component';
+import { ContactComponent } from './components/contact/contact.component';
 import { BlogDetailsComponent } from './components/blog-details/blog-details.component';
 import { AdminBlogs } from './components/admin-blogs/admin-blogs';
 import { RenderMode, ServerRoute } from '@angular/ssr';
@@ -28,6 +29,8 @@ export const routes: Routes = [
     { path: 'about', component: AboutSushmitaComponent },
     { path: 'testimonials', component: TestimonialsComponent },
     { path: 'faq', component: FaqComponent },
+    { path: 'contact', component: ContactComponent },
+    { path: 'mobile', loadComponent: () => import('./components/mobile-app/mobile-app.component').then(m => m.MobileAppComponent) },
     { path: 'complaint-data', component: ComplaintDataComponent },
     { path: 'compliance-audit', component: ComplianceAuditComponent },
     { path: 'grievance-redressal', component: GrievanceRedressalComponent },

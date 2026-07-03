@@ -48,6 +48,7 @@ import { LeadService } from '../../services/lead.service';
               id="lead-name"
               type="text"
               formControlName="name"
+              maxlength="50"
               class="form-input"
               [class.input-error]="form.get('name')?.invalid && form.get('name')?.touched"
               placeholder="e.g. Rajesh Kumar"
@@ -387,7 +388,7 @@ export class LeadCaptureModalComponent {
   apiError = signal('');
 
   form = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
+    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
     mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
   });
 

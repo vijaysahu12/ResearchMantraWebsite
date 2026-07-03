@@ -9,8 +9,7 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
-import { BlogService } from '../../services/blog.service';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AdminBlogService } from '../../services/admin-blog.service';
 import { LeadService } from '../../services/lead.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
@@ -29,6 +28,7 @@ import { EnquiryStateService } from '../../services/enquiry-state.service';
 export class AdminBlogs implements OnInit {
   private blogService = inject(AdminBlogService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
   private seoService = inject(SeoService);
   private enquiryState = inject(EnquiryStateService);
@@ -53,12 +53,54 @@ export class AdminBlogs implements OnInit {
   readonly categories = ['ALL', 'Nifty', 'Options', 'F&O', 'Stocks', 'Investment', 'Portfolio', 'Market', 'Sector', 'Levels', 'Education', 'Others'];
   selectedCategory = signal<string>('ALL');
 
+  // ── Date-filter view ──────────────────────────────────────
+  activeDateParam  = signal<string>('');
+  activeDateLabel  = signal<string>('');
+  dateBlogs        = signal<any[]>([]);
+  isLoadingDate    = signal<boolean>(false);
+
+  private readonly monthNames = ['January','February','March','April','May','June',
+                                 'July','August','September','October','November','December'];
+
+  clearDateFilter() {
+    this.router.navigate(['/stock-market-analysis-and-nifty-updates']);
+  }
+
+  private loadBlogsByDate(date: string) {
+    if (!this.isBrowser) return;
+    this.isLoadingDate.set(true);
+    this.blogService.getBlogsByDate(date).subscribe({
+      next: (res: any) => {
+        const blogs = res?.data ?? [];
+        console.log('[by-date] raw response:', res);
+        console.log('[by-date] blogs:', blogs);
+        this.dateBlogs.set(blogs);
+        this.isLoadingDate.set(false);
+      },
+      error: (err) => {
+        console.error('[by-date] error:', err);
+        this.dateBlogs.set([]);
+        this.isLoadingDate.set(false);
+      }
+    });
+  }
+
+  private parseDateLabel(dateStr: string): string {
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${this.monthNames[+parts[1] - 1]} ${+parts[2]}, ${parts[0]}`;
+  }
+  // ─────────────────────────────────────────────────────────
+
+  getCategories(category: string): string[] {
+    if (!category) return [];
+    return category.split(',').map(c => c.trim()).filter(c => c.length > 0);
+  }
+
   onCategorySelect(category: string) {
     if (this.selectedCategory() === category) return;
     this.selectedCategory.set(category);
     this.searchQuery.set('');
-    this.isLoadingInitial.set(true);
-    this.blogService.loadBlogs(1, 10, category);
   }
 
   // Lead capture modal
@@ -80,8 +122,7 @@ export class AdminBlogs implements OnInit {
     this.shareModalBlog.set(null);
   }
 
-  constructor(private adminBlogService: AdminBlogService) {
-    // ✅ FIXED EFFECT: Hide loader when blogs load
+  constructor() {
     effect(() => {
       const blogs = this.blogs();
       if (blogs !== undefined && blogs !== null) {
@@ -100,33 +141,58 @@ export class AdminBlogs implements OnInit {
 
     if (!this.isBrowser) return;
 
-    this.isLoadingInitial.set(true);
-    this.refreshBlogs();
+    // Handle ?date= query param (calendar date-filter view)
+    this.route.queryParams.subscribe(params => {
+      const date = params['date'] ?? '';
+      this.activeDateParam.set(date);
+
+      if (date) {
+        this.activeDateLabel.set(this.parseDateLabel(date));
+        this.loadBlogsByDate(date);
+      } else {
+        this.dateBlogs.set([]);
+        this.isLoadingInitial.set(true);
+        this.refreshBlogs();
+      }
+    });
   }
 
   private refreshBlogs(): void {
-    this.blogService.loadBlogs(1, 10, this.selectedCategory());
-
-    // If you are using the 'effect' we previously set up,
-    // it will detect when the Signal updates and set isLoadingInitial(false).
-    // Otherwise, you can add a manual timeout for safety:
-    /*
-  setTimeout(() => {
-     if (this.isLoadingInitial()) this.isLoadingInitial.set(false);
-  }, 5000); // Safety fallback
-  */
+    // Load all blogs without server-side category filter; filtering is done client-side
+    this.blogService.loadBlogs(1, 100);
   }
 
   filteredBlogs = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
-    const blogs = this.blogs();
+    const category = this.selectedCategory();
+    let blogs = this.blogs();
 
-    if (!query) return blogs;
+    // Client-side category filter — partial case-insensitive match
+    if (category && category !== 'ALL') {
+      if (category === 'Others') {
+        const knownKeywords = this.categories
+          .filter(c => c !== 'ALL' && c !== 'Others')
+          .map(c => c.toLowerCase());
+        blogs = blogs.filter(blog => {
+          const cat = blog.category?.toLowerCase() || '';
+          return !knownKeywords.some(kw => cat.includes(kw));
+        });
+      } else {
+        const keyword = category.toLowerCase();
+        blogs = blogs.filter(blog =>
+          blog.category?.toLowerCase().includes(keyword)
+        );
+      }
+    }
 
-    return blogs.filter(
-      (blog) =>
-        blog.title?.toLowerCase().includes(query) || blog.slug?.toLowerCase().includes(query),
-    );
+    // Search filter
+    if (query) {
+      blogs = blogs.filter(blog =>
+        blog.title?.toLowerCase().includes(query) || blog.slug?.toLowerCase().includes(query)
+      );
+    }
+
+    return blogs;
   });
 
 
@@ -252,7 +318,7 @@ export class AdminBlogs implements OnInit {
 
         this.processingLikes.delete(blog.id);
       },
-      error: (err) => {
+      error: () => {
         blog.isLiked = wasLiked;
         blog.likesCount = blog.isLiked ? blog.likesCount + 1 : blog.likesCount - 1;
 
