@@ -1,9 +1,12 @@
-<app-header></app-header>
+@if (!isPortalRoute()) {
+  <app-header></app-header>
+}
 
 <router-outlet />
 
-<app-footer></app-footer>
-
-<app-enquiry-form></app-enquiry-form>
-<app-floating-social></app-floating-social>
+@if (!isPortalRoute()) {
+  <app-footer></app-footer>
+  <app-enquiry-form></app-enquiry-form>
+  <app-floating-social></app-floating-social>
+}
 <app-accessibility></app-accessibility>

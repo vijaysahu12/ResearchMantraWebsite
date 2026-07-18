@@ -16,6 +16,10 @@ body {
     padding-top: 72px;
 }
 
+body.portal-route {
+    padding-top: 0;
+}
+
 section[id] {
     scroll-margin-top: 72px;
     /* Matches header height for sticky navigation */

@@ -5,9 +5,9 @@
         <img src="assets/RM_Logo.png" alt="Research Mantra Logo" class="brand-logo">
       </div>
       <div class="brand-info">
-        <span class="brand-name">Research Mantra By Susmita Sahoo</span>
-        <span class="brand-subtitle">SEBI Registered Research Analyst </span>
-        <span class="brand-subtitle">INH000019150</span>
+        <span class="brand-name">Research Mantra</span>
+        <span class="brand-owner">By Susmita Sahoo</span>
+        <span class="brand-subtitle">SEBI Registered Research Analyst · INH000019150</span>
       </div>
     </div>
 
@@ -24,17 +24,17 @@
             (click)="isMenuOpen.set(false)"><strong>Testimonials</strong></a></li>
         <li><a [routerLink]="['/']" fragment="faq" (click)="isMenuOpen.set(false)"><strong>FAQ</strong></a></li>
         <!-- <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li> -->
-        <li class="dropdown" [class.open]="isComplianceOpen()">
-          <a class="dropdown-toggle" (click)="toggleCompliance($event)">
+        <li class="dropdown" [class.open]="isBlogsOpen()">
+          <a class="dropdown-toggle" (click)="toggleBlogs($event)">
             <strong>Blogs</strong>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </a>
           <ul class="dropdown-menu">
-            <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+            <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false); isBlogsOpen.set(false)">
                 Blogs</a></li>
-            <li><a [routerLink]="['/admin/blogs']" (click)="isMenuOpen.set(false); isComplianceOpen.set(false)">
+            <li><a [routerLink]="['/admin/blogs']" (click)="isMenuOpen.set(false); isBlogsOpen.set(false)">
                 Admin Blogs</a></li>
           </ul>
         </li>
@@ -42,8 +42,8 @@
         <li><a [routerLink]="['/contact']" (click)="isMenuOpen.set(false)"><strong>Contact</strong></a></li>
 
         <!-- RA Compliance Dropdown -->
-        <li class="dropdown" [class.open]="isBlogsOpen()">
-          <a class="dropdown-toggle" (click)="toggleBlogs($event)">
+        <li class="dropdown" [class.open]="isComplianceOpen()">
+          <a class="dropdown-toggle" (click)="toggleCompliance($event)">
             <strong>RA Compliance</strong>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
               <polyline points="6 9 12 15 18 9"></polyline>
@@ -72,6 +72,13 @@
     </nav>
 
     <div class="right-section">
+      @if (isAuthenticated()) {
+        <a class="research-link" routerLink="/research">Research</a>
+        <button class="btn-login" type="button" (click)="logout()">Log out</button>
+      } @else {
+        <a class="btn-login login-link" routerLink="/login">Login</a>
+        <a class="btn-research" routerLink="/login">View Research</a>
+      }
       <!-- <button class="btn-login" type="button">Login</button>
       <button class="btn-get-started" type="button">Get Started</button> -->
       <!-- <button

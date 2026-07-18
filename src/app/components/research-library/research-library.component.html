@@ -1,0 +1,111 @@
+<main class="research-page">
+  <section class="portal-hero" aria-labelledby="research-heading">
+    <div class="portal-topline">
+      <a routerLink="/" class="portal-brand" aria-label="Research Mantra home">
+        <span class="portal-mark" aria-hidden="true">RM</span>
+        <span><strong>Research Mantra</strong><small>Investor Research Desk</small></span>
+      </a>
+      <div class="account-area">
+        <a routerLink="/research/purchases">Purchases</a>
+        <span class="welcome">Hello, {{ session()?.name || 'Investor' }}</span>
+        <button type="button" class="logout-button" (click)="logout()">Log out</button>
+      </div>
+    </div>
+
+    <div class="hero-copy">
+      <p class="eyebrow">Independent equity research</p>
+      <h1 id="research-heading">Find the story behind the stock.</h1>
+      <p>
+        Explore concise company snapshots and open the full analysis when you’re ready to go
+        deeper. Research is an input to your decision—not a substitute for it.
+      </p>
+    </div>
+
+    <form class="search-bar" (submit)="$event.preventDefault(); loadCompanies()" role="search">
+      <span aria-hidden="true">⌕</span>
+      <label class="sr-only" for="company-search">Search companies</label>
+      <input id="company-search" type="search" placeholder="Search by company name" [formControl]="search" />
+      <button type="submit">Search research</button>
+    </form>
+  </section>
+
+  <section class="research-content" aria-label="Research reports">
+    <div class="content-heading">
+      <div>
+        <p class="section-kicker">Research library</p>
+        <h2>Company reports</h2>
+        <p>{{ filteredCompanies().length }} research notes available</p>
+      </div>
+      <div class="filter-tabs" aria-label="Filter by company size">
+        <button type="button" [class.active]="activeFilter() === 'all'" (click)="setFilter('all')">All</button>
+        <button type="button" [class.active]="activeFilter() === 'large'" (click)="setFilter('large')">₹500 Cr+</button>
+        <button type="button" [class.active]="activeFilter() === 'emerging'" (click)="setFilter('emerging')">Under ₹500 Cr</button>
+      </div>
+    </div>
+
+    @if (!hasResearchProduct() && !loading()) {
+      <aside class="access-note">
+        <span aria-hidden="true">i</span>
+        <p><strong>Preview access</strong> You can read reports marked Free. Subscribe to Research to unlock the complete library.</p>
+        <a routerLink="/research/plans" [queryParams]="{ productId: researchProductId(), returnUrl: '/research' }">View research plans</a>
+      </aside>
+    }
+
+    @if (loading()) {
+      <div class="loading-grid" aria-label="Loading research reports" aria-live="polite">
+        @for (item of [1, 2, 3, 4, 5, 6]; track item) { <div class="skeleton-card"></div> }
+      </div>
+    } @else if (errorMessage()) {
+      <div class="state-card" role="alert">
+        <h3>Research is temporarily unavailable</h3>
+        <p>{{ errorMessage() }}</p>
+        <button type="button" (click)="loadCompanies()">Try again</button>
+      </div>
+    } @else if (filteredCompanies().length === 0) {
+      <div class="state-card">
+        <h3>No companies found</h3>
+        <p>Try a different company name or reset the market-cap filter.</p>
+        <button type="button" (click)="search.reset(); setFilter('all'); loadCompanies()">Clear filters</button>
+      </div>
+    } @else {
+      <div class="report-list">
+        @for (company of filteredCompanies(); track company.productId; let index = $index) {
+          <article class="report-card">
+            <div class="card-main">
+              <div class="company-heading">
+                <div class="company-monogram" aria-hidden="true">{{ company.name.slice(0, 1) }}</div>
+                <div>
+                  <div class="badge-row">
+                    @if (company.isFree) { <span class="free-badge">Free report</span> }
+                    @if (company.companyStatus) { <span class="status-badge">{{ company.companyStatus }}</span> }
+                  </div>
+                  <h3>{{ company.name }}</h3>
+                  <p class="published">Published {{ company.publishDate || company.createdOn || 'recently' }}</p>
+                </div>
+              </div>
+              <p class="summary">{{ company.shortSummary || 'A structured company note covering the business, valuation and key factors to track.' }}</p>
+            </div>
+
+            <div class="metrics">
+              <div><span>TTM P/E</span><strong>{{ formatMetric(company.pe) }}</strong></div>
+              <div><span>Market cap</span><strong>₹{{ formatMetric(company.marketCap) }} Cr</strong></div>
+            </div>
+
+            <button
+              type="button"
+              class="read-button"
+              (click)="openReport(company, index)"
+              [attr.aria-label]="(!hasResearchProduct() && !company.isFree ? 'View plans to unlock ' : 'Read research report for ') + company.name"
+            >
+              {{ !hasResearchProduct() && !company.isFree ? 'View plans' : 'Read report' }} <span aria-hidden="true">→</span>
+            </button>
+          </article>
+        }
+      </div>
+    }
+
+    <p class="research-disclaimer">
+      Investment in securities market is subject to market risks. Read all related documents carefully before investing. Past performance is not indicative of future returns.
+    </p>
+  </section>
+</main>

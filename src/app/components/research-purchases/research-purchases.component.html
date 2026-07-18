@@ -1,0 +1,36 @@
+<main class="purchases-page">
+  <nav><a routerLink="/research">← Research library</a><a routerLink="/research/plans">View plans</a></nav>
+  <header><p>YOUR ACCOUNT</p><h1>Purchase history & receipts</h1><span>Orders made in the app and on the website appear together.</span></header>
+
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (loading()) { <p class="state" aria-live="polite">Loading your purchases…</p> }
+  @else if (purchases().length === 0) { <p class="state">You do not have any purchases yet.</p> }
+  @else {
+    <section class="orders" aria-label="Purchase orders">
+      @for (order of purchases(); track order.id) {
+        <article>
+          <div><small>PRODUCT</small><strong>{{ order.productName || 'Research subscription' }}</strong></div>
+          <div><small>PAYMENT DATE</small><span>{{ order.paymentDate | date:'mediumDate' }}</span></div>
+          <div><small>VALID UNTIL</small><span>{{ order.endDate ? (order.endDate | date:'mediumDate') : '—' }}</span></div>
+          <div><small>AMOUNT</small><strong>₹{{ order.paidAmount || 0 | number:'1.0-2' }}</strong></div>
+          <button type="button" (click)="viewReceipt(order.id)">View receipt</button>
+        </article>
+      }
+    </section>
+  }
+
+  @if (receipt(); as item) {
+    <section class="receipt" aria-label="Purchase receipt">
+      <div class="receipt-head"><div><small>RESEARCH MANTRA</small><h2>Payment receipt</h2></div><button type="button" (click)="receipt.set(null)" aria-label="Close receipt">×</button></div>
+      <dl>
+        <div><dt>Receipt number</dt><dd>RM-{{ item.id }}</dd></div>
+        <div><dt>Customer</dt><dd>{{ item.customerName || 'Investor' }}</dd></div>
+        <div><dt>Product</dt><dd>{{ item.productName }}</dd></div>
+        <div><dt>Payment date</dt><dd>{{ item.paymentDate | date:'medium' }}</dd></div>
+        <div><dt>Transaction</dt><dd>{{ item.transactionId || item.transactionReference || '—' }}</dd></div>
+        <div><dt>Amount paid</dt><dd>₹{{ item.paidAmount || 0 | number:'1.0-2' }}</dd></div>
+      </dl>
+      <button class="print" type="button" (click)="printReceipt()">Print / save receipt</button>
+    </section>
+  }
+</main>
