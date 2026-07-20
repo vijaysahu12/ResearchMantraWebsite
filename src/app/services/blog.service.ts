@@ -18,6 +18,10 @@ export interface BlogPost {
     metaDescription?: string;
     keywords?: string;
     enableComments?: boolean;
+    images?: { url: string; alt?: string; aspectRatio?: string }[];
+    likesCount?: number;
+    commentsCount?: number;
+    isLiked?: boolean;
 }
 
 @Injectable({

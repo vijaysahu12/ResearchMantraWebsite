@@ -2,7 +2,7 @@
   <section class="portal-hero" aria-labelledby="research-heading">
     <div class="portal-topline">
       <a routerLink="/" class="portal-brand" aria-label="Research Mantra home">
-        <span class="portal-mark" aria-hidden="true">RM</span>
+        <img class="portal-mark" src="assets/RM_Logo.png" alt="" aria-hidden="true" />
         <span><strong>Research Mantra</strong><small>Investor Research Desk</small></span>
       </a>
       <div class="account-area">
@@ -73,17 +73,25 @@
           <article class="report-card">
             <div class="card-main">
               <div class="company-heading">
-                <div class="company-monogram" aria-hidden="true">{{ company.name.slice(0, 1) }}</div>
+                <div class="company-monogram" aria-hidden="true">{{ isLocked(company) ? '🔒' : company.name.slice(0, 1) }}</div>
                 <div>
                   <div class="badge-row">
                     @if (company.isFree) { <span class="free-badge">Free report</span> }
-                    @if (company.companyStatus) { <span class="status-badge">{{ company.companyStatus }}</span> }
+                    @if (isLocked(company)) {
+                      <span class="status-badge">Subscriber report</span>
+                    } @else if (company.companyStatus) {
+                      <span class="status-badge">{{ company.companyStatus }}</span>
+                    }
                   </div>
-                  <h3>{{ company.name }}</h3>
+                  <h3>{{ isLocked(company) ? lockedLabel(index) : company.name }}</h3>
                   <p class="published">Published {{ company.publishDate || company.createdOn || 'recently' }}</p>
                 </div>
               </div>
-              <p class="summary">{{ company.shortSummary || 'A structured company note covering the business, valuation and key factors to track.' }}</p>
+              <p class="summary">
+                {{ isLocked(company)
+                  ? 'Subscribe to reveal the company and read the complete research report.'
+                  : company.shortSummary || 'A structured company note covering the business, valuation and key factors to track.' }}
+              </p>
             </div>
 
             <div class="metrics">
@@ -95,9 +103,9 @@
               type="button"
               class="read-button"
               (click)="openReport(company, index)"
-              [attr.aria-label]="(!hasResearchProduct() && !company.isFree ? 'View plans to unlock ' : 'Read research report for ') + company.name"
+              [attr.aria-label]="isLocked(company) ? 'View plans to unlock ' + lockedLabel(index) : 'Read research report for ' + company.name"
             >
-              {{ !hasResearchProduct() && !company.isFree ? 'View plans' : 'Read report' }} <span aria-hidden="true">→</span>
+              {{ isLocked(company) ? 'View plans' : 'Read report' }} <span aria-hidden="true">→</span>
             </button>
           </article>
         }

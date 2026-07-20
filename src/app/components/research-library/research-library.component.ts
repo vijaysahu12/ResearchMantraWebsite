@@ -67,10 +67,15 @@ export class ResearchLibraryComponent implements OnInit {
   }
 
   openReport(company: ResearchCompany, visibleIndex: number): void {
-    const page = this.companies().indexOf(company) + 1 || visibleIndex + 1;
-    if (!this.hasResearchProduct() && !company.isFree) {
+    const accessibleCompanies = this.companies().filter((item) => !this.isLocked(item));
+    const accessiblePage = accessibleCompanies.indexOf(company) + 1;
+    const page = this.hasResearchProduct()
+      ? this.companies().indexOf(company) + 1 || visibleIndex + 1
+      : accessiblePage;
+
+    if (this.isLocked(company)) {
       const returnUrl = this.router.createUrlTree(['/research/report'], {
-        queryParams: { page, name: company.name },
+        queryParams: { page: this.companies().indexOf(company) + 1, name: 'Premium Research Idea' },
       }).toString();
       void this.router.navigate(['/research/plans'], {
         queryParams: { productId: company.productId, returnUrl },
@@ -90,5 +95,13 @@ export class ResearchLibraryComponent implements OnInit {
 
   formatMetric(value?: number): string {
     return value == null ? '—' : new Intl.NumberFormat('en-IN', { maximumFractionDigits: 1 }).format(value);
+  }
+
+  isLocked(company: ResearchCompany): boolean {
+    return !this.hasResearchProduct() && company.isFree !== true;
+  }
+
+  lockedLabel(index: number): string {
+    return `Premium research idea ${index + 1}`;
   }
 }

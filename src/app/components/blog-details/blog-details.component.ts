@@ -19,10 +19,14 @@ import { SeoService } from '../../services/seo.service';
         } @else if (blog()) {
             <article class="blog-detail-container">
                 <!-- Hero Section -->
-                <header class="blog-hero" [style.backgroundImage]="blog()?.image ? 'url(' + blog()?.image + ')' : 'none'">
+                <header class="blog-hero">
+                    @if (blog()?.image) {
+                        <img class="hero-cover" [src]="blog()?.image" [alt]="blog()?.title || 'Research Mantra blog cover'" />
+                    }
                     <div class="hero-overlay"></div>
                     <div class="hero-content">
                         <h1 class="blog-title">{{ blog()?.title }}</h1>
+                        <p class="blog-byline">By {{ blog()?.author }} @if (blog()?.date) { · {{ blog()?.date }} } @if (blog()?.readTime) { · {{ blog()?.readTime }} }</p>
                     </div>
 
                     <div class="bg-text-overlay">
@@ -166,6 +170,20 @@ import { SeoService } from '../../services/seo.service';
             inset: 0;
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
             z-index: 1;
+        }
+
+        .hero-cover {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .blog-byline {
+            margin: 18px 0 0;
+            font-weight: 600;
+            color: #f8fafc;
         }
 
         .hero-content {
@@ -695,7 +713,8 @@ export class BlogDetailsComponent implements OnInit {
                 if (res.statusCode === 200) {
                     this.comments.set(res.data || []);
                 }
-            }
+            },
+            error: () => this.comments.set([]),
         });
     }
 
@@ -796,5 +815,6 @@ export class BlogDetailsComponent implements OnInit {
             image: blog.image,
             type: 'article'
         });
+        this.seoService.updateCanonicalUrl(`https://researchmantra.in/blogs/${blog.slug}`);
     }
 }

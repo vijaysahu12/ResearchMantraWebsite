@@ -3,7 +3,7 @@
 .portal-hero { padding:28px clamp(24px,6vw,92px) 78px; color:#fff; background:radial-gradient(circle at 78% 20%,rgba(35,142,236,.46),transparent 28%),linear-gradient(135deg,#061b31 0%,#0a3158 58%,#075da9 100%); }
 .portal-topline { max-width:1320px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:20px; }
 .portal-brand { display:flex; align-items:center; gap:12px; color:#fff; text-decoration:none; }
-.portal-mark { width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#1682df;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,.22); }
+.portal-mark { width:48px;height:48px;display:block;object-fit:contain;filter:drop-shadow(0 8px 14px rgba(0,0,0,.24)); }
 .portal-brand strong,.portal-brand small { display:block; }.portal-brand small{margin-top:2px;color:#a9c6df;font-size:11px;}
 .account-area{display:flex;align-items:center;gap:14px}.welcome{color:#d6e6f4;font-size:14px}.logout-button{border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:9px 16px;color:#fff;background:transparent;font-weight:750;cursor:pointer}
 .hero-copy{max-width:780px;margin:90px auto 36px;text-align:center}.eyebrow,.section-kicker{margin:0 0 12px;text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:850;color:#63b6ff}.hero-copy h1{margin:0;font-size:clamp(44px,6vw,72px);line-height:1;letter-spacing:-.05em}.hero-copy>p:last-child{max-width:680px;margin:22px auto 0;color:#c8dae9;font-size:17px;line-height:1.7}

@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, ViewChildren, QueryList, DestroyRef, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, ViewChildren, QueryList, DestroyRef, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, FormArray } from '@angular/forms';
 import { LeadService, SendOtpRequest, VerifyOtpRequest, WebsiteLead } from '../../services/lead.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -20,6 +20,7 @@ export class RmIntroComponent implements OnInit {
     private leadService = inject(LeadService);
     private destroyRef = inject(DestroyRef);
     private http = inject(HttpClient);
+    private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     // State Signals
     currentStep = signal<Step>('mobile');
@@ -75,6 +76,7 @@ export class RmIntroComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (!this.isBrowser) return;
         // Restore state from sessionStorage if available
         const savedState = sessionStorage.getItem('leadState');
         if (savedState) {

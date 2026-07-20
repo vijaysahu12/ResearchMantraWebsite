@@ -14,15 +14,24 @@
         <p class="eyebrow">Company research note</p>
         <div class="title-row"><h1>{{ company.name }}</h1>@if(company.symbol){<span>{{ company.symbol }}</span>}</div>
         <p class="date">Published {{ company.publishDate || 'recently' }} · Research Mantra Research Desk</p>
-        <p class="description">{{ company.description || 'Detailed fundamental research and key business factors for investor review.' }}</p>
+        <div
+          class="description"
+          [innerHTML]="company.description || 'Detailed fundamental research and key business factors for investor review.'"
+        ></div>
       </div>
-      <aside class="quick-view" aria-label="Company snapshot">
-        <p>Quick view</p>
-        <div><span>Current price</span><strong>₹{{ formatNumber(company.currentPrice) }}</strong></div>
-        <div><span>Face value</span><strong>₹{{ formatNumber(company.faceValue) }}</strong></div>
-        <div><span>Promoter holding</span><strong>{{ formatNumber(company.promotersHolding) }}%</strong></div>
-        <div><span>Profit growth</span><strong>{{ formatNumber(company.profitGrowth) }}%</strong></div>
-      </aside>
+      <div class="header-asides">
+        <aside class="quick-view" aria-label="Company snapshot">
+          <p>Quick view</p>
+          <div><span>Current price</span><strong>₹{{ formatNumber(company.currentPrice) }}</strong></div>
+          <div><span>Face value</span><strong>₹{{ formatNumber(company.faceValue) }}</strong></div>
+          <div><span>Promoter holding</span><strong>{{ formatNumber(company.promotersHolding) }}%</strong></div>
+          <div><span>Profit growth</span><strong>{{ formatNumber(company.profitGrowth) }}%</strong></div>
+        </aside>
+        <aside class="report-sidebar">
+          <div class="sidebar-card"><p class="sidebar-label">Report contents</p><ol><li>Investment thesis</li><li>Price context</li><li>Financial track record</li><li>Decision checklist</li></ol></div>
+          @if(company.websiteUrl){<a class="company-link" [href]="company.websiteUrl" target="_blank" rel="noopener noreferrer">Visit company website <span aria-hidden="true">↗</span></a>}
+        </aside>
+      </div>
     </header>
 
     <div class="report-layout">
@@ -52,11 +61,6 @@
 
         <section class="decision-note"><h2>Use this report as a starting point</h2><p>Consider your investment horizon, risk appetite, portfolio concentration and the latest company disclosures before making a decision. Revisit the thesis when facts change.</p></section>
       </article>
-
-      <aside class="report-sidebar">
-        <div class="sidebar-card"><p class="sidebar-label">Report contents</p><ol><li>Investment thesis</li><li>Price context</li><li>Financial track record</li><li>Decision checklist</li></ol></div>
-        @if(company.websiteUrl){<a class="company-link" [href]="company.websiteUrl" target="_blank" rel="noopener noreferrer">Visit company website <span aria-hidden="true">↗</span></a>}
-      </aside>
     </div>
 
     <footer class="report-disclaimer"><strong>Research disclaimer</strong><p>Registration granted by SEBI and certification from NISM in no way guarantee performance of the intermediary or provide any assurance of returns to investors. Investment in securities market is subject to market risks. This material is for information and education and should not be treated as a guarantee of returns.</p></footer>

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApiEnvelope,
@@ -15,7 +15,7 @@ export class ResearchService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(ResearchAuthService);
 
-  getCompanies(searchText = '') {
+  getCompanies(searchText = ''): Observable<CompaniesResponse> {
     const session = this.requireSession();
     return this.http
       .post<ApiEnvelope<CompaniesResponse>>(
@@ -33,7 +33,7 @@ export class ResearchService {
       .pipe(map((response) => this.unwrap(response)));
   }
 
-  getCompanyReport(pageNumber: number) {
+  getCompanyReport(pageNumber: number): Observable<CompanyReport> {
     const session = this.requireSession();
     return this.http
       .post<ApiEnvelope<CompanyReport>>(
@@ -51,7 +51,7 @@ export class ResearchService {
       .pipe(map((response) => this.unwrap(response)));
   }
 
-  getSharedPost(postId: string) {
+  getSharedPost(postId: string): Observable<SharedPost> {
     const session = this.requireSession();
     return this.http.get<ApiEnvelope<SharedPost>>(
       `${environment.gatewayUrl}product/blog/shared/${encodeURIComponent(postId)}`,

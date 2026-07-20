@@ -138,7 +138,7 @@ export class AdminBlogs implements OnInit {
   }
 
   navigateToBlog(slug: string) {
-    this.router.navigate(['/', slug]);
+    this.router.navigate(['/blogs', slug]);
   }
 
   // Add a local tracking set

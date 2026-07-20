@@ -41,19 +41,7 @@ export class ResearchAuthService {
         version: '1.0.0',
       })
       .pipe(
-        tap((response) => {
-          if (response.statusCode !== 200 || !response.data?.accessToken) return;
-
-          const session: AuthSession = {
-            publicKey: response.data.publicKey,
-            mobileNumber,
-            name: response.data.name?.trim() || 'Investor',
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
-          };
-          this.sessionState.set(session);
-          if (this.isBrowser) sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-        }),
+        tap((response) => this.storeSession(response, mobileNumber)),
       );
   }
 
@@ -76,6 +64,19 @@ export class ResearchAuthService {
   private clearSession(): void {
     this.sessionState.set(null);
     if (this.isBrowser) sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  private storeSession(response: ApiEnvelope<OtpVerificationData>, mobileNumber: string): void {
+    if (response.statusCode !== 200 || !response.data?.accessToken) return;
+    const session: AuthSession = {
+      publicKey: response.data.publicKey,
+      mobileNumber,
+      name: response.data.name?.trim() || 'Investor',
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
+    };
+    this.sessionState.set(session);
+    if (this.isBrowser) sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
   }
 
   private readSession(): AuthSession | null {

@@ -42,8 +42,16 @@ export const routes: Routes = [
     { path: 'terms-conditions', component: TermsConditionsComponent },
     { path: 'mobile-terms-condition', component: MobileTermsCondition },
     { path: 'blogs', component: BlogsComponent },
+    { path: 'blogs/:slug', component: BlogDetailsComponent },
     { path: 'stock-market-analysis-and-nifty-updates', component: AdminBlogs },
-    { path: 'admin/blogs', redirectTo: 'stock-market-analysis-and-nifty-updates', pathMatch: 'full' },
+    {
+      path: 'admin/blogs',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/admin-blog-editor/admin-blog-editor.component').then(
+          (component) => component.AdminBlogEditorComponent,
+        ),
+    },
     {
       path: 'login',
       loadComponent: () =>
@@ -73,6 +81,16 @@ export const routes: Routes = [
       loadComponent: () =>
         import('./components/research-plans/research-plans.component').then(
           (component) => component.ResearchPlansComponent,
+        ),
+    },
+    {
+      path: 'research/test-payment',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import(
+          './components/research-test-payment/research-test-payment.component'
+        ).then(
+          (component) => component.ResearchTestPaymentComponent,
         ),
     },
     {

@@ -12,7 +12,13 @@ h1 { max-width: 620px; margin: 14px 0 20px; font-size: clamp(42px,5vw,68px); lin
 .registration { position: relative; z-index: 1; color: #a9c2da; font-size: 12px; letter-spacing: .06em; }
 .login-panel { display: grid; place-items: center; padding: 48px clamp(24px,6vw,90px); }
 .login-card { width: min(100%,480px); padding: 44px; border: 1px solid #e1e8f0; border-radius: 24px; background: #fff; box-shadow: 0 26px 70px rgba(15,45,80,.1); }
-.brand-mark { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: #0d6cca; color: white; font-weight: 900; box-shadow: 0 10px 25px rgba(13,108,202,.25); }
+.brand-mark {
+  width: 68px;
+  height: 68px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(6, 47, 91, 0.2));
+}
 .step-label { margin: 28px 0 8px; color: #0d6cca; }
 h2 { margin: 0; font-size: 30px; letter-spacing: -.03em; }
 .helper { color: #607086; line-height: 1.6; margin: 12px 0 28px; }

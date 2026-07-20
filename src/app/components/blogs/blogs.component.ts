@@ -9,6 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
+import { AdminBlogService } from '../../services/admin-blog.service';
 
 @Component({
   selector: 'app-blogs',
@@ -20,12 +21,19 @@ import { BlogService } from '../../services/blog.service';
 })
 export class BlogsComponent implements OnInit {
   private blogService = inject(BlogService);
+  private apiBlogService = inject(AdminBlogService);
   private router = inject(Router);
   // Define state variable
 public activeCommentBlogId: string | number | null = null;
 
   // signal from service
-  blogs = this.blogService.getBlogs();
+  private hardcodedBlogs = this.blogService.getBlogs();
+  private apiBlogs = this.apiBlogService.getBlogs();
+  blogs = computed(() => {
+    const bySlug = new Map(this.hardcodedBlogs().map((blog) => [blog.slug, blog]));
+    for (const blog of this.apiBlogs()) bySlug.set(blog.slug, blog);
+    return Array.from(bySlug.values());
+  });
 
   searchQuery = signal<string>('');
   isSearching = signal<boolean>(false);
@@ -36,7 +44,7 @@ public activeCommentBlogId: string | number | null = null;
   userId: any = '00000000-0000-0000-0000-000000000000'; // Replace with actual user ID logic
 
   ngOnInit() {
-    this.blogService.getBlogs();
+    this.apiBlogService.loadBlogs(1, 50);
   }
 
   filteredBlogs = computed(() => {
@@ -119,7 +127,7 @@ public activeCommentBlogId: string | number | null = null;
     };
   }
   navigateToBlog(slug: string) {
-    this.router.navigate(['/', slug]);
+    this.router.navigate(['/blogs', slug]);
   }
 
 toggleComments(blog: any, event: Event) {
@@ -144,7 +152,7 @@ loadCommentsForBlog(blog: any) {
           b.id === blog.id ? { ...b, comments: res.data } : b
         );
 
-        this.blogs.set(updatedBlogs);
+        this.apiBlogs.set(updatedBlogs.filter((blog): blog is import('../../services/admin-blog.service').BlogPost => typeof blog.id === 'string'));
       }
     },
     error: (err) => {

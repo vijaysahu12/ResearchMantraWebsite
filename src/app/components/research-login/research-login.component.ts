@@ -93,7 +93,7 @@ export class ResearchLoginComponent {
       return '/research';
     }
 
-    const allowed = ['/research', '/share/post/', '/share/research'];
+    const allowed = ['/research', '/share/post/', '/share/research', '/admin/blogs'];
     return allowed.some((prefix) => value === prefix || value.startsWith(prefix))
       ? value
       : '/research';

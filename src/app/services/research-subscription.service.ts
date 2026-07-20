@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApiEnvelope,
@@ -19,7 +19,7 @@ export class ResearchSubscriptionService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(ResearchAuthService);
 
-  getPlans(productId: number) {
+  getPlans(productId: number): Observable<ResearchSubscriptionPlan[]> {
     const session = this.requireSession();
     return this.http
       .post<ApiEnvelope<ResearchSubscriptionPlan[]>>(
@@ -35,7 +35,7 @@ export class ResearchSubscriptionService {
       .pipe(map((response) => this.unwrap(response)));
   }
 
-  validateCoupon(productId: number, durationId: number, couponCode: string) {
+  validateCoupon(productId: number, durationId: number, couponCode: string): Observable<{ deductedPrice: number }> {
     const session = this.requireSession();
     return this.http
       .post<ApiEnvelope<{ deductedPrice: number }>>(
@@ -51,7 +51,7 @@ export class ResearchSubscriptionService {
       .pipe(map((response) => this.unwrap(response)));
   }
 
-  createPaymentRequest(productId: number, duration: SubscriptionDuration, _amount: number, couponCode: string) {
+  createPaymentRequest(productId: number, duration: SubscriptionDuration, _amount: number, couponCode: string): Observable<PaymentRequestResult> {
     const session = this.requireSession();
 
     return this.http
@@ -66,7 +66,7 @@ export class ResearchSubscriptionService {
       );
   }
 
-  getPaymentStatus(linkId: string) {
+  getPaymentStatus(linkId: string): Observable<PaymentStatusResult> {
     const session = this.requireSession();
     return this.http
       .get<PaymentStatusResult>(
@@ -75,14 +75,23 @@ export class ResearchSubscriptionService {
       );
   }
 
-  getPurchaseHistory() {
+  completeTestPayment(linkId: string): Observable<PaymentStatusResult> {
+    const session = this.requireSession();
+    return this.http.post<PaymentStatusResult>(
+      `${environment.gatewayUrl}payment/cashfree/orders/${encodeURIComponent(linkId)}/test-complete`,
+      {},
+      { headers: this.authHeaders(session.accessToken) },
+    );
+  }
+
+  getPurchaseHistory(): Observable<PurchaseHistoryItem[]> {
     const session = this.requireSession();
     return this.http.get<ApiEnvelope<PurchaseHistoryItem[]>>(`${environment.gatewayUrl}payment/history`, {
       headers: this.authHeaders(session.accessToken),
     }).pipe(map((response) => this.unwrap(response)));
   }
 
-  getReceipt(id: number) {
+  getReceipt(id: number): Observable<PurchaseHistoryItem> {
     const session = this.requireSession();
     return this.http.get<ApiEnvelope<PurchaseHistoryItem>>(`${environment.gatewayUrl}payment/receipt/${id}`, {
       headers: this.authHeaders(session.accessToken),
