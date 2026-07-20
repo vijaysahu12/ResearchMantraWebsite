@@ -1,20 +1,23 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PurchaseHistoryItem } from '../../models/research.models';
+import { catchError, forkJoin, of } from 'rxjs';
+import { MyBucketItem, PurchaseHistoryItem } from '../../models/research.models';
 import { ResearchSubscriptionService } from '../../services/research-subscription.service';
 
 @Component({
   selector: 'app-research-purchases',
   imports: [RouterLink, DatePipe, DecimalPipe],
   templateUrl: './research-purchases.component.html',
-  styleUrl: './research-purchases.component.css',
+  styleUrls: ['./research-purchases.component.css', './research-purchases.bucket.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResearchPurchasesComponent {
   private readonly subscriptions = inject(ResearchSubscriptionService);
   readonly loading = signal(true);
   readonly error = signal('');
+  readonly activeView = signal<'bucket' | 'purchases'>('bucket');
+  readonly bucket = signal<MyBucketItem[]>([]);
   readonly purchases = signal<PurchaseHistoryItem[]>([]);
   readonly receipt = signal<PurchaseHistoryItem | null>(null);
 
@@ -22,10 +25,30 @@ export class ResearchPurchasesComponent {
 
   load(): void {
     this.loading.set(true); this.error.set('');
-    this.subscriptions.getPurchaseHistory().subscribe({
-      next: (rows) => { this.purchases.set(rows); this.loading.set(false); },
-      error: () => { this.error.set('Purchase history could not be loaded.'); this.loading.set(false); },
+    let bucketFailed = false;
+    let purchasesFailed = false;
+    forkJoin({
+      bucket: this.subscriptions.getMyBucket().pipe(catchError(() => { bucketFailed = true; return of([]); })),
+      purchases: this.subscriptions.getPurchaseHistory().pipe(catchError(() => { purchasesFailed = true; return of([]); })),
+    }).subscribe({
+      next: ({ bucket, purchases }) => {
+        this.bucket.set(bucket);
+        this.purchases.set(purchases);
+        if (bucketFailed && purchasesFailed) this.error.set('Your products and purchase history could not be loaded.');
+        else if (bucketFailed) this.error.set('My Bucket could not be loaded.');
+        else if (purchasesFailed) this.error.set('Purchase history could not be loaded.');
+        this.loading.set(false);
+      },
     });
+  }
+
+  isBucketActive(item: MyBucketItem): boolean {
+    return !item.enddate || new Date(item.enddate).getTime() >= Date.now();
+  }
+
+  show(view: 'bucket' | 'purchases'): void {
+    this.activeView.set(view);
+    if (view === 'bucket') this.receipt.set(null);
   }
 
   viewReceipt(id: number): void {

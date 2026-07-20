@@ -1,0 +1,150 @@
+.purchases-page > header {
+  padding-bottom: 24px;
+}
+
+.purchases-page > header p {
+  margin-bottom: 8px;
+}
+
+.account-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-width: 620px;
+  padding: 6px;
+  border: 1px solid #d5e2ee;
+  border-radius: 14px;
+  background: #eaf0f6;
+}
+
+.account-tabs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 10px;
+  color: #52677d;
+  background: transparent;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.account-tabs button.active {
+  color: #075faa;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(27, 62, 91, 0.1);
+}
+
+.account-tabs small {
+  min-width: 24px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: inherit;
+  background: rgba(8, 104, 201, 0.1);
+  font-size: 0.72rem;
+}
+
+.account-section {
+  margin-top: 24px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+
+.section-heading p {
+  margin: 0 0 5px;
+  color: #3078bd;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.65rem;
+}
+
+.section-heading > span {
+  color: #64758b;
+}
+
+.bucket-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.bucket-card {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid #dce6f1;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.bucket-card > div {
+  display: grid;
+  gap: 6px;
+}
+
+.status {
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #087a50;
+  background: #e6f7ef;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.status.expired {
+  color: #8a4b15;
+  background: #fff0df;
+}
+
+@media (max-width: 800px) {
+  .bucket-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bucket-card > div:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 430px) {
+  .account-tabs {
+    width: 100%;
+  }
+
+  .account-tabs button {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+
+  .section-heading {
+    align-items: start;
+  }
+
+  .section-heading > span {
+    font-size: 0.8rem;
+  }
+
+  .bucket-card {
+    grid-template-columns: 1fr;
+  }
+
+  .bucket-card > div,
+  .bucket-card > div:first-child {
+    grid-column: 1;
+  }
+}

@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApiEnvelope,
+  MyBucketItem,
   PaymentRequestResult,
   PaymentStatusResult,
   PurchaseHistoryItem,
@@ -89,6 +90,16 @@ export class ResearchSubscriptionService {
     return this.http.get<ApiEnvelope<PurchaseHistoryItem[]>>(`${environment.gatewayUrl}payment/history`, {
       headers: this.authHeaders(session.accessToken),
     }).pipe(map((response) => this.unwrap(response)));
+  }
+
+  getMyBucket(): Observable<MyBucketItem[]> {
+    const session = this.requireSession();
+    return this.http.get<ApiEnvelope<MyBucketItem[]>>(`${environment.gatewayUrl}product/my-bucket-content`, {
+      headers: this.authHeaders(session.accessToken),
+    }).pipe(map((response) => {
+      if (response.statusCode !== 200) throw new Error(response.message || 'My Bucket could not be loaded.');
+      return response.data ?? [];
+    }));
   }
 
   getReceipt(id: number): Observable<PurchaseHistoryItem> {

@@ -84,6 +84,20 @@ export interface PurchaseHistoryItem {
   status?: number;
 }
 
+export interface MyBucketItem {
+  id: number;
+  name: string;
+  startdate: string;
+  enddate?: string;
+  listImage?: string;
+  daysToGo?: number;
+  showReminder?: boolean;
+  categoryName?: string;
+  buyButtonText?: string;
+  price?: number;
+  notificationEnabled?: boolean;
+}
+
 export interface ResearchCompany {
   basketId: number;
   productId: number;
