@@ -277,7 +277,7 @@
 }
 
 .block-label,
-.info-card h4 {
+.info-card h3 {
     letter-spacing: 0.02em;
 }
 
@@ -370,7 +370,7 @@
     box-shadow: 0 8px 16px -6px rgba(248, 176, 24, 0.6);
 }
 
-.info-card h4 {
+.info-card h3 {
     font-size: 17px;
     font-weight: 800;
     color: var(--navy-dark);

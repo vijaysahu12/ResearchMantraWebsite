@@ -37,7 +37,7 @@
 }
 
 .highlight {
-    color: #FACC15;
+    color: #a5870e;
 }
 
 .sub-heading {
@@ -166,7 +166,7 @@
     margin-bottom: 20px;
 }
 
-.no-results h3 {
+.no-results h2 {
     font-size: 24px;
     font-weight: 700;
     color: #111827;
@@ -304,6 +304,12 @@
 
 .read-more:hover {
     color: #EAB308;
+}
+
+.read-more:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 3px;
+    border-radius: 4px;
 }
 
 /* Newsletter CTA */

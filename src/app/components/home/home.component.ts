@@ -35,9 +35,7 @@ import { ContactComponent } from '../contact/contact.component';
     <app-complaints-summary></app-complaints-summary>
     <app-must-read></app-must-read>
     <app-faq></app-faq>
-    <div id="contact">
-      <app-contact></app-contact>
-    </div>
+    <app-contact></app-contact>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

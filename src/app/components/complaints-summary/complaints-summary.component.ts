@@ -26,7 +26,7 @@ import { isPlatformBrowser } from '@angular/common';
         <p class="update-note">Data of the month ending Jan, 2026 (Data is updated on 7th of every month)</p>
 
         <div class="table-container">
-            <div class="table-wrapper">
+            <div class="table-wrapper" role="region" tabindex="0" aria-label="Complaints summary table">
                 <table class="complaints-table">
                     <thead>
                         <tr>

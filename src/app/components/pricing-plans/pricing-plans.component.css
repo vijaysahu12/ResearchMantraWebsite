@@ -1,7 +1,7 @@
 :host {
     display: block;
     --text-primary: #111827;
-    --text-muted: #64748B;
+    --text-muted: #5e6d83;
     --brand-yellow: #f8b018;
     --bg-white: #FFFFFF;
     --navy-blue: #0F172A;
@@ -49,7 +49,7 @@
 }
 
 .main-heading .highlight {
-    color: var(--brand-yellow);
+    color: #b88212;
 }
 
 .sub-heading {
@@ -280,7 +280,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    color: #94A3B8;
+    color: #656f7d;
     padding-top: 2px;
 }
 
@@ -308,7 +308,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 700;
-    color: #94A3B8;
+    color: #656f7d;
     margin-bottom: 10px;
 }
 
@@ -349,7 +349,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #7a4d05;
+    color: #654004;
     background: var(--brand-yellow);
     padding: 2px 7px;
     border-radius: 100px;
@@ -446,7 +446,7 @@
 }
 
 .reports-btn {
-    background-color: #128C7E;
+    background-color: #107f73;
     /* WhatsApp Teal */
     color: white;
     padding: 16px 36px;
@@ -515,7 +515,7 @@
     background: none;
     border: none;
     font-size: 28px;
-    color: #94A3B8;
+    color: #656f7d;
     cursor: pointer;
     line-height: 1;
     z-index: 10;
@@ -616,7 +616,7 @@
 
 .qr-hint {
     font-size: 13px;
-    color: #94A3B8;
+    color: #656f7d;
     margin: 0;
     margin-bottom: 8px !important;
 }

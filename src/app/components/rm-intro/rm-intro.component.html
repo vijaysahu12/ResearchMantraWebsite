@@ -39,13 +39,13 @@
             </span>
             <div class="offer-timer" role="timer" aria-label="Offer ends in">
                 <span class="offer-timer-label">Ends in</span>
-                <span class="cd-unit">{{ countdown().d }}<i>d</i></span>
+                <span class="cd-unit">{{ countdown().d }}<span class="cd-suffix">d</span></span>
                 <span class="cd-sep">:</span>
-                <span class="cd-unit">{{ countdown().h }}<i>h</i></span>
+                <span class="cd-unit">{{ countdown().h }}<span class="cd-suffix">h</span></span>
                 <span class="cd-sep">:</span>
-                <span class="cd-unit">{{ countdown().m }}<i>m</i></span>
+                <span class="cd-unit">{{ countdown().m }}<span class="cd-suffix">m</span></span>
                 <span class="cd-sep">:</span>
-                <span class="cd-unit">{{ countdown().s }}<i>s</i></span>
+                <span class="cd-unit">{{ countdown().s }}<span class="cd-suffix">s</span></span>
             </div>
         </div>
 
@@ -55,7 +55,7 @@
                 <span class="offer-save">Grab Now</span>
             </div>
             <a routerLink="/mobile" class="offer-install" (mouseenter)="burstConfetti()"
-                aria-label="Install the app — exclusive free trial, limited offer">
+                aria-label="Install Now — exclusive free trial, limited offer">
                 Install Now
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -84,7 +84,7 @@
                             </svg>
                         </div>
                         <div class="tl-title-wrap">
-                            <h4>Get instant updates on Telegram</h4>
+                            <h2>Get instant updates on Telegram</h2>
                             <span class="tl-stats">🏆 4,500+ traders already joined</span>
                         </div>
                     </div>
@@ -215,8 +215,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="message" class="sr-only">Message</label>
-                        <textarea id="message" formControlName="message" rows="2" minlength="1" maxlength="300"
+                        <label for="hero-message" class="sr-only">Message</label>
+                        <textarea id="hero-message" formControlName="message" rows="2" minlength="1" maxlength="300"
                             placeholder="How can we help you?"></textarea>
                     </div>
 
@@ -231,7 +231,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="submit-button"
+                    <button type="submit" class="submit-button" aria-label="Request a Free Demo"
                         [disabled]="enquiryForm.invalid || isEnquirySubmitting()">
                         @if (isEnquirySubmitting()) {
                         <span class="spinner"></span> Sending...

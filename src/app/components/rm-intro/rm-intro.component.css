@@ -3,7 +3,7 @@
     --hero-bg-left: #0F172A;
     --hero-bg-right: #1E293B;
     --text-muted: #94A3B8;
-    --accent-teal: #14B8A6;
+    --accent-teal: #0e7f73;
     --card-bg: #FFFFFF;
     --text-red: #EF4444;
     --text-green: #10B981;
@@ -274,7 +274,7 @@
     font-variant-numeric: tabular-nums;
 }
 
-.cd-unit i {
+.cd-unit .cd-suffix {
     font-style: normal;
     font-size: 8px;
     opacity: 0.65;
@@ -653,14 +653,14 @@
     width: 48px;
     height: 48px;
     background: rgba(0, 136, 204, 0.15);
-    color: #0088cc;
+    color: #0076b1;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.tl-title-wrap h4 {
+.tl-title-wrap h2 {
     margin: 0 0 4px 0;
     font-size: 18px;
     font-weight: 700;
@@ -738,7 +738,7 @@
 }
 
 .tl-join-btn-small {
-    background-color: #0088cc;
+    background-color: #0076b1;
     color: white;
     text-decoration: none;
     display: inline-flex;
@@ -757,7 +757,7 @@
 }
 
 .tl-join-btn {
-    background-color: #0088cc;
+    background-color: #0076b1;
     text-decoration: none;
     display: flex;
     justify-content: center;
@@ -1153,11 +1153,11 @@
 }
 
 .telegram-tab {
-    color: #0088cc;
+    color: #0076b1;
 }
 
 .yt-tab {
-    color: #FF0000;
+    color: #d70000;
 }
 
 
@@ -1496,7 +1496,7 @@
 }
 
 .telegram-join-btn {
-    background-color: #0088cc !important;
+    background-color: #0076b1 !important;
     font-size: 16px !important;
     padding: 18px !important;
     box-shadow: 0 8px 16px -4px rgba(0, 136, 204, 0.4);
@@ -1900,7 +1900,7 @@
         gap: 10px;
     }
 
-    .tl-title-wrap h4 {
+    .tl-title-wrap h2 {
         font-size: 16px;
     }
 }
@@ -1919,10 +1919,13 @@
 
 .glow-free {
     color: #FACC15;
-    text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 20px rgba(250, 204, 21, 0.6);
+    background: #0b1533;
+    padding: 1px 8px;
+    border-radius: 6px;
     font-weight: 800;
     margin-left: 6px;
     display: inline-block;
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.55);
     animation: freePulse 1.5s infinite ease-in-out;
 }
 
@@ -1930,13 +1933,13 @@
 
     0%,
     100% {
-        text-shadow: 0 0 10px rgba(250, 204, 21, 0.8), 0 0 20px rgba(250, 204, 21, 0.6);
+        box-shadow: 0 0 12px rgba(250, 204, 21, 0.55);
         transform: scale(1);
     }
 
     50% {
-        text-shadow: 0 0 30px rgba(250, 204, 21, 1), 0 0 60px rgba(250, 204, 21, 0.9), 0 0 90px rgba(250, 204, 21, 0.8);
-        transform: scale(1.25);
+        box-shadow: 0 0 26px rgba(250, 204, 21, 0.95), 0 0 48px rgba(250, 204, 21, 0.7);
+        transform: scale(1.18);
     }
 }
 

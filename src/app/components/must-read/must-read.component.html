@@ -12,7 +12,7 @@
             <div class="carousel-track" [style.transform]="'translateX(-' + (currentIndex() * (100 / 3)) + '%)'">
                 @for (blog of blogs(); track blog.id) {
                 <div class="blog-card-wrapper">
-                    <div class="blog-card" [routerLink]="['/', blog.slug]">
+                    <a class="blog-card" [routerLink]="['/', blog.slug]" [attr.aria-label]="'Read: ' + blog.title">
                         <div class="card-image">
                             <img [src]="blog.image" [alt]="blog.title" loading="lazy">
                         </div>
@@ -24,7 +24,7 @@
                                 <span class="date">{{ blog.date }}</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 }
             </div>

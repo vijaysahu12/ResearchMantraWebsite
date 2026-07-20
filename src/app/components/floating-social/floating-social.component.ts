@@ -6,13 +6,13 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [NgOptimizedImage],
   template: `
-    <div class="floating-container">
+    <nav class="floating-container" aria-label="Social media">
       @for(social of socials; track social.name) {
         <a [href]="social.link" target="_blank" [attr.aria-label]="social.name" class="social-icon" [style.--glow-color]="social.color">
           <img [ngSrc]="social.icon" [alt]="social.name" width="40" height="40">
         </a>
       }
-    </div>
+    </nav>
   `,
   styles: [`
     .floating-container {

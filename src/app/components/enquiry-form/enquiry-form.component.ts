@@ -44,7 +44,7 @@ interface WebsiteLead {
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <!-- Floating Button -->
-    <button class="floating-btn" (click)="toggleEnquiry()" aria-label="Enquire Now">
+    <button class="floating-btn" (click)="toggleEnquiry()" aria-label="Request a Free Demo">
       <span class="btn-text">Request a Free Demo</span>
       <span class="btn-icon">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
@@ -93,8 +93,8 @@ interface WebsiteLead {
           </div>
 
           <div class="form-group">
-            <label for="message">Your Message</label>
-            <textarea id="message" formControlName="message" rows="4" maxlength="300" placeholder="How can we help you?"></textarea>
+            <label for="enquiry-message">Your Message</label>
+            <textarea id="enquiry-message" formControlName="message" rows="4" maxlength="300" placeholder="How can we help you?"></textarea>
           </div>
 
           <div class="terms-wrapper">

@@ -88,6 +88,13 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+}
+
+.blog-card:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 3px;
 }
 
 .blog-card:hover {
@@ -171,7 +178,7 @@
 .date {
     font-size: 13px;
     font-weight: 600;
-    color: #94a3b8;
+    color: #687281;
 }
 
 /* Nav Buttons */

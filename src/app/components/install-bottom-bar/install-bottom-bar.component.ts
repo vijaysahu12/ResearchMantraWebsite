@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
           <span class="ibb-trust">Trusted by <strong>12K+</strong> Traders</span>
           <span class="ibb-divider" aria-hidden="true"></span>
           <span class="ibb-offer">🔥 <strong>Exclusive Free Trial</strong> — Grab Now</span>
-          <a routerLink="/mobile" class="ibb-btn" aria-label="Install the Research Mantra app">
+          <a routerLink="/mobile" class="ibb-btn" aria-label="Install App">
             Install App
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
                  stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -41,7 +41,7 @@ import { RouterLink } from '@angular/router';
       align-items: center;
       justify-content: center;
       gap: 12px;
-      padding: 11px 52px 11px 20px;
+      padding: 11px 64px 11px 20px;
       background: linear-gradient(90deg, #eaf2ff 0%, #dfeaff 50%, #eaf2ff 100%);
       border-top: 1px solid #c7d6f5;
       box-shadow: 0 -6px 20px -8px rgba(15, 23, 42, 0.25);
@@ -117,15 +117,19 @@ import { RouterLink } from '@angular/router';
 
     .ibb-close {
       position: absolute;
-      right: 14px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
       display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
       background: transparent;
       border: none;
       color: #64748b;
       cursor: pointer;
-      padding: 4px;
+      padding: 0;
       border-radius: 50%;
       transition: background 0.2s ease, color 0.2s ease;
     }
@@ -137,7 +141,7 @@ import { RouterLink } from '@angular/router';
 
     @media (max-width: 600px) {
       .ibb {
-        padding: 10px 44px 10px 14px;
+        padding: 10px 56px 10px 14px;
         gap: 8px;
       }
 

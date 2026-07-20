@@ -64,7 +64,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
                 <div class="content-layout">
                     <div class="content-row">
                     <!-- Main Content -->
-                    <main class="article-body">
+                    <div class="article-body">
                         <div class="content-card">
                             <h2 class="article-inner-title">{{ blog()?.title }}</h2>
                             <div class="content-wrapper" [innerHTML]="sanitizedContent()"></div>
@@ -185,7 +185,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
                                 </button>
                             </div>
                         </div>
-                    </main>
+                    </div>
 
                     <!-- Calendar Sidebar -->
                     <aside class="blog-sidebar" aria-label="Posts calendar">
@@ -926,7 +926,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
             text-align: center;
             font-size: 10px;
             font-weight: 700;
-            color: #94a3b8;
+            color: #687281;
             padding: 4px 0;
         }
 

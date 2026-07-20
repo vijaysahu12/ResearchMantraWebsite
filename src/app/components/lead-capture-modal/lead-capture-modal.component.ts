@@ -83,7 +83,7 @@ import { LeadService } from '../../services/lead.service';
             <div class="api-error" role="alert">{{ apiError() }}</div>
           }
 
-          <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+          <button type="submit" class="submit-btn" aria-label="Read Full Article" [disabled]="isSubmitting()">
             @if (isSubmitting()) {
               <span class="btn-spinner" aria-hidden="true"></span>
               Processing...

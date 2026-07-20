@@ -56,7 +56,7 @@
 }
 
 .section-title.success {
-    color: #059669;
+    color: #04815a;
 }
 
 .section-title.danger {
@@ -80,7 +80,7 @@
     content: "✓";
     position: absolute;
     left: 0;
-    color: #059669;
+    color: #04815a;
     font-weight: 700;
     font-size: 18px;
 }

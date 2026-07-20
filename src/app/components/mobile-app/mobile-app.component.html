@@ -1,4 +1,4 @@
-<main class="rm-mobile">
+<div class="rm-mobile">
 
     <!-- ===================== HERO ===================== -->
     <section class="hero">
@@ -36,7 +36,7 @@
                 </ul>
 
                 <a class="cta-pulse" [href]="primaryDownloadUrl()" target="_blank" rel="noopener noreferrer"
-                    aria-label="Download the Research Mantra app now">
+                    aria-label="Download the App Now">
                     <span class="cta-pulse-ring" aria-hidden="true"></span>
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -190,7 +190,7 @@
             </p>
         </div>
 
-        <div class="screen-strip">
+        <div class="screen-strip" role="group" tabindex="0" aria-label="App screenshots">
             @for (screen of screens; track screen.src) {
                 <figure class="screen-item">
                     <img class="screen-img" [ngSrc]="screen.src" width="1080" height="1920"
@@ -241,7 +241,7 @@
 
     <!-- ===================== FLOATING DOWNLOAD BUTTON ===================== -->
     <a class="floating-download" [href]="primaryDownloadUrl()" target="_blank" rel="noopener noreferrer"
-        aria-label="Download the app now">
+        aria-label="Download Now">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 3v12"></path>
@@ -251,4 +251,4 @@
         <span class="floating-download-text">Download Now</span>
     </a>
 
-</main>
+</div>
