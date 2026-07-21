@@ -65,6 +65,7 @@ export interface BlogEditorPayload {
 export class AdminBlogService {
 
     private readonly apiUrl = `${environment.apiurl}WebsiteBlog`;
+    private readonly publicApiUrl = `${environment.websiteBlogApiUrl}WebsiteBlog`;
     private readonly http = inject(HttpClient);
     private readonly auth = inject(ResearchAuthService);
     private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -139,7 +140,7 @@ loadBlogs(page = 1, size = 50, search = ''): void {
       .set('pageNumber', page)
       .set('pageSize', size)
       .set('search', search);
-    return this.http.get<ApiEnvelope<BlogPost[]>>(`${this.apiUrl}/GetAllWebsiteBlogs`, {
+    return this.http.get<ApiEnvelope<BlogPost[]>>(`${this.publicApiUrl}/GetAllWebsiteBlogs`, {
       params,
       headers: this.publicHeaders(),
     });
@@ -151,7 +152,7 @@ loadBlogs(page = 1, size = 50, search = ''): void {
 
 getBlogDetails(slug: string): Observable<ApiEnvelope<BlogPost>> {
   return this.http.get<ApiEnvelope<BlogPost>>(
-    `${this.apiUrl}/GetBlogBySlug/${encodeURIComponent(slug)}`,
+    `${this.publicApiUrl}/GetBlogBySlug/${encodeURIComponent(slug)}`,
     { headers: this.publicHeaders() },
   );
 }

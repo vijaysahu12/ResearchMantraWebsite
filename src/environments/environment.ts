@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   signalRURL: 'https://localhost:44380/notification',
   apiurl: 'https://crmapi.researchmantra.in/api/',
+  websiteBlogApiUrl: 'http://127.0.0.1:5087/api/',
   // apiurl:'http://free.kingresearch.co.in/api/'
   // mobilePushNotificationUrl: 'http://testmobileapi.kingresearch.co.in/api/',
   mobilePushNotificationUrl: 'https://localhost:7001/api/',
