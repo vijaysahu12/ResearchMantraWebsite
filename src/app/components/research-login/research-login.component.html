@@ -1,0 +1,104 @@
+<main class="login-page">
+  <section class="login-story" aria-labelledby="login-title">
+    <a routerLink="/" class="back-link" aria-label="Return to Research Mantra home">
+      <span aria-hidden="true">←</span> Back to home
+    </a>
+    <div class="story-content">
+      <p class="eyebrow">Research Mantra Insights</p>
+      <h1 id="login-title">Research that helps you ask better investment questions.</h1>
+      <p>
+        Access structured company notes, valuation snapshots and detailed research reports from
+        our SEBI-registered research team.
+      </p>
+      <ul class="benefit-list">
+        <li><span aria-hidden="true">✓</span> Independent company research</li>
+        <li><span aria-hidden="true">✓</span> Key valuation and business metrics</li>
+        <li><span aria-hidden="true">✓</span> One account across app and website</li>
+      </ul>
+    </div>
+    <p class="registration">SEBI Registration No. INH000019150</p>
+  </section>
+
+  <section class="login-panel" aria-label="Investor login">
+    <div class="login-card">
+      <img class="brand-mark" src="assets/RM_Logo.png" alt="Research Mantra logo" />
+      @if (step() === 'mobile') {
+        <p class="step-label">Secure investor access</p>
+        <h2>Login with mobile number</h2>
+        <p class="helper">We’ll send a 6-digit OTP to your registered WhatsApp number.</p>
+
+        <form (submit)="$event.preventDefault(); sendOtp()" novalidate>
+          <label for="mobile">Mobile number</label>
+          <div class="phone-field" [class.field-error]="mobile.invalid && mobile.touched">
+            <span class="country-code">+91</span>
+            <input
+              id="mobile"
+              type="tel"
+              inputmode="numeric"
+              autocomplete="tel-national"
+              maxlength="10"
+              placeholder="Enter 10-digit number"
+              [formControl]="mobile"
+              aria-describedby="mobile-help"
+            />
+          </div>
+          <p id="mobile-help" class="field-help">
+            @if (mobile.invalid && mobile.touched) {
+              Enter a valid Indian mobile number.
+            } @else {
+              Your existing Research Mantra account will work here.
+            }
+          </p>
+          <button class="primary-button" type="submit" [disabled]="isLoading()">
+            {{ isLoading() ? 'Sending OTP…' : 'Continue securely' }}
+          </button>
+        </form>
+      } @else {
+        <p class="step-label">OTP verification</p>
+        <h2>Check your WhatsApp</h2>
+        <p class="helper">
+          Enter the 6-digit code sent to +91 {{ mobile.value }}.
+          <button type="button" class="text-button" (click)="editMobile()">Edit number</button>
+        </p>
+
+        @if (localTestOtp()) {
+          <p class="local-otp" role="status">
+            Local test OTP: <strong>{{ localTestOtp() }}</strong>
+          </p>
+        }
+
+        <form (submit)="$event.preventDefault(); verifyOtp()" novalidate>
+          <label for="otp">One-time password</label>
+          <input
+            id="otp"
+            class="otp-field"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            placeholder="• • • • • •"
+            [formControl]="otp"
+          />
+          <p class="field-help">
+            @if (otp.invalid && otp.touched) { Enter the complete 6-digit OTP. } @else { The OTP is
+            valid for a limited time. }
+          </p>
+          <button class="primary-button" type="submit" [disabled]="isLoading()">
+            {{ isLoading() ? 'Verifying…' : 'View research' }}
+          </button>
+          <button type="button" class="resend-button" (click)="sendOtp()" [disabled]="isLoading()">
+            Resend OTP
+          </button>
+        </form>
+      }
+
+      @if (errorMessage()) {
+        <p class="error-banner" role="alert">{{ errorMessage() }}</p>
+      }
+      <p class="terms-copy">
+        By continuing, you agree to our <a routerLink="/terms-conditions">Terms</a> and
+        <a routerLink="/privacy-policy">Privacy Policy</a>.
+      </p>
+    </div>
+  </section>
+</main>

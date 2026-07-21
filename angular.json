@@ -33,6 +33,13 @@
             "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
+            },
+            "security": {
+              "allowedHosts": [
+                "researchmantra.in",
+                "www.researchmantra.in",
+                "localhost"
+              ]
             }
           },
           "configurations": {

@@ -1,0 +1,30 @@
+<main class="test-payment-page">
+  <section class="checkout-card" aria-labelledby="checkout-title">
+    <img src="assets/RM_Logo.png" alt="Research Mantra logo" />
+    <p class="mode-label">Local test payment</p>
+    <h1 id="checkout-title">Research subscription checkout</h1>
+    <p class="intro">This development-only checkout follows the mobile payment flow without charging a real account.</p>
+
+    @if (loading()) {
+      <p class="status-message" aria-live="polite">Loading test order…</p>
+    } @else if (errorMessage()) {
+      <p class="error-message" role="alert">{{ errorMessage() }}</p>
+      <a routerLink="/research/plans">Return to plans</a>
+    } @else {
+      <dl>
+        <div><dt>Test account</dt><dd>Local Research Mantra user</dd></div>
+        <div><dt>Order</dt><dd>{{ linkId }}</dd></div>
+        <div><dt>Amount</dt><dd>{{ formatCurrency(amount()) }}</dd></div>
+      </dl>
+
+      @if (completed()) {
+        <p class="success-message" role="status">Payment successful. Your Research access is being activated.</p>
+      } @else {
+        <button type="button" (click)="completePayment()" [disabled]="completing()">
+          {{ completing() ? 'Completing test payment…' : 'Complete test payment' }}
+        </button>
+        <p class="test-note">No card, UPI, or real money is used in local development.</p>
+      }
+    }
+  </section>
+</main>

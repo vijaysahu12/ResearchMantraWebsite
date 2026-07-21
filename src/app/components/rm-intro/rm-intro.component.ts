@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, ViewChild, ViewChildren, QueryList, DestroyRef, OnInit, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, FormArray } from '@angular/forms';
 import { LeadService, SendOtpRequest, VerifyOtpRequest, WebsiteLead } from '../../services/lead.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -22,6 +22,7 @@ export class RmIntroComponent implements OnInit, AfterViewInit {
     private leadService = inject(LeadService);
     private destroyRef = inject(DestroyRef);
     private http = inject(HttpClient);
+    private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     // Limited-offer countdown (rolling weekly deadline — resets every Sunday)
     countdown = signal<{ d: string; h: string; m: string; s: string }>({ d: '00', h: '00', m: '00', s: '00' });
@@ -103,6 +104,7 @@ export class RmIntroComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        if (!this.isBrowser) return;
         // Restore state from sessionStorage if available
         const savedState = sessionStorage.getItem('leadState');
         if (savedState) {

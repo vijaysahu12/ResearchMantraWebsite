@@ -1,0 +1,99 @@
+<main class="editor-page">
+  <header class="editor-header">
+    <div>
+      <p class="eyebrow">Research Mantra Admin</p>
+      <h1>Create a blog post</h1>
+      <p>Publish a completed article to the public blog without rewriting its content.</p>
+    </div>
+    <a routerLink="/blogs" class="secondary-action">View public blogs</a>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="publish()" class="editor-form">
+    @if (errorMessage()) {
+      <div class="alert" role="alert">{{ errorMessage() }}</div>
+    }
+
+    <section class="panel" aria-labelledby="article-heading">
+      <h2 id="article-heading">Article</h2>
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" formControlName="title" maxlength="180" (input)="onTitleInput()" />
+        @if (form.controls.title.touched && form.controls.title.invalid) {
+          <p class="field-error">Enter a title of up to 180 characters.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="slug">Public URL slug</label>
+        <input id="slug" formControlName="slug" (input)="onSlugInput()" aria-describedby="slug-help" />
+        <p id="slug-help" class="hint">{{ canonicalUrl() }}</p>
+        @if (form.controls.slug.touched && form.controls.slug.invalid) {
+          <p class="field-error">Use lowercase letters, numbers, and single hyphens only.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="excerpt">Excerpt</label>
+        <textarea id="excerpt" formControlName="shortDescription" rows="3" maxlength="320"></textarea>
+      </div>
+
+      <div class="two-column">
+        <div class="field">
+          <label for="category">Category</label>
+          <input id="category" formControlName="category" maxlength="80" />
+        </div>
+        <div class="field">
+          <label for="tags">Tags</label>
+          <input id="tags" formControlName="hashtag" placeholder="Nifty, Risk Management, Trading" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="content">Article HTML</label>
+        <textarea id="content" formControlName="content" rows="20" spellcheck="true"></textarea>
+        <p class="hint">Paste the final article HTML exactly as it should appear publicly.</p>
+      </div>
+
+      <div class="field">
+        <label for="cover">16:9 cover image</label>
+        <input id="cover" type="file" accept="image/png,image/jpeg,image/webp" (change)="onImageSelected($event)" />
+        <p class="hint">PNG, JPEG, or WebP; maximum 1.49 MB.</p>
+        @if (imagePreviewUrl()) {
+          <img class="cover-preview" [src]="imagePreviewUrl()" alt="Selected cover preview" />
+        }
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="seo-heading">
+      <h2 id="seo-heading">Search and social metadata</h2>
+      <div class="field">
+        <label for="meta-title">SEO title</label>
+        <input id="meta-title" formControlName="metaTitle" maxlength="180" />
+      </div>
+      <div class="field">
+        <label for="meta-description">SEO description</label>
+        <textarea id="meta-description" formControlName="metaDescription" rows="3" maxlength="320"></textarea>
+      </div>
+      <div class="field">
+        <label for="keywords">SEO keywords</label>
+        <input id="keywords" formControlName="metaKeywords" placeholder="comma-separated keywords" />
+      </div>
+      <div class="field">
+        <label for="risk-note">Editorial/risk note</label>
+        <input id="risk-note" formControlName="investmentCapital" />
+      </div>
+    </section>
+
+    <section class="panel publish-panel" aria-labelledby="publish-heading">
+      <div>
+        <h2 id="publish-heading">Publishing</h2>
+        <label class="check"><input type="checkbox" formControlName="enableComments" /> Allow public comments</label>
+        <label class="check"><input type="checkbox" formControlName="isPinned" /> Pin this post</label>
+        <label class="check"><input type="checkbox" formControlName="isPublished" /> Make publicly visible now</label>
+      </div>
+      <button type="submit" class="publish-action" [disabled]="isSaving()">
+        {{ isSaving() ? 'Publishing…' : (form.controls.isPublished.value ? 'Publish post' : 'Save draft') }}
+      </button>
+    </section>
+  </form>
+</main>

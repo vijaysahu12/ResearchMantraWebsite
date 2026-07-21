@@ -1,6 +1,8 @@
-import { Component, signal, ChangeDetectionStrategy, ElementRef, inject } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, HostListener, ElementRef, inject } from '@angular/core';
+
 import { Router, RouterLink } from '@angular/router';
 import { AccessibilityService } from '../../services/accessibility.service';
+import { ResearchAuthService } from '../../services/research-auth.service';
 
 @Component({
     selector: 'app-header',
@@ -19,6 +21,8 @@ export class HeaderComponent {
     private elementRef = inject(ElementRef);
     private readonly a11yService = inject(AccessibilityService);
     private readonly router = inject(Router);
+    private readonly auth = inject(ResearchAuthService);
+    readonly isAuthenticated = this.auth.isAuthenticated;
 
     openAccessibilityPanel(): void {
         this.a11yService.openPanel();
@@ -71,5 +75,10 @@ export class HeaderComponent {
     toggleCompliance(event: Event) {
         event.stopPropagation();
         this.isComplianceOpen.update(open => !open);
+    }
+
+    logout(): void {
+        this.auth.logout();
+        void this.router.navigate(['/']);
     }
 }

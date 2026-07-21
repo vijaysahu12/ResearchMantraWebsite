@@ -7,8 +7,12 @@ export const environment = {
   production: false,
   signalRURL: 'https://localhost:44380/notification',
   apiurl: 'https://localhost:44380/api/',
+  websiteBlogApiUrl: 'http://127.0.0.1:5087/api/',
+  // apiurl:'http://free.kingresearch.co.in/api/'
+  // mobilePushNotificationUrl: 'http://testmobileapi.kingresearch.co.in/api/',
   mobilePushNotificationUrl: 'https://localhost:7001/api/',
   mobileBaseUrl: 'http://product.researchmantra.in/api/',
-  gupshupApiKey: 'dd2noa4nnfdfmbchbch8mmtm0rr0kzdb',
+  gatewayUrl: ' https://localhost:7159/gateway/',
+  gupshupApiKey: '',
   azureBlobUrl: 'https://communitypostdata.blob.core.windows.net/mobileapptest/'
 };

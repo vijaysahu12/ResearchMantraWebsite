@@ -19,6 +19,10 @@ export interface BlogPost {
     keywords?: string;
     enableComments?: boolean;
     publishedOn?: string;
+    images?: { url: string; alt?: string; aspectRatio?: string }[];
+    likesCount?: number;
+    commentsCount?: number;
+    isLiked?: boolean;
 }
 
 @Injectable({

@@ -1,0 +1,32 @@
+<main class="shared-post-page">
+  <nav><a routerLink="/research">← Research library</a><span>Research Mantra</span></nav>
+
+  @if (loading()) {
+    <section class="state" aria-live="polite"><div class="loader"></div><p>Opening shared post…</p></section>
+  } @else if (errorMessage()) {
+    <section class="state" role="alert">
+      <p class="eyebrow">Subscriber content</p>
+      <h1>Post unavailable</h1>
+      <p>{{ errorMessage() }}</p>
+      <div class="actions"><a routerLink="/research/plans" [queryParams]="researchPlanQuery()">View Research plans</a><a routerLink="/research">Browse research</a></div>
+    </section>
+  } @else if (post(); as item) {
+    <article>
+      <header>
+        <p class="eyebrow">Research Mantra community</p>
+        <div class="author">
+          @if (item.userProfileImage) { <img [src]="item.userProfileImage" alt="" /> }
+          <div><strong>{{ item.userFullName || 'Research Mantra' }}</strong><span>{{ item.postedAgo || item.createdOn || 'Recently' }}</span></div>
+        </div>
+      </header>
+      <p class="content">{{ item.content }}</p>
+      @if (item.hashtag) { <p class="hashtags">{{ item.hashtag }}</p> }
+      @if (item.image?.length) {
+        <div class="images">
+          @for (image of item.image; track image.name) { <img [src]="image.name" alt="Image shared with the post" /> }
+        </div>
+      }
+      <footer>Shared subscriber content. Please do not redistribute without permission.</footer>
+    </article>
+  }
+</main>

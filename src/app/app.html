@@ -91,3 +91,9 @@
     </div>
 </div>
 }
+@if (!isPortalRoute()) {
+  <app-footer></app-footer>
+  <app-enquiry-form></app-enquiry-form>
+  <app-floating-social></app-floating-social>
+}
+<app-accessibility></app-accessibility>

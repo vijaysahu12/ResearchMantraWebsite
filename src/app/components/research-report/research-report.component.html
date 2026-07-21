@@ -1,0 +1,68 @@
+<main class="report-page">
+  <nav class="report-nav" aria-label="Research navigation">
+    <a routerLink="/research"><span aria-hidden="true">←</span> All research</a>
+    <span class="registration">SEBI RA · INH000019150</span>
+  </nav>
+
+  @if (loading()) {
+    <section class="report-state" aria-live="polite"><div class="loader"></div><p>Opening {{ requestedName() }} research…</p></section>
+  } @else if (errorMessage()) {
+    <section class="report-state" role="alert"><h1>Report unavailable</h1><p>{{ errorMessage() }}</p><button type="button" (click)="loadReport()">Try again</button></section>
+  } @else if (report(); as company) {
+    <header class="report-header">
+      <div class="header-copy">
+        <p class="eyebrow">Company research note</p>
+        <div class="title-row"><h1>{{ company.name }}</h1>@if(company.symbol){<span>{{ company.symbol }}</span>}</div>
+        <p class="date">Published {{ company.publishDate || 'recently' }} · Research Mantra Research Desk</p>
+        <div
+          class="description"
+          [innerHTML]="company.description || 'Detailed fundamental research and key business factors for investor review.'"
+        ></div>
+      </div>
+      <div class="header-asides">
+        <aside class="quick-view" aria-label="Company snapshot">
+          <p>Quick view</p>
+          <div><span>Current price</span><strong>₹{{ formatNumber(company.currentPrice) }}</strong></div>
+          <div><span>Face value</span><strong>₹{{ formatNumber(company.faceValue) }}</strong></div>
+          <div><span>Promoter holding</span><strong>{{ formatNumber(company.promotersHolding) }}%</strong></div>
+          <div><span>Profit growth</span><strong>{{ formatNumber(company.profitGrowth) }}%</strong></div>
+        </aside>
+        <aside class="report-sidebar">
+          <div class="sidebar-card"><p class="sidebar-label">Report contents</p><ol><li>Investment thesis</li><li>Price context</li><li>Financial track record</li><li>Decision checklist</li></ol></div>
+          @if(company.websiteUrl){<a class="company-link" [href]="company.websiteUrl" target="_blank" rel="noopener noreferrer">Visit company website <span aria-hidden="true">↗</span></a>}
+        </aside>
+      </div>
+    </header>
+
+    <div class="report-layout">
+      <article class="report-body">
+        @if (company.companyType; as type) {
+          <section class="report-section">
+            <p class="section-number">01</p><div><h2>Why this company is on our radar</h2><div class="thesis-grid">
+              @if(type.ltopUptrend){<span>Long-term operating uptrend</span>}
+              @if(type.stopOpUpTrend){<span>Short-term operating momentum</span>}
+              @if(type.futuristicSector){<span>Future-facing sector</span>}
+              @if(type.hniInstitutionalPromotersBuy){<span>Institutional / promoter interest</span>}
+              @if(type.specialSituations){<span>Special situation</span>}
+              @if(type.futureVisibility){<span>Revenue visibility</span>}
+            </div></div>
+          </section>
+        }
+
+        @if (company.chartUrl) {
+          <section class="report-section"><p class="section-number">02</p><div><h2>Price context</h2><figure><img [src]="company.chartUrl" [alt]="company.name + ' price chart'" /><figcaption>Company price chart supplied with the research report.</figcaption></figure></div></section>
+        }
+
+        @if (company.lastTenYearSales?.length) {
+          <section class="report-section"><p class="section-number">03</p><div class="table-wrap"><h2>Financial track record</h2><table><thead><tr><th>Year</th><th>Sales</th><th>Operating profit</th><th>Net profit</th><th>NPM</th><th>Promoters</th></tr></thead><tbody>
+            @for(row of company.lastTenYearSales; track row.year){<tr><td>{{ row.year }}</td><td>{{ formatNumber(row.sales) }}</td><td>{{ formatNumber(row.opProfit) }}</td><td>{{ formatNumber(row.netProfit) }}</td><td>{{ formatNumber(row.npm) }}%</td><td>{{ formatNumber(row.promotersPercent) }}%</td></tr>}
+          </tbody></table></div></section>
+        }
+
+        <section class="decision-note"><h2>Use this report as a starting point</h2><p>Consider your investment horizon, risk appetite, portfolio concentration and the latest company disclosures before making a decision. Revisit the thesis when facts change.</p></section>
+      </article>
+    </div>
+
+    <footer class="report-disclaimer"><strong>Research disclaimer</strong><p>Registration granted by SEBI and certification from NISM in no way guarantee performance of the intermediary or provide any assurance of returns to investors. Investment in securities market is subject to market risks. This material is for information and education and should not be treated as a guarantee of returns.</p></footer>
+  }
+</main>

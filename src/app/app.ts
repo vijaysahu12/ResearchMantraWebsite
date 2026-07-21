@@ -1,6 +1,6 @@
-import { Component, signal, ChangeDetectionStrategy, inject, effect, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, DOCUMENT, NgOptimizedImage } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Component, signal, ChangeDetectionStrategy, inject, effect, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { EnquiryFormComponent } from './components/enquiry-form/enquiry-form.component';
@@ -10,6 +10,8 @@ import { InstallBottomBarComponent } from './components/install-bottom-bar/insta
 import { RouterLink } from '@angular/router';
 import { SeoService } from './services/seo.service';
 import { AccessibilityService } from './services/accessibility.service';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -21,14 +23,18 @@ import { AccessibilityService } from './services/accessibility.service';
 export class App {
   protected readonly title = signal('rm-website');
   readonly isPromoOpen = signal(false);
+  protected readonly isPortalRoute = signal(false);
 
   private readonly seoService = inject(SeoService);
   private readonly accessibilityService = inject(AccessibilityService);
   private readonly document = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.handleDomainRedirect();
+    this.initPortalShell();
     this.seoService.init();
     this.initAccessibilityEffect();
     this.schedulePromoPopup();
@@ -44,6 +50,22 @@ export class App {
     setTimeout(() => {
       this.isPromoOpen.set(true);
     }, 7000);
+  }
+
+  private initPortalShell(): void {
+    const updateShell = (url: string) => {
+      const isPortal = url === '/login' || url.startsWith('/login?') || url.startsWith('/research') || url.startsWith('/share/');
+      this.isPortalRoute.set(isPortal);
+      if (this.isBrowser) this.document.body.classList.toggle('portal-route', isPortal);
+    };
+
+    updateShell(this.router.url);
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((event) => updateShell(event.urlAfterRedirects));
   }
 
   private initAccessibilityEffect(): void {

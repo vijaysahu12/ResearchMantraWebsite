@@ -1,10 +1,12 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ResearchAuthService } from './research-auth.service';
 
 export interface BlogPost {
-    id: number | string;
+    id: string;
     slug: string;
     title: string;
     excerpt: string;
@@ -14,15 +16,48 @@ export interface BlogPost {
     author: string;
     readTime: string;
     image: string;
-    images: any[];
+    images: WebsiteBlogImage[];
     metaTitle?: string;
     metaDescription?: string;
     keywords?: string;
     likesCount?: number;
+    commentsCount?: number;
     isLiked?: boolean;
-    comments?: any[];
+    comments?: unknown[];
     enableComments?: boolean;
     publishedOn?: string;
+}
+
+export interface WebsiteBlogImage {
+  url: string;
+  alt?: string;
+  aspectRatio?: string;
+}
+
+export interface ApiEnvelope<T> {
+  statusCode: number;
+  message: string;
+  data: T;
+  total?: number;
+}
+
+export interface BlogEditorPayload {
+  title: string;
+  slug: string;
+  shortDescription: string;
+  content: string;
+  hashtag: string;
+  category: string;
+  investmentCapital: string;
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+  canonicalUrl: string;
+  enableComments: boolean;
+  isPinned: boolean;
+  isPublished: boolean;
+  publishedOn: string;
+  image?: File;
 }
 
 @Injectable({
@@ -30,9 +65,11 @@ export interface BlogPost {
 })
 export class AdminBlogService {
 
-
-    constructor() {
-    }
+    private readonly apiUrl = `${environment.apiurl}WebsiteBlog`;
+    private readonly publicApiUrl = `${environment.websiteBlogApiUrl}WebsiteBlog`;
+    private readonly http = inject(HttpClient);
+    private readonly auth = inject(ResearchAuthService);
+    private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     private processBlogContent(content: string): string {
         if (!content) return '';
@@ -69,10 +106,7 @@ export class AdminBlogService {
             }
         });
     }
-private blogs = signal<any[]>([]);
-
-     private apiUrl = `${environment.apiurl}WebsiteBlog`;
- private http = inject(HttpClient);
+private blogs = signal<BlogPost[]>([]);
     // getBlogs() {
     //     return this.blogsData;
     // }
@@ -103,8 +137,9 @@ loadBlogs(page = 1, size = 10, category = '') {
     }
   ).subscribe({
     next: (res) => {
-      const mappedData = (res?.data ?? []).map((b: any) => ({
+      const mappedData = (res?.data ?? []).map((b) => ({
         ...b,
+        images: b.images ?? [],
         enableComments: b.enableComments === true || String(b.enableComments).toLowerCase() === 'true'
       }));
       this.blogs.set(mappedData);
@@ -116,12 +151,26 @@ loadBlogs(page = 1, size = 10, category = '') {
   });
 }
 
+  getPublishedBlogs(page = 1, size = 50, search = ''): Observable<ApiEnvelope<BlogPost[]>> {
+    const params = new HttpParams()
+      .set('pageNumber', page)
+      .set('pageSize', size)
+      .set('search', search);
+    return this.http.get<ApiEnvelope<BlogPost[]>>(`${this.publicApiUrl}/GetAllWebsiteBlogs`, {
+      params,
+      headers: this.publicHeaders(),
+    });
+  }
+
    getBlogs() {
     return this.blogs; // returning signal
   }
 
-getBlogDetails(slug: string) {
-  return this.http.get(`${this.apiUrl}/GetBlogBySlug/${slug}`);
+getBlogDetails(slug: string): Observable<ApiEnvelope<BlogPost>> {
+  return this.http.get<ApiEnvelope<BlogPost>>(
+    `${this.publicApiUrl}/GetBlogBySlug/${encodeURIComponent(slug)}`,
+    { headers: this.publicHeaders() },
+  );
 }
 
 getRecentPosts(count = 6): Observable<any> {
@@ -136,8 +185,7 @@ getRecentPosts(count = 6): Observable<any> {
   }
 
   getComments(blogId: string): Observable<any> {
-  // Adjust the URL to match your ASP.NET Core Routing
-  return this.http.get(`${this.apiUrl}/${blogId}/comments`);
+  return this.http.get(`${this.apiUrl}/${blogId}/comments`, { headers: this.publicHeaders() });
 }
 
 toggleLike(blogId: string, userId: string): Observable<any> {
@@ -155,4 +203,49 @@ getBlogsByDate(date: string): Observable<any> {
 getRelatedBlogs(slug: string, count = 4): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/related?slug=${encodeURIComponent(slug)}&count=${count}`);
 }
+  savePost(payload: BlogEditorPayload): Observable<ApiEnvelope<BlogPost>> {
+    const formData = new FormData();
+    const fields: Record<string, string> = {
+      Title: payload.title,
+      Slug: payload.slug,
+      ShortDescription: payload.shortDescription,
+      Content: payload.content,
+      Hashtag: payload.hashtag,
+      Category: payload.category,
+      InvestmentCapital: payload.investmentCapital,
+      MetaTitle: payload.metaTitle,
+      MetaDescription: payload.metaDescription,
+      MetaKeywords: payload.metaKeywords,
+      CanonicalUrl: payload.canonicalUrl,
+      EnableComments: String(payload.enableComments),
+      IsPinned: String(payload.isPinned),
+      IsPublished: String(payload.isPublished),
+      PublishedOn: payload.publishedOn,
+      AspectRatios: '16:9',
+    };
+    const createdBy = this.auth.session()?.publicKey;
+    if (createdBy) fields['CreatedBy'] = createdBy;
+    Object.entries(fields).forEach(([key, value]) => formData.append(key, value));
+    if (payload.image) formData.append('Images', payload.image, payload.image.name);
+
+    return this.http.post<ApiEnvelope<BlogPost>>(`${this.apiUrl}/manage`, formData, {
+      headers: this.adminHeaders(),
+    });
+  }
+
+  private publicHeaders(): HttpHeaders {
+    let headers = new HttpHeaders({ 'Cache-Control': 'no-cache', Pragma: 'no-cache' });
+    if (!this.isBrowser) {
+      headers = headers
+        .set('Origin', 'https://researchmantra.in')
+        .set('Referer', 'https://researchmantra.in/blogs')
+        .set('User-Agent', 'Mozilla/5.0 (compatible; ResearchMantraSSR/1.0; +https://researchmantra.in)');
+    }
+    return headers;
+  }
+
+  private adminHeaders(): HttpHeaders {
+    const token = this.auth.session()?.accessToken;
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+  }
 }

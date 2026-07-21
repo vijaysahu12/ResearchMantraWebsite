@@ -26,6 +26,7 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
 export class BlogsComponent implements OnInit {
   private blogService = inject(BlogService);
   private adminBlogService = inject(AdminBlogService);
+  private apiBlogService = inject(AdminBlogService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);

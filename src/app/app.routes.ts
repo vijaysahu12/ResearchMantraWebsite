@@ -20,6 +20,7 @@ import { BlogDetailsComponent } from './components/blog-details/blog-details.com
 import { AdminBlogs } from './components/admin-blogs/admin-blogs';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { MobileTermsCondition } from './components/terms-conditions/mobile-terms-condition/mobile-terms-condition';
+import { researchAuthGuard } from './guards/research-auth.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -42,8 +43,81 @@ export const routes: Routes = [
     { path: 'terms-conditions', component: TermsConditionsComponent },
     { path: 'mobile-terms-condition', component: MobileTermsCondition },
     { path: 'blogs', component: BlogsComponent },
+    { path: 'blogs/:slug', component: BlogDetailsComponent },
     { path: 'stock-market-analysis-and-nifty-updates', component: AdminBlogs },
-    { path: 'admin/blogs', redirectTo: 'stock-market-analysis-and-nifty-updates', pathMatch: 'full' },
+    {
+      path: 'admin/blogs',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/admin-blog-editor/admin-blog-editor.component').then(
+          (component) => component.AdminBlogEditorComponent,
+        ),
+    },
+    {
+      path: 'login',
+      loadComponent: () =>
+        import('./components/research-login/research-login.component').then(
+          (component) => component.ResearchLoginComponent,
+        ),
+    },
+    {
+      path: 'research',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-library/research-library.component').then(
+          (component) => component.ResearchLibraryComponent,
+        ),
+    },
+    {
+      path: 'research/report',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-report/research-report.component').then(
+          (component) => component.ResearchReportComponent,
+        ),
+    },
+    {
+      path: 'research/plans',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-plans/research-plans.component').then(
+          (component) => component.ResearchPlansComponent,
+        ),
+    },
+    {
+      path: 'research/test-payment',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import(
+          './components/research-test-payment/research-test-payment.component'
+        ).then(
+          (component) => component.ResearchTestPaymentComponent,
+        ),
+    },
+    {
+      path: 'research/purchases',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-purchases/research-purchases.component').then(
+          (component) => component.ResearchPurchasesComponent,
+        ),
+    },
+    {
+      path: 'share/research',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-report/research-report.component').then(
+          (component) => component.ResearchReportComponent,
+        ),
+    },
+    {
+      path: 'share/post/:id',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/shared-post/shared-post.component').then(
+          (component) => component.SharedPostComponent,
+        ),
+    },
 
     // Blog Redirects (Old to New)
     { path: 'top-share-market-advisory-services-india-2025-e', redirectTo: 'best-share-market-advisory-services', pathMatch: 'full' },
