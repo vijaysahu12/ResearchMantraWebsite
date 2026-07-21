@@ -1,69 +1,124 @@
 <main class="purchases-page">
-  <nav><a routerLink="/research">← Research library</a><a routerLink="/research/plans">View plans</a></nav>
-  <header><p>YOUR ACCOUNT</p><span>Switch between your product entitlements and payment receipts.</span></header>
+  <section class="portal-hero">
+    <div class="hero-inner">
+      <nav class="hero-nav" aria-label="Account navigation">
+        <a routerLink="/research" class="nav-btn nav-back">
+          <span class="nav-ico" aria-hidden="true">←</span>
+          <span>Research library</span>
+        </a>
+        <a routerLink="/research/plans" class="nav-btn nav-plans">
+          <span>View plans</span>
+          <span class="nav-ico" aria-hidden="true">→</span>
+        </a>
+      </nav>
 
-  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
-  @if (loading()) { <p class="state" aria-live="polite">Loading your products and purchases…</p> }
-  @else {
-    <div class="account-tabs" role="tablist" aria-label="Account records">
-      <button id="bucket-tab" type="button" role="tab" [class.active]="activeView() === 'bucket'" [attr.aria-selected]="activeView() === 'bucket'" aria-controls="bucket-panel" (click)="show('bucket')">
-        <span>My Bucket</span><small>{{ bucket().length }}</small>
-      </button>
-      <button id="purchases-tab" type="button" role="tab" [class.active]="activeView() === 'purchases'" [attr.aria-selected]="activeView() === 'purchases'" aria-controls="purchases-panel" (click)="show('purchases')">
-        <span>Purchase History</span><small>{{ purchases().length }}</small>
-      </button>
+      <header class="hero-copy">
+        <p class="eyebrow">Your account</p>
+        <h1>Purchases &amp; entitlements</h1>
+        <p class="hero-sub">Switch between your active product entitlements and your payment receipts — everything in one place.</p>
+      </header>
     </div>
+  </section>
 
-    @if (activeView() === 'bucket') {
-    <section id="bucket-panel" class="account-section" role="tabpanel" aria-labelledby="bucket-tab">
-      <div class="section-heading"><div><p>ENTITLEMENTS</p><h2 id="bucket-heading">My Bucket</h2></div><span>{{ bucket().length }} products</span></div>
-      @if (bucket().length === 0) { <p class="state">Your bucket is empty.</p> }
-      @else {
-        <div class="bucket-grid">
-          @for (item of bucket(); track item.id) {
-            <article class="bucket-card">
-              <div><small>{{ item.categoryName || 'PRODUCT' }}</small><strong>{{ item.name }}</strong></div>
-              <div><small>START DATE</small><span>{{ item.startdate | date:'mediumDate' }}</span></div>
-              <div><small>VALID UNTIL</small><span>{{ item.enddate ? (item.enddate | date:'mediumDate') : 'No expiry' }}</span></div>
-              <span class="status" [class.expired]="!isBucketActive(item)">{{ isBucketActive(item) ? 'Active' : 'Expired' }}</span>
-            </article>
-          }
-        </div>
-      }
-    </section>
-    } @else {
-    <section id="purchases-panel" class="account-section" role="tabpanel" aria-labelledby="purchases-tab">
-      <div class="section-heading"><div><p>PAYMENTS</p><h2 id="purchases-heading">Purchase history & receipts</h2></div><span>{{ purchases().length }} orders</span></div>
-      @if (purchases().length === 0) { <p class="state">You do not have any payment receipts yet.</p> }
-      @else {
-        <div class="orders" aria-label="Purchase orders">
-          @for (order of purchases(); track order.id) {
-            <article>
-              <div><small>PRODUCT</small><strong>{{ order.productName || 'Research subscription' }}</strong></div>
-              <div><small>PAYMENT DATE</small><span>{{ order.paymentDate | date:'mediumDate' }}</span></div>
-              <div><small>VALID UNTIL</small><span>{{ order.endDate ? (order.endDate | date:'mediumDate') : '—' }}</span></div>
-              <div><small>AMOUNT</small><strong>₹{{ order.paidAmount || 0 | number:'1.0-2' }}</strong></div>
-              <button type="button" (click)="viewReceipt(order.id)">View receipt</button>
-            </article>
-          }
-        </div>
-      }
-    </section>
+  <div class="page-body">
+    @if (error()) {
+      <p class="error" role="alert">
+        <svg class="error-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2 1 21h22L12 2Zm0 6v6m0 3v.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {{ error() }}
+      </p>
     }
-  }
 
-  @if (activeView() === 'purchases' && receipt(); as item) {
-    <section class="receipt" aria-label="Purchase receipt">
-      <div class="receipt-head"><div><small>RESEARCH MANTRA</small><h2>Payment receipt</h2></div><button type="button" (click)="receipt.set(null)" aria-label="Close receipt">×</button></div>
-      <dl>
-        <div><dt>Receipt number</dt><dd>RM-{{ item.id }}</dd></div>
-        <div><dt>Customer</dt><dd>{{ item.customerName || 'Investor' }}</dd></div>
-        <div><dt>Product</dt><dd>{{ item.productName }}</dd></div>
-        <div><dt>Payment date</dt><dd>{{ item.paymentDate | date:'medium' }}</dd></div>
-        <div><dt>Transaction</dt><dd>{{ item.transactionId || item.transactionReference || '—' }}</dd></div>
-        <div><dt>Amount paid</dt><dd>₹{{ item.paidAmount || 0 | number:'1.0-2' }}</dd></div>
-      </dl>
-      <button class="print" type="button" (click)="printReceipt()">Print / save receipt</button>
-    </section>
-  }
+    @if (loading()) {
+      <div class="state-card" aria-live="polite">
+        <span class="loader" aria-hidden="true"></span>
+        <p>Loading your products and purchases…</p>
+      </div>
+    } @else {
+      <div class="account-tabs" role="tablist" aria-label="Account records">
+        <button id="bucket-tab" type="button" role="tab" [class.active]="activeView() === 'bucket'" [attr.aria-selected]="activeView() === 'bucket'" aria-controls="bucket-panel" (click)="show('bucket')">
+          <svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7 12 3l9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span>My Bucket</span><small>{{ bucket().length }}</small>
+        </button>
+        <button id="purchases-tab" type="button" role="tab" [class.active]="activeView() === 'purchases'" [attr.aria-selected]="activeView() === 'purchases'" aria-controls="purchases-panel" (click)="show('purchases')">
+          <svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 2h9l4 4v16l-2.5-1.5L14 22l-2.5-1.5L9 22l-2.5-1.5L4 22V4a2 2 0 0 1 2-2Zm2 7h8M8 13h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          <span>Purchase History</span><small>{{ purchases().length }}</small>
+        </button>
+      </div>
+
+      @if (activeView() === 'bucket') {
+      <section id="bucket-panel" class="account-section" role="tabpanel" aria-labelledby="bucket-tab">
+        <div class="section-heading"><div><p>Entitlements</p><h2 id="bucket-heading">My Bucket</h2></div><span class="count-pill">{{ bucket().length }} products</span></div>
+        @if (bucket().length === 0) {
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 7 12 3l9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            <h3>Your bucket is empty</h3>
+            <p>Products you subscribe to will appear here with their validity.</p>
+            <a routerLink="/research/plans" class="empty-cta">Browse plans</a>
+          </div>
+        }
+        @else {
+          <div class="bucket-grid">
+            @for (item of bucket(); track item.id) {
+              <article class="record-card bucket-card">
+                <span class="card-ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M3 7 12 3l9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                </span>
+                <div class="card-main"><small>{{ item.categoryName || 'PRODUCT' }}</small><strong>{{ item.name }}</strong></div>
+                <div class="card-field"><small>Start date</small><span>{{ item.startdate | date:'mediumDate' }}</span></div>
+                <div class="card-field"><small>Valid until</small><span>{{ item.enddate ? (item.enddate | date:'mediumDate') : 'No expiry' }}</span></div>
+                <span class="status" [class.expired]="!isBucketActive(item)">{{ isBucketActive(item) ? 'Active' : 'Expired' }}</span>
+              </article>
+            }
+          </div>
+        }
+      </section>
+      } @else {
+      <section id="purchases-panel" class="account-section" role="tabpanel" aria-labelledby="purchases-tab">
+        <div class="section-heading"><div><p>Payments</p><h2 id="purchases-heading">Purchase history &amp; receipts</h2></div><span class="count-pill">{{ purchases().length }} orders</span></div>
+        @if (purchases().length === 0) {
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 2h9l4 4v16l-2.5-1.5L14 22l-2.5-1.5L9 22l-2.5-1.5L4 22V4a2 2 0 0 1 2-2Zm2 7h8M8 13h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            <h3>No receipts yet</h3>
+            <p>Once you complete a purchase, your payment receipts will show up here.</p>
+            <a routerLink="/research/plans" class="empty-cta">View plans</a>
+          </div>
+        }
+        @else {
+          <div class="orders" aria-label="Purchase orders">
+            @for (order of purchases(); track order.id) {
+              <article class="record-card order-card">
+                <span class="card-ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><path d="M6 2h9l4 4v16l-2.5-1.5L14 22l-2.5-1.5L9 22l-2.5-1.5L4 22V4a2 2 0 0 1 2-2Zm2 7h8M8 13h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                </span>
+                <div class="card-main"><small>Product</small><strong>{{ order.productName || 'Research subscription' }}</strong></div>
+                <div class="card-field"><small>Payment date</small><span>{{ order.paymentDate | date:'mediumDate' }}</span></div>
+                <div class="card-field"><small>Valid until</small><span>{{ order.endDate ? (order.endDate | date:'mediumDate') : '—' }}</span></div>
+                <div class="card-field amount"><small>Amount</small><strong>₹{{ order.paidAmount || 0 | number:'1.0-2' }}</strong></div>
+                <button type="button" class="ghost-btn" (click)="viewReceipt(order.id)">View receipt</button>
+              </article>
+            }
+          </div>
+        }
+      </section>
+      }
+    }
+
+    @if (activeView() === 'purchases' && receipt(); as item) {
+      <section class="receipt" aria-label="Purchase receipt">
+        <div class="receipt-head">
+          <div><small>Research Mantra</small><h2>Payment receipt</h2></div>
+          <button type="button" class="receipt-close" (click)="receipt.set(null)" aria-label="Close receipt">×</button>
+        </div>
+        <dl>
+          <div><dt>Receipt number</dt><dd>RM-{{ item.id }}</dd></div>
+          <div><dt>Customer</dt><dd>{{ item.customerName || 'Investor' }}</dd></div>
+          <div><dt>Product</dt><dd>{{ item.productName }}</dd></div>
+          <div><dt>Payment date</dt><dd>{{ item.paymentDate | date:'medium' }}</dd></div>
+          <div><dt>Transaction</dt><dd>{{ item.transactionId || item.transactionReference || '—' }}</dd></div>
+          <div class="amount-row"><dt>Amount paid</dt><dd>₹{{ item.paidAmount || 0 | number:'1.0-2' }}</dd></div>
+        </dl>
+        <button class="print" type="button" (click)="printReceipt()">Print / save receipt</button>
+      </section>
+    }
+  </div>
 </main>

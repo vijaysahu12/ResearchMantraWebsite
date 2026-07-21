@@ -4,7 +4,7 @@ export const environment = {
   apiurl: 'http://crmtest.kingresearch.co.in/api/',
   mobilePushNotificationUrl: 'http://testmobileapi.kingresearch.co.in/api/',
   mobileBaseUrl: 'http://testmobileapi.kingresearch.co.in/api/',
-  gatewayUrl: 'http://127.0.0.1:5131/gateway/',
+  gatewayUrl: ' https://localhost:7159/gateway/',
   gupshupApiKey: '',
   azureBlobUrl: 'https://communitypostdata.blob.core.windows.net/mobileapptest/',
 };
