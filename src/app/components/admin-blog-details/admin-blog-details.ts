@@ -102,13 +102,15 @@ export class AdminBlogDetails implements OnInit {
     private updateSeoTags(blog: BlogPost) {
         const pageTitle = blog.metaTitle || blog.title;
         const description = blog.metaDescription || blog.excerpt;
+        const canonicalUrl = `https://researchmantra.in/${blog.slug}`;
 
         this.seoService.setMetaTags({
             title: pageTitle,
             description: description,
             keywords: blog.keywords,
             image: blog.image,
-            type: 'article'
+            type: 'article',
+            canonicalUrl
         });
     }
 }

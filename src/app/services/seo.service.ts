@@ -4,6 +4,15 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { filter } from 'rxjs/operators';
 
+interface SeoMetaConfig {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    image?: string;
+    type?: string;
+    canonicalUrl?: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -37,10 +46,12 @@ export class SeoService {
         element.setAttribute('href', canonicalUrl);
     }
 
-    setMetaTags(config: { title?: string, description?: string, keywords?: string, image?: string, type?: string }) {
-        // Set og:url to the current canonical URL for proper SEO indexing
-        const currentUrl = this.baseUrl + this.router.url.split('?')[0].split('#')[0];
-        this.metaService.updateTag({ property: 'og:url', content: currentUrl });
+    setMetaTags(config: SeoMetaConfig) {
+        const canonicalUrl =
+            config.canonicalUrl || this.baseUrl + this.router.url.split('?')[0].split('#')[0];
+
+        this.updateCanonicalUrl(canonicalUrl);
+        this.metaService.updateTag({ property: 'og:url', content: canonicalUrl });
 
         // Set twitter:card for rich social media previews
         this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });

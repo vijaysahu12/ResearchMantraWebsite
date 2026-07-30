@@ -70,7 +70,58 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
                     <div class="article-body">
                         <div class="content-card">
                             <h2 class="article-inner-title">{{ blog()?.title }}</h2>
-                            <div class="content-wrapper" [innerHTML]="sanitizedContent()"></div>
+                            <div
+                                class="content-wrapper"
+                                [innerHTML]="sanitizedContent()"
+                                (click)="onContentClick($event)">
+                            </div>
+
+                            @if (blog()?.faqs?.length) {
+                                <section id="faqs" class="blog-faqs" aria-labelledby="blog-faqs-title">
+                                    <h2 id="blog-faqs-title">Frequently Asked Questions</h2>
+                                    <div class="blog-faq-list">
+                                        @for (faq of blog()?.faqs ?? []; track faq.question) {
+                                            <section
+                                                class="blog-faq-item"
+                                                [class.expanded]="expandedFaqIndex() === $index">
+                                                <h3>
+                                                    <button
+                                                        type="button"
+                                                        class="blog-faq-header"
+                                                        [attr.aria-expanded]="expandedFaqIndex() === $index"
+                                                        [attr.aria-controls]="'blog-faq-answer-' + $index"
+                                                        (click)="toggleFaq($index)">
+                                                        <span class="blog-faq-question">{{ faq.question }}</span>
+                                                        <span class="blog-faq-toggle" aria-hidden="true">
+                                                            <svg
+                                                                viewBox="0 0 24 24"
+                                                                width="18"
+                                                                height="18"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                stroke-width="2.4"
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+                                                </h3>
+                                                <div
+                                                    class="blog-faq-answer"
+                                                    [class.show]="expandedFaqIndex() === $index"
+                                                    [attr.aria-hidden]="expandedFaqIndex() !== $index"
+                                                    [attr.inert]="expandedFaqIndex() === $index ? null : ''"
+                                                    [id]="'blog-faq-answer-' + $index">
+                                                    <div class="blog-faq-answer-inner">
+                                                        <div [innerHTML]="sanitizeHtml(faq.answer)"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        }
+                                    </div>
+                                </section>
+                            }
 
                             <!-- Interaction Bar (Likes & Comments Count) -->
                             @if (isApiBlog()) {
@@ -301,7 +352,10 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     styles: [`
         .blog-detail-container {
             min-height: 100vh;
-            background-color: #f8fafc;
+            background:
+                radial-gradient(circle at 8% 24%, rgba(219, 234, 254, 0.55), transparent 24rem),
+                radial-gradient(circle at 92% 54%, rgba(254, 243, 199, 0.42), transparent 22rem),
+                #f8fafc;
             color: #111827;
             font-family: "Inter", system-ui, sans-serif;
         }
@@ -324,7 +378,9 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+            background:
+                linear-gradient(120deg, rgba(15, 23, 42, 0.78), rgba(30, 58, 138, 0.52)),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.08), rgba(15, 23, 42, 0.78));
             z-index: 1;
         }
 
@@ -346,6 +402,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
             position: relative;
             z-index: 2;
             max-width: 1000px;
+            text-shadow: 0 3px 22px rgba(15, 23, 42, 0.5);
         }
 
         .bg-text-overlay {
@@ -422,10 +479,14 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
         }
 
         .content-card {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
             background: #ffffff;
             border-radius: 20px;
             padding: 60px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 30px 70px -34px rgba(15, 23, 42, 0.3);
         }
 
         .article-inner-title {
@@ -438,31 +499,35 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
         }
 
         .content-wrapper {
-            font-size: 18px;
-            line-height: 1.8;
-            color: #374151;
+            font-size: 17px;
+            line-height: 1.78;
+            color: #334155;
         }
 
         .content-wrapper ::ng-deep h1 {
             font-size: 32px;
             font-weight: 800;
-            color: #1e3a8a;
+            color: #172554;
             margin-bottom: 40px;
-            line-height: 1.3;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
         }
 
         .content-wrapper ::ng-deep h2 {
             font-size: 28px;
-            font-weight: 700;
-            color: #111827;
-            margin: 48px 0 20px;
+            font-weight: 750;
+            color: #172554;
+            margin: 52px 0 18px;
+            line-height: 1.3;
+            letter-spacing: -0.018em;
         }
 
         .content-wrapper ::ng-deep h3 {
             font-size: 24px;
             font-weight: 700;
-            color: #111827;
-            margin: 40px 0 20px;
+            color: #1e293b;
+            margin: 38px 0 16px;
+            line-height: 1.35;
         }
 
         .content-wrapper ::ng-deep h4 {
@@ -473,17 +538,52 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
         }
 
         .content-wrapper ::ng-deep p {
-            margin-bottom: 24px;
+            margin: 0 0 20px;
         }
 
         .content-wrapper ::ng-deep a {
             color: #2563eb;
             text-decoration: none;
             font-weight: 600;
+            text-underline-offset: 3px;
+            transition: color 0.2s ease, text-decoration-color 0.2s ease;
         }
 
-        .content-wrapper ::ng-deep a:hover {
+        .content-wrapper ::ng-deep a:hover,
+        .content-wrapper ::ng-deep a:focus-visible {
+            color: #1d4ed8;
             text-decoration: underline;
+        }
+
+        .content-wrapper ::ng-deep a:focus-visible {
+            border-radius: 3px;
+            outline: 3px solid rgba(37, 99, 235, 0.25);
+            outline-offset: 3px;
+        }
+
+        .content-wrapper ::ng-deep ul:not([class]),
+        .content-wrapper ::ng-deep ol:not([class]) {
+            margin: 0 0 24px;
+            padding-left: 1.4rem;
+        }
+
+        .content-wrapper ::ng-deep li:not([class]) {
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .content-wrapper ::ng-deep li:not([class])::marker {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .content-wrapper ::ng-deep blockquote {
+            margin: 28px 0;
+            padding: 18px 22px;
+            border-left: 4px solid #f8b018;
+            border-radius: 0 12px 12px 0;
+            background: #fffbeb;
+            color: #475569;
         }
 
         .content-wrapper {
@@ -498,9 +598,12 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     max-width: 100% !important;
     width: auto !important;
     height: auto !important;
-    max-height: 7rem !important;
-    border-radius: 12px;
-    margin: 20px 0;
+    max-height: 480px !important;
+    display: block;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    margin: 28px auto;
+    box-shadow: 0 18px 36px -24px rgba(15, 23, 42, 0.45);
 }
 
 /* Ensure iframes (videos) are responsive */
@@ -521,6 +624,14 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     border-left: 4px solid #2563eb;
     border-radius: 14px;
     text-decoration: none !important;
+    box-shadow: 0 8px 24px -22px rgba(15, 23, 42, 0.5);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.content-wrapper ::ng-deep .rm-related-guide:hover {
+    border-color: #bfdbfe;
+    box-shadow: 0 16px 30px -24px rgba(30, 64, 175, 0.55);
+    transform: translateY(-1px);
 }
 
 .content-wrapper ::ng-deep .rm-related-guide-label {
@@ -560,14 +671,156 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     color: #1d4ed8 !important;
 }
 
-.content-wrapper ::ng-deep a.rm-related-guide:hover {
-    border-color: #2563eb;
-    background: #eff6ff;
-    text-decoration: none !important;
+.content-wrapper ::ng-deep .rm-related-guide-title:hover,
+.content-wrapper ::ng-deep .rm-related-guide-title:focus-visible,
+.content-wrapper ::ng-deep .rm-related-guide-cta:hover,
+.content-wrapper ::ng-deep .rm-related-guide-cta:focus-visible {
+    text-decoration: underline !important;
 }
 
-.content-wrapper ::ng-deep a.rm-related-guide:hover .rm-related-guide-cta {
-    text-decoration: underline !important;
+.content-wrapper ::ng-deep [id],
+.blog-faqs {
+    scroll-margin-top: 110px;
+}
+
+.blog-faqs {
+    margin-top: 40px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.blog-faqs > h2 {
+    margin: 28px 0 20px;
+    color: #172554;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.blog-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.blog-faq-item {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #eceff3;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.blog-faq-item::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, #facc15, #f8b018);
+    content: "";
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s ease;
+}
+
+.blog-faq-item:hover {
+    border-color: #dfe4ea;
+    box-shadow: 0 12px 24px -16px rgba(15, 23, 42, 0.25);
+}
+
+.blog-faq-item.expanded {
+    border-color: rgba(248, 176, 24, 0.45);
+    background: rgba(248, 176, 24, 0.035);
+    box-shadow: 0 18px 34px -20px rgba(248, 176, 24, 0.4);
+}
+
+.blog-faq-item.expanded::before {
+    transform: scaleY(1);
+}
+
+.blog-faq-item h3 {
+    margin: 0;
+}
+
+.blog-faq-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px 22px;
+    border: 0;
+    background: transparent;
+    color: #111827;
+    text-align: left;
+    cursor: pointer;
+}
+
+.blog-faq-header:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.45);
+    outline-offset: -3px;
+}
+
+.blog-faq-question {
+    font-size: 16.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    transition: color 0.25s ease;
+}
+
+.blog-faq-item.expanded .blog-faq-question {
+    color: #92610a;
+}
+
+.blog-faq-toggle {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    transition: transform 0.35s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.blog-faq-item.expanded .blog-faq-toggle {
+    background: linear-gradient(135deg, #facc15, #f8b018);
+    color: #1a1a1a;
+    transform: rotate(180deg);
+}
+
+.blog-faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s ease;
+}
+
+.blog-faq-answer.show {
+    grid-template-rows: 1fr;
+}
+
+.blog-faq-answer-inner {
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 22px;
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.blog-faq-answer.show .blog-faq-answer-inner {
+    padding-bottom: 22px;
+}
+
+.blog-faq-answer-inner ::ng-deep p {
+    margin: 0 0 10px;
+}
+
+.blog-faq-answer-inner ::ng-deep p:last-child,
+.blog-faq-answer-inner ::ng-deep ul:last-child,
+.blog-faq-answer-inner ::ng-deep ol:last-child {
+    margin-bottom: 0;
 }
 
 /* Insight / key-takeaway callout used inline within blog content HTML */
@@ -594,6 +847,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
 
 /* Comparison tables used inline within blog content HTML */
 .content-wrapper ::ng-deep .table-container {
+    max-width: 100%;
     overflow-x: auto;
     margin: 28px 0;
     border-radius: 12px;
@@ -630,71 +884,225 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     background: #f9fafb;
 }
 
+.content-wrapper ::ng-deep .comparison-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.content-wrapper ::ng-deep .comparison-table tbody tr:hover {
+    background: #eff6ff;
+}
+
 /* CTA box used inline within blog content HTML */
 .content-wrapper ::ng-deep .rm-cta-box {
-    margin: 32px 0;
-    padding: 28px 30px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
-    border-radius: 16px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    max-width: 760px;
+    margin: 28px auto;
+    padding: 22px 24px;
+    border: 1px solid rgba(147, 197, 253, 0.35);
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at 95% 10%, rgba(96, 165, 250, 0.35), transparent 35%),
+        linear-gradient(135deg, #172554 0%, #1e3a8a 48%, #1d4ed8 100%);
     color: #ffffff;
+    box-shadow: 0 18px 42px -26px rgba(30, 64, 175, 0.85);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box::before {
+    position: absolute;
+    z-index: -1;
+    top: -55px;
+    right: -42px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    content: "";
+    animation: rm-cta-float 6s ease-in-out infinite;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box::after {
+    position: absolute;
+    z-index: -1;
+    bottom: -70px;
+    left: 38%;
+    width: 180px;
+    height: 110px;
+    border-radius: 50%;
+    background: rgba(250, 204, 21, 0.1);
+    filter: blur(12px);
+    content: "";
+    animation: rm-cta-glow 5s ease-in-out infinite alternate;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box:hover {
+    box-shadow: 0 24px 50px -28px rgba(30, 64, 175, 0.95);
+    transform: translateY(-2px);
 }
 
 .content-wrapper ::ng-deep .rm-cta-box-title {
-    font-size: 20px;
+    position: relative;
+    font-size: clamp(17px, 2vw, 19px);
     font-weight: 800;
-    margin-bottom: 10px;
+    line-height: 1.35;
+    margin-bottom: 8px;
     color: #ffffff;
 }
 
 .content-wrapper ::ng-deep .rm-cta-box p {
+    position: relative;
+    max-width: 68ch;
     color: #dbeafe;
-    margin-bottom: 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin: 0 0 10px;
 }
 
 .content-wrapper ::ng-deep .rm-cta-box ul {
-    margin: 0 0 20px;
-    padding-left: 20px;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 18px;
+    margin: 12px 0 16px;
+    padding: 0;
+    list-style: none;
 }
 
 .content-wrapper ::ng-deep .rm-cta-box li {
     color: #eff6ff;
-    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
 }
 
 .content-wrapper ::ng-deep .rm-cta-box a {
-    display: inline-flex !important;
+    position: relative;
+    display: flex !important;
     align-items: center;
     justify-content: center;
+    min-height: 42px;
+    width: fit-content;
+    margin: 14px auto 0;
     background: #ffffff !important;
     color: #1d4ed8 !important;
     font-weight: 700 !important;
-    padding: 12px 28px !important;
+    font-size: 14px !important;
+    padding: 9px 18px !important;
+    border: 1px solid rgba(255, 255, 255, 0.75);
     border-radius: 10px !important;
+    box-shadow: 0 8px 20px -12px rgba(15, 23, 42, 0.7);
     text-decoration: none !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
-.content-wrapper ::ng-deep .rm-cta-box a:hover {
-    background: #eff6ff !important;
+.content-wrapper ::ng-deep .rm-cta-box a:hover,
+.content-wrapper ::ng-deep .rm-cta-box a:focus-visible {
+    background: #fefce8 !important;
+    box-shadow: 0 12px 24px -12px rgba(15, 23, 42, 0.8);
     text-decoration: none !important;
+    transform: translateY(-2px);
+}
+
+.content-wrapper ::ng-deep .rm-cta-box a:focus-visible {
+    outline: 3px solid #facc15;
+    outline-offset: 3px;
+}
+
+@keyframes rm-cta-float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(-8px, 8px, 0); }
+}
+
+@keyframes rm-cta-glow {
+    from { opacity: 0.45; transform: scale(0.9); }
+    to { opacity: 0.9; transform: scale(1.12); }
 }
 
 .content-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     background: #ffffff;
     border-radius: 20px;
     padding: 60px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    box-shadow: 0 30px 70px -34px rgba(15, 23, 42, 0.3);
     position: relative;
+    animation: rm-content-enter 0.55s ease-out both;
     /* Remove max-height and overflow:visible entirely
        to let the natural flow of the document take over */
 }
 
+@keyframes rm-content-enter {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
+    .content-wrapper ::ng-deep .rm-cta-box {
+        margin: 24px 0;
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .content-wrapper ::ng-deep .rm-cta-box ul {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .content-wrapper ::ng-deep .rm-cta-box a {
+        width: 100%;
+    }
+
+    .content-wrapper {
+        font-size: 16px;
+        line-height: 1.72;
+    }
+
+    .content-wrapper ::ng-deep h1 {
+        font-size: 27px;
+        margin-bottom: 28px;
+    }
+
+    .content-wrapper ::ng-deep h2 {
+        font-size: 24px;
+        margin-top: 40px;
+    }
+
+    .content-wrapper ::ng-deep h3 {
+        font-size: 20px;
+        margin-top: 32px;
+    }
+
+    .content-wrapper ::ng-deep h4 {
+        font-size: 18px;
+    }
+
+    .content-wrapper ::ng-deep .rm-related-guide {
+        padding: 20px;
+    }
+
     .content-card {
         padding: 30px 20px; /* Reduce padding on mobile */
         border-radius: 0;     /* Full width looks better on mobile */
     }
     .content-layout {
         padding: 0;          /* Remove side padding to save space */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .content-wrapper ::ng-deep .rm-cta-box,
+    .content-wrapper ::ng-deep .rm-cta-box::before,
+    .content-wrapper ::ng-deep .rm-cta-box::after,
+    .content-wrapper ::ng-deep .rm-cta-box a,
+    .content-wrapper ::ng-deep .rm-related-guide,
+    .content-card {
+        animation: none;
+        transition: none;
     }
 }
         .article-footer {
@@ -1037,6 +1445,12 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
             grid-template-columns: 1fr 280px;
             gap: 32px;
             align-items: start;
+            min-width: 0;
+        }
+
+        .article-body {
+            width: 100%;
+            min-width: 0;
         }
 
         @media (max-width: 960px) {
@@ -1327,6 +1741,11 @@ export class BlogDetailsComponent implements OnInit {
 
     /** Current blog data (hardcoded or from API) */
     blog = signal<BlogPost | undefined>(undefined);
+    expandedFaqIndex = signal<number | null>(null);
+
+    toggleFaq(index: number) {
+        this.expandedFaqIndex.update(currentIndex => currentIndex === index ? null : index);
+    }
 
     /** Computed check to identify dynamically loaded API blogs with GUID IDs */
     isApiBlog = computed(() => {
@@ -1451,9 +1870,32 @@ export class BlogDetailsComponent implements OnInit {
         return content ? this.sanitizer.bypassSecurityTrustHtml(content) : '';
     });
 
+    sanitizeHtml(content: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(content);
+    }
+
+    onContentClick(event: MouseEvent) {
+        if (!this.isBrowser) return;
+
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const anchor = target.closest<HTMLAnchorElement>('a[href^="#"]');
+        const fragment = anchor?.getAttribute('href')?.slice(1);
+        if (!anchor || !fragment) return;
+
+        const destination = document.getElementById(decodeURIComponent(fragment));
+        if (!destination) return;
+
+        event.preventDefault();
+        destination.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.replaceState(null, '', `#${fragment}`);
+    }
+
     ngOnInit() {
         this.route.params.subscribe(params => {
             const slugValue = params['slug'];
+            this.expandedFaqIndex.set(null);
 
             if (!slugValue) {
                 this.loading.set(false);
@@ -1692,14 +2134,15 @@ export class BlogDetailsComponent implements OnInit {
     private updateSeoTags(blog: BlogPost) {
         const pageTitle = blog.metaTitle || blog.title;
         const description = blog.metaDescription || blog.excerpt;
+        const canonicalUrl = `https://researchmantra.in/${blog.slug}`;
 
         this.seoService.setMetaTags({
             title: pageTitle,
             description: description,
             keywords: blog.keywords,
             image: blog.image,
-            type: 'article'
+            type: 'article',
+            canonicalUrl
         });
-        this.seoService.updateCanonicalUrl(`https://researchmantra.in/blogs/${blog.slug}`);
     }
 }
