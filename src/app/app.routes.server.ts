@@ -30,6 +30,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'research/products',
+    renderMode: RenderMode.Client
+  },
+  {
+    path: 'research/products/:id',
+    renderMode: RenderMode.Client
+  },
+  {
     path: 'share/research',
     renderMode: RenderMode.Client
   },

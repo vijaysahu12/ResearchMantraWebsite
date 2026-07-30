@@ -18,12 +18,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [RouterOutlet, RouterLink, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent, InstallBottomBarComponent, NgOptimizedImage],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:scroll)': 'onWindowScroll()',
+  },
 })
 export class App {
   protected readonly title = signal('rm-website');
   readonly isPromoOpen = signal(false);
   protected readonly isPortalRoute = signal(false);
+  /** Hide the top bars (promo + header) when scrolling down, reveal on scroll up. */
+  protected readonly topBarsHidden = signal(false);
+  private lastScrollY = 0;
 
   private readonly seoService = inject(SeoService);
   private readonly accessibilityService = inject(AccessibilityService);
@@ -44,6 +50,24 @@ export class App {
     this.isPromoOpen.set(false);
   }
 
+  protected onWindowScroll(): void {
+    if (!this.isBrowser) return;
+    const y = window.scrollY;
+    const delta = y - this.lastScrollY;
+
+    // Always show near the very top; otherwise hide on downward scroll and
+    // reveal on upward scroll (small deltas ignored to avoid jitter).
+    if (y < 140) {
+      this.topBarsHidden.set(false);
+    } else if (delta > 6) {
+      this.topBarsHidden.set(true);
+    } else if (delta < -6) {
+      this.topBarsHidden.set(false);
+    }
+
+    this.lastScrollY = y;
+  }
+
   private schedulePromoPopup(): void {
     if (!this.isBrowser) return;
     // Show on every page load / refresh, 7s after load.
@@ -54,9 +78,14 @@ export class App {
 
   private initPortalShell(): void {
     const updateShell = (url: string) => {
+      const path = url.split('?')[0].split('#')[0];
       const isPortal = url === '/login' || url.startsWith('/login?') || url.startsWith('/research') || url.startsWith('/share/');
+      const isHome = !isPortal && (path === '/' || path === '/home');
       this.isPortalRoute.set(isPortal);
-      if (this.isBrowser) this.document.body.classList.toggle('portal-route', isPortal);
+      // Toggle on both server and browser so SSR markup matches the client
+      // shell (prevents a layout shift on the home page during hydration).
+      this.document.body.classList.toggle('portal-route', isPortal);
+      this.document.body.classList.toggle('home-route', isHome);
     };
 
     updateShell(this.router.url);

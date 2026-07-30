@@ -3,7 +3,6 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ResearchAuthService } from '../../services/research-auth.service';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-research-login',
@@ -18,10 +17,13 @@ export class ResearchLoginComponent {
   private readonly route = inject(ActivatedRoute);
 
   readonly step = signal<'mobile' | 'otp'>('mobile');
+  /** UI-only: drives the slide direction of the step transition. */
+  readonly direction = signal<'forward' | 'back'>('forward');
+  /** UI-only: enables the swap animation only after the first step change. */
+  readonly hasInteracted = signal(false);
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
   readonly mobileUserKey = signal('');
-  readonly localTestOtp = signal('');
 
   readonly mobile = new FormControl('', {
     nonNullable: true,
@@ -50,7 +52,8 @@ export class ResearchLoginComponent {
             return;
           }
           this.mobileUserKey.set(publicKey);
-          this.localTestOtp.set(environment.production ? '' : response.data?.oneTimePassword || '');
+          this.direction.set('forward');
+          this.hasInteracted.set(true);
           this.step.set('otp');
         },
         error: () => this.errorMessage.set('Unable to reach the login service. Please try again.'),
@@ -72,20 +75,42 @@ export class ResearchLoginComponent {
             this.errorMessage.set(response.message || 'The OTP is incorrect. Please try again.');
             return;
           }
-          const returnUrl = this.safeReturnUrl(
-            this.route.snapshot.queryParamMap.get('returnUrl'),
-          );
-          void this.router.navigateByUrl(returnUrl);
+          // A saved product redirect (e.g. from a "Buy" click while logged out)
+          // takes priority; it is cleared on read so later logins won't reuse it.
+          const saved = this.auth.consumePostLoginRedirect();
+          const target =
+            saved && this.isSafeInternalUrl(saved)
+              ? saved
+              : this.safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'));
+          void this.router.navigateByUrl(target);
         },
         error: () => this.errorMessage.set('The OTP could not be verified. Please try again.'),
       });
   }
 
+  /**
+   * User is leaving the login flow (e.g. "Back to home"). Drop any saved
+   * post-login redirect so signing in later from elsewhere doesn't send them
+   * back to a product they abandoned here.
+   */
+  onBackToHome(): void {
+    this.auth.clearPostLoginRedirect();
+  }
+
   editMobile(): void {
     this.otp.reset();
     this.errorMessage.set('');
-    this.localTestOtp.set('');
+    this.direction.set('back');
+    this.hasInteracted.set(true);
     this.step.set('mobile');
+  }
+
+  private isSafeInternalUrl(value: string): boolean {
+    return (
+      value.startsWith('/research/products/') &&
+      !value.startsWith('//') &&
+      !value.includes('\\')
+    );
   }
 
   private safeReturnUrl(value: string | null): string {

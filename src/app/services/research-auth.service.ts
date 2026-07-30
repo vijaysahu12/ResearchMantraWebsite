@@ -11,6 +11,7 @@ import {
 } from '../models/research.models';
 
 const SESSION_KEY = 'rm-web-research-session';
+const POST_LOGIN_REDIRECT_KEY = 'rm-post-login-redirect';
 
 @Injectable({ providedIn: 'root' })
 export class ResearchAuthService {
@@ -59,6 +60,42 @@ export class ResearchAuthService {
       return;
     }
     this.clearSession();
+  }
+
+  /** Remember where to send the user after they log in (e.g. a product they wanted to buy). */
+  setPostLoginRedirect(url: string): void {
+    if (!this.isBrowser) return;
+    try {
+      localStorage.setItem(POST_LOGIN_REDIRECT_KEY, url);
+    } catch {
+      /* storage unavailable — ignore */
+    }
+  }
+
+  /**
+   * Forget any saved post-login redirect. Called when the user abandons the
+   * login flow (e.g. "Back to home") so a later, unrelated login does not
+   * bounce them to a product page they clicked "Buy" on much earlier.
+   */
+  clearPostLoginRedirect(): void {
+    if (!this.isBrowser) return;
+    try {
+      localStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+    } catch {
+      /* storage unavailable — ignore */
+    }
+  }
+
+  /** Read the saved redirect and clear it immediately so it is only used once. */
+  consumePostLoginRedirect(): string | null {
+    if (!this.isBrowser) return null;
+    try {
+      const url = localStorage.getItem(POST_LOGIN_REDIRECT_KEY);
+      if (url) localStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+      return url;
+    } catch {
+      return null;
+    }
   }
 
   private clearSession(): void {

@@ -6,7 +6,7 @@
       </div>
       <div class="brand-info">
         <span class="brand-name">Research Mantra By Susmita Sahoo</span>
-        <span class="brand-subtitle">SEBI Reg Research Analyst </span>
+        <span class="brand-subtitle">SEBI Reg Research Analyst - INH000019150 </span>
       </div>
     </div>
 
@@ -31,10 +31,10 @@
                 Blogs</a></li>
             <li><a [routerLink]="['/stock-market-analysis-and-nifty-updates']" (click)="isMenuOpen.set(false); isBlogsOpen.set(false)">
                 Market Analysis</a></li>
-            @if (isAuthenticated()) {
+            <!-- @if (isAuthenticated()) {
               <li><a [routerLink]="['/admin/blogs']" (click)="isMenuOpen.set(false); isBlogsOpen.set(false)">
                   Manage Blogs</a></li>
-            }
+            } -->
           </ul>
         </li>
 

@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 import { MyBucketItem, PurchaseHistoryItem } from '../../models/research.models';
 import { ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { PurchaseDialogComponent } from '../purchase-dialog/purchase-dialog.component';
 
 @Component({
   selector: 'app-research-purchases',
-  imports: [RouterLink, DatePipe, DecimalPipe],
+  imports: [RouterLink, DatePipe, DecimalPipe, PurchaseDialogComponent],
   templateUrl: './research-purchases.component.html',
   styleUrls: ['./research-purchases.component.css', './research-purchases.bucket.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +21,8 @@ export class ResearchPurchasesComponent {
   readonly bucket = signal<MyBucketItem[]>([]);
   readonly purchases = signal<PurchaseHistoryItem[]>([]);
   readonly receipt = signal<PurchaseHistoryItem | null>(null);
+  readonly showRenew = signal(false);
+  readonly renewItem = signal<MyBucketItem | null>(null);
 
   constructor() { this.load(); }
 
@@ -49,6 +52,16 @@ export class ResearchPurchasesComponent {
   show(view: 'bucket' | 'purchases'): void {
     this.activeView.set(view);
     if (view === 'bucket') this.receipt.set(null);
+  }
+
+  openRenew(item: MyBucketItem): void {
+    this.renewItem.set(item);
+    this.showRenew.set(true);
+  }
+
+  onRenewed(): void {
+    // Refresh the bucket so the renewed product shows its new validity.
+    this.load();
   }
 
   viewReceipt(id: number): void {

@@ -66,7 +66,20 @@
                 <div class="card-main"><small>{{ item.categoryName || 'PRODUCT' }}</small><strong>{{ item.name }}</strong></div>
                 <div class="card-field"><small>Start date</small><span>{{ item.startdate | date:'mediumDate' }}</span></div>
                 <div class="card-field"><small>Valid until</small><span>{{ item.enddate ? (item.enddate | date:'mediumDate') : 'No expiry' }}</span></div>
-                <span class="status" [class.expired]="!isBucketActive(item)">{{ isBucketActive(item) ? 'Active' : 'Expired' }}</span>
+                <div class="card-actions">
+                  <span class="status" [class.expired]="!isBucketActive(item)">{{ isBucketActive(item) ? 'Active' : 'Expired' }}</span>
+                  @if (isBucketActive(item)) {
+                    <a routerLink="/mobile" class="bucket-cta" [attr.aria-label]="'Open ' + item.name + ' in the Research Mantra app'">
+                      <span>View on app</span>
+                      <svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                  } @else {
+                    <button type="button" class="bucket-cta renew" (click)="openRenew(item)" [attr.aria-label]="'Renew ' + item.name">
+                      <span>Renew now</span>
+                      <svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                  }
+                </div>
               </article>
             }
           </div>
@@ -119,6 +132,17 @@
         </dl>
         <button class="print" type="button" (click)="printReceipt()">Print / save receipt</button>
       </section>
+    }
+
+    @if (showRenew() && renewItem(); as item) {
+      <app-purchase-dialog
+        [productId]="item.id"
+        [productName]="item.name"
+        [productImage]="item.listImage ?? null"
+        [category]="item.categoryName ?? ''"
+        (closed)="showRenew.set(false)"
+        (purchased)="onRenewed()"
+      />
     }
   </div>
 </main>

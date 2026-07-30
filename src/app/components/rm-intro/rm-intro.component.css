@@ -14,7 +14,8 @@
     width: 100%;
     min-height: 500px;
     background: linear-gradient(90deg, var(--hero-bg-left) 0%, var(--hero-bg-right) 100%);
-    padding: 25px 0 80px;
+    /* Hero starts at the very top on home; clear the promo bar + floating header. */
+    padding: calc(var(--promo-h, 40px) + var(--header-h, 72px) + 20px) 0 80px;
     color: #FFFFFF;
     font-family: 'Inter', system-ui, sans-serif;
     overflow: hidden;

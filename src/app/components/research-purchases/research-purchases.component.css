@@ -381,5 +381,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .loader { animation: none; }
-  .record-card, .nav-btn { transition: none; }
+  .record-card, .nav-btn, .bucket-cta, .bucket-cta .cta-arrow { transition: none; }
+  .bucket-cta:hover { transform: none; }
+  .bucket-cta:hover .cta-arrow { transform: none; }
 }

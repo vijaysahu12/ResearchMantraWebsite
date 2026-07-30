@@ -60,6 +60,28 @@ export interface PaymentRequestResult {
   link_status?: string;
 }
 
+export interface PaymentLinkResult {
+  url: string;
+  name?: string;
+  email?: string;
+  amount?: number;
+  merchantTransactionId?: string;
+  paymentGateway?: string;
+  paymentLinkId?: string;
+}
+
+export interface PaymentStatusProduct {
+  productId: number;
+  name?: string;
+  code?: string;
+  startDate?: string;
+  endDate?: string;
+  createdOn?: string;
+  productValidity?: number;
+  /** "PENDING" | "SUCCESS" | "FAILED" */
+  paymentStatus?: string;
+}
+
 export interface PaymentStatusResult {
   link_id: string;
   link_status: string;
@@ -96,6 +118,83 @@ export interface MyBucketItem {
   buyButtonText?: string;
   price?: number;
   notificationEnabled?: boolean;
+}
+
+export interface TopProduct {
+  id: number;
+  name: string;
+  subTitle?: string;
+  shortImage?: string;
+  navigationText?: string;
+  isActive?: boolean;
+  isPurchased?: boolean;
+}
+
+export interface ProductListItem {
+  id: number;
+  name: string;
+  productTag?: string;
+  description?: string;
+  descriptionTitle?: string;
+  category?: string;
+  groupName?: string;
+  price: number;
+  listImage?: string;
+  landscapeImage?: string;
+  heartsCount?: number;
+  buyButtonText?: string;
+  thumbsUpCount?: number;
+  contentCount?: number;
+  videoCount?: number;
+  userHasHeart?: boolean;
+  userHasThumbsUp?: boolean;
+  overAllRating?: number;
+  userRating?: number;
+  liked?: boolean;
+  isInMyBucket?: boolean;
+  isFreeTrailAvailable?: boolean;
+  isInValidity?: boolean;
+  isPanVerified?: boolean;
+  isInCart?: boolean;
+}
+
+export interface ProductDetail {
+  id: number;
+  name: string;
+  productTag?: string;
+  code?: string;
+  communityId?: number;
+  communityName?: string;
+  description?: string;
+  descriptionTitle?: string;
+  categoryId?: number;
+  category?: string;
+  accessToScanner?: boolean;
+  price: number;
+  paidAmount?: number;
+  landscapeImage?: string;
+  buyButtonText?: string;
+  showViewButton?: boolean;
+  discount?: string;
+  userRating?: string;
+  liked?: string;
+  enableSubscription?: string;
+  isHeart?: boolean;
+  isThumbsUp?: boolean;
+  subscriptionData?: string;
+  extraBenefits?: string;
+  isInMyBucket?: boolean;
+  isInValidity?: boolean;
+  isQueryFormEnabled?: boolean;
+  contentCount?: number;
+  videoCount?: number;
+  daysToGo?: number;
+  bonusProducts?: string;
+  scannerBonusProductId?: string;
+  roi?: number;
+  accuracy?: number;
+  isPanVerified?: boolean;
+  isInCart?: boolean;
 }
 
 export interface ResearchCompany {

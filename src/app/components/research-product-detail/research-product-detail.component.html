@@ -1,0 +1,135 @@
+<main class="detail-page">
+  @let backUrl = isAuthenticated() ? '/research/products' : '/';
+  <section class="portal-hero">
+    <div class="portal-topline">
+      <a [routerLink]="backUrl" class="portal-brand" aria-label="Research Mantra">
+        <img class="portal-mark" src="assets/RM_Logo.png" alt="" aria-hidden="true" />
+        <span><strong>Research Mantra</strong><small>Product details</small></span>
+      </a>
+      <div class="account-area">
+        @if (isAuthenticated()) {
+          <a routerLink="/research/products" class="account-link">
+            <svg class="account-link-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16M4 12l6-6M4 12l6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>All products</span>
+          </a>
+          <button type="button" class="logout-button" (click)="logout()">Log out</button>
+        } @else {
+          <a routerLink="/" class="account-link">
+            <svg class="account-link-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16M4 12l6-6M4 12l6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Home</span>
+          </a>
+          <a routerLink="/login" class="logout-button">Login</a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="detail-body">
+    @if (loading()) {
+      <div class="detail-skeleton" aria-label="Loading product" aria-live="polite">
+        <div class="sk-media"></div>
+        <div class="sk-lines"><span></span><span></span><span></span></div>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="state-card" role="alert">
+        <h3>Product unavailable</h3>
+        <p>{{ errorMessage() }}</p>
+        <div class="state-actions">
+          <button type="button" (click)="retry()">Try again</button>
+          <a [routerLink]="backUrl" class="ghost">{{ isAuthenticated() ? 'Back to products' : 'Back to home' }}</a>
+        </div>
+      </div>
+    } @else if (product(); as item) {
+      <article class="detail-card">
+        <header class="detail-hero" [class.no-image]="!item.landscapeImage">
+          @if (item.landscapeImage) {
+            <img [src]="item.landscapeImage" [alt]="item.name" />
+          } @else {
+            <span class="hero-monogram" aria-hidden="true">{{ monogram(item.name) }}</span>
+          }
+          <div class="hero-overlay"></div>
+          <div class="hero-text">
+            <div class="badge-row">
+              @if (item.category) { <span class="cat-badge">{{ item.category }}</span> }
+              @if (item.productTag) { <span class="tag-badge">{{ item.productTag }}</span> }
+              @if (isOwned()) { <span class="owned-badge">In your bucket</span> }
+            </div>
+            <h1>{{ item.name }}</h1>
+            @if (item.descriptionTitle) { <p class="hero-sub">{{ item.descriptionTitle }}</p> }
+          </div>
+        </header>
+
+        <div class="detail-grid">
+          <div class="detail-main">
+            @if (item.roi != null || item.accuracy != null || item.contentCount || item.videoCount) {
+              <div class="stat-row">
+                @if (item.roi != null && item.roi > 0) { <div class="stat"><span>ROI</span><strong>{{ item.roi | number:'1.0-2' }}%</strong></div> }
+                @if (item.accuracy != null && item.accuracy > 0) { <div class="stat"><span>Accuracy</span><strong>{{ item.accuracy | number:'1.0-2' }}%</strong></div> }
+                @if (item.contentCount) { <div class="stat"><span>Reports</span><strong>{{ item.contentCount }}</strong></div> }
+                @if (item.videoCount) { <div class="stat"><span>Videos</span><strong>{{ item.videoCount }}</strong></div> }
+              </div>
+            }
+
+            @if (item.description) {
+              <section class="detail-section">
+                <h2>About this product</h2>
+                <div class="rich-text" [innerHTML]="item.description"></div>
+              </section>
+            }
+
+            @if (item.extraBenefits) {
+              <section class="detail-section">
+                <h2>What you get</h2>
+                <div class="rich-text" [innerHTML]="item.extraBenefits"></div>
+              </section>
+            }
+          </div>
+
+          <aside class="detail-side">
+            <div class="buy-card">
+              <div class="price-line">
+                @if (item.price > 0) {
+                  <span class="price">₹{{ item.price | number:'1.0-0' }}</span>
+                  @if (item.discount) { <span class="discount">{{ item.discount }}</span> }
+                } @else {
+                  <span class="price free">Free</span>
+                }
+              </div>
+
+              @if (isOwned()) {
+                <p class="owned-note">
+                  You already own this product.
+                  @if (item.daysToGo && item.daysToGo > 0) { <strong>{{ item.daysToGo }} day{{ item.daysToGo === 1 ? '' : 's' }} left.</strong> }
+                </p>
+                <a routerLink="/mobile" class="buy-btn secondary">Open in the app <span aria-hidden="true">→</span></a>
+              } @else {
+                <button type="button" class="buy-btn" (click)="openPurchase()">
+                  {{ item.buyButtonText || 'Buy this product' }} <span aria-hidden="true">→</span>
+                </button>
+                @if (item.isInCart) { <p class="cart-note">This product is already in your cart.</p> }
+              }
+
+              <a [routerLink]="backUrl" class="back-link-btn">← {{ isAuthenticated() ? 'Back to all products' : 'Back to home' }}</a>
+            </div>
+          </aside>
+        </div>
+      </article>
+    }
+
+    <p class="detail-disclaimer">
+      Investment in securities market is subject to market risks. Read all related documents carefully before investing. Past performance is not indicative of future returns.
+    </p>
+  </div>
+
+  @if (showPurchase() && product(); as item) {
+    <app-purchase-dialog
+      [productId]="item.id"
+      [productName]="item.name"
+      [productImage]="item.landscapeImage ?? null"
+      [category]="item.category ?? ''"
+      [productTag]="item.productTag ?? ''"
+      (closed)="showPurchase.set(false)"
+      (purchased)="onPurchased()"
+    />
+  }
+</main>

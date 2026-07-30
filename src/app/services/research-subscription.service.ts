@@ -1,11 +1,13 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApiEnvelope,
   MyBucketItem,
+  PaymentLinkResult,
   PaymentRequestResult,
+  PaymentStatusProduct,
   PaymentStatusResult,
   PurchaseHistoryItem,
   ResearchSubscriptionPlan,
@@ -34,6 +36,62 @@ export class ResearchSubscriptionService {
         { headers: this.authHeaders(session.accessToken) },
       )
       .pipe(map((response) => this.unwrap(response)));
+  }
+
+  /** GetSubscriptionById for any product (subscriptionPlanId 0 => all durations of the product). */
+  getProductSubscriptions(productId: number): Observable<ResearchSubscriptionPlan[]> {
+    const session = this.requireSession();
+    return this.http
+      .post<ApiEnvelope<ResearchSubscriptionPlan[]>>(
+        `${environment.gatewayUrl}product/subscription/get-subscription-by-id`,
+        {
+          productId,
+          subscriptionPlanId: 0,
+          mobileUserKey: session.publicKey,
+          deviceType: 'Web',
+        },
+        { headers: this.authHeaders(session.accessToken) },
+      )
+      .pipe(map((response) => this.unwrap(response)));
+  }
+
+  /** AddPaymentRequestV2 — returns a payment link URL to open in a new tab. */
+  addPaymentRequest(input: {
+    productId: number;
+    amount: number;
+    couponCode: string;
+    subscriptionDurationId: number;
+    merchantTransactionId: string;
+  }): Observable<PaymentLinkResult> {
+    const session = this.requireSession();
+    return this.http
+      .post<ApiEnvelope<PaymentLinkResult>>(
+        `${environment.gatewayUrl}Payment/AddPaymentRequest`,
+        {
+          productIds: [input.productId],
+          merchantTransactionID: input.merchantTransactionId,
+          amount: input.amount,
+          couponCode: input.couponCode || '',
+          subcriptionModelId: input.subscriptionDurationId,
+          subscriptionMappingId: 0,
+          mobileUserKey: session.publicKey,
+        },
+        { headers: this.authHeaders(session.accessToken) },
+      )
+      .pipe(map((response) => this.unwrap(response)));
+  }
+
+  /** GetPaymentStatusV2 — poll a payment by the merchant transaction id we generated. */
+  getPaymentStatusV2(paymentRequestId: string): Observable<PaymentStatusProduct[]> {
+    const session = this.requireSession();
+    const params = new HttpParams().set('paymentRequestId', paymentRequestId);
+    return this.http
+      .post<ApiEnvelope<PaymentStatusProduct[]>>(
+        `${environment.gatewayUrl}Payment/GetPaymentStatus`,
+        null,
+        { headers: this.authHeaders(session.accessToken), params },
+      )
+      .pipe(map((response) => response?.data ?? []));
   }
 
   validateCoupon(productId: number, durationId: number, couponCode: string): Observable<{ deductedPrice: number }> {

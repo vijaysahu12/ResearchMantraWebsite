@@ -465,6 +465,13 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
             margin: 40px 0 20px;
         }
 
+        .content-wrapper ::ng-deep h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 32px 0 14px;
+        }
+
         .content-wrapper ::ng-deep p {
             margin-bottom: 24px;
         }
@@ -502,6 +509,173 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     width: 100%;
     aspect-ratio: 16 / 9;
     border-radius: 8px;
+}
+
+/* Related Guide callout box, used inline within blog content HTML */
+.content-wrapper ::ng-deep .rm-related-guide {
+    display: block;
+    margin: 32px 0;
+    padding: 24px 28px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #2563eb;
+    border-radius: 14px;
+    text-decoration: none !important;
+}
+
+.content-wrapper ::ng-deep .rm-related-guide-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+.content-wrapper ::ng-deep .rm-related-guide-title {
+    display: block;
+    font-size: 19px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.content-wrapper ::ng-deep .rm-related-guide-desc {
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-bottom: 14px;
+}
+
+.content-wrapper ::ng-deep .rm-related-guide-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1d4ed8 !important;
+}
+
+.content-wrapper ::ng-deep a.rm-related-guide:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+    text-decoration: none !important;
+}
+
+.content-wrapper ::ng-deep a.rm-related-guide:hover .rm-related-guide-cta {
+    text-decoration: underline !important;
+}
+
+/* Insight / key-takeaway callout used inline within blog content HTML */
+.content-wrapper ::ng-deep .rm-note {
+    margin: 28px 0;
+    padding: 20px 24px;
+    background: #eff6ff;
+    border-radius: 12px;
+    border: 1px solid #dbeafe;
+}
+
+.content-wrapper ::ng-deep .rm-note-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 6px;
+}
+
+.content-wrapper ::ng-deep .rm-note p {
+    margin: 0;
+    font-size: 15.5px;
+    color: #374151;
+}
+
+/* Comparison tables used inline within blog content HTML */
+.content-wrapper ::ng-deep .table-container {
+    overflow-x: auto;
+    margin: 28px 0;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.content-wrapper ::ng-deep .comparison-table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.content-wrapper ::ng-deep .comparison-table th {
+    background: #1e3a8a;
+    color: #ffffff;
+    text-align: left;
+    padding: 14px 18px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.content-wrapper ::ng-deep .comparison-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+}
+
+.content-wrapper ::ng-deep .comparison-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.content-wrapper ::ng-deep .comparison-table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+/* CTA box used inline within blog content HTML */
+.content-wrapper ::ng-deep .rm-cta-box {
+    margin: 32px 0;
+    padding: 28px 30px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+    border-radius: 16px;
+    color: #ffffff;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box p {
+    color: #dbeafe;
+    margin-bottom: 16px;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box ul {
+    margin: 0 0 20px;
+    padding-left: 20px;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box li {
+    color: #eff6ff;
+    margin-bottom: 6px;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box a {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff !important;
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+    padding: 12px 28px !important;
+    border-radius: 10px !important;
+    text-decoration: none !important;
+}
+
+.content-wrapper ::ng-deep .rm-cta-box a:hover {
+    background: #eff6ff !important;
+    text-decoration: none !important;
 }
 
 .content-card {

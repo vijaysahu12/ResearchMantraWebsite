@@ -120,11 +120,61 @@
   background: #fff0df;
 }
 
+/* ---------- Card CTA ---------- */
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.bucket-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: #0d6dca;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.82rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(13, 109, 202, 0.24);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.bucket-cta:hover {
+  background: #075aa9;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(13, 109, 202, 0.3);
+}
+
+.bucket-cta .cta-arrow { width: 15px; height: 15px; transition: transform 0.2s; }
+.bucket-cta:hover .cta-arrow { transform: translateX(3px); }
+
+.bucket-cta.renew {
+  background: #e07b1a;
+  box-shadow: 0 6px 16px rgba(224, 123, 26, 0.28);
+}
+
+.bucket-cta.renew:hover { background: #c56812; }
+
+.bucket-cta:focus-visible { outline: 3px solid #f5a623; outline-offset: 3px; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   .bucket-card { grid-template-columns: auto 1fr 1fr; }
   .bucket-card .card-main { grid-column: 2 / -1; }
-  .bucket-card .status { grid-column: 1 / -1; justify-self: start; }
+  .bucket-card .card-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 @media (max-width: 520px) {

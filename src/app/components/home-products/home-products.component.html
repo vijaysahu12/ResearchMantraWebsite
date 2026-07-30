@@ -1,0 +1,61 @@
+<section class="hp-section" aria-labelledby="hp-heading">
+  <div class="hp-inner">
+    <div class="hp-head">
+      <p class="hp-eyebrow">Our products</p>
+      <h2 id="hp-heading">Research &amp; advisory products</h2>
+      <p class="hp-sub">Swipe through our products and open any one to see the details.</p>
+    </div>
+
+    @if (loading()) {
+      <div class="hp-scroller" aria-label="Loading products" aria-live="polite">
+        @for (n of [1,2,3,4,5]; track n) { <div class="hp-card hp-skeleton"></div> }
+      </div>
+    } @else if (errorMessage()) {
+      <div class="hp-state" role="alert">
+        <p>{{ errorMessage() }}</p>
+        <button type="button" (click)="load()">Try again</button>
+      </div>
+    } @else if (items().length === 0) {
+      <div class="hp-state"><p>Products will appear here soon.</p></div>
+    } @else {
+      <div class="hp-scroller" role="list">
+        @for (product of items(); track product.id) {
+          <article class="hp-card" role="listitem" tabindex="0"
+                   (click)="openProduct(product.id)"
+                   (keydown.enter)="openProduct(product.id)"
+                   (keydown.space)="$event.preventDefault(); openProduct(product.id)"
+                   [attr.aria-label]="'View details for ' + product.name">
+            <div class="hp-thumb" aria-hidden="true">
+              @if (product.listImage || product.landscapeImage) {
+                <img [src]="product.listImage || product.landscapeImage" [alt]="product.name" loading="lazy" />
+              } @else {
+                <span class="hp-mono">{{ monogram(product.name) }}</span>
+              }
+              @if (product.isInMyBucket) { <span class="hp-badge owned">Owned</span> }
+              @else if (product.isFreeTrailAvailable) { <span class="hp-badge trial">Free trial</span> }
+            </div>
+            <div class="hp-body">
+              <div class="hp-badge-row">
+                @if (product.category || product.groupName) { <span class="hp-chip">{{ product.category || product.groupName }}</span> }
+                @if (product.productTag) { <span class="hp-chip alt">{{ product.productTag }}</span> }
+              </div>
+              <h3>{{ product.name }}</h3>
+              <p class="hp-desc">{{ product.descriptionTitle || product.description || 'Open to view the full details.' }}</p>
+              <div class="hp-foot">
+                @if (product.price && product.price > 0) {
+                  <span class="hp-price">₹{{ product.price | number:'1.0-0' }}</span>
+                } @else {
+                  <span class="hp-price free">Free</span>
+                }
+                <span class="hp-cta">
+                  View details
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

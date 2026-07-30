@@ -137,7 +137,7 @@ loadBlogs(page = 1, size = 10, category = '') {
     }
   ).subscribe({
     next: (res) => {
-      const mappedData = (res?.data ?? []).map((b) => ({
+      const mappedData = (res?.data ?? []).map((b: any) => ({
         ...b,
         images: b.images ?? [],
         enableComments: b.enableComments === true || String(b.enableComments).toLowerCase() === 'true'

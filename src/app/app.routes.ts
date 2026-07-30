@@ -85,6 +85,22 @@ export const routes: Routes = [
         ),
     },
     {
+      path: 'research/products',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-products/research-products.component').then(
+          (component) => component.ResearchProductsComponent,
+        ),
+    },
+    {
+      // Public: anyone can view a product's details; login is only required at "Buy".
+      path: 'research/products/:id',
+      loadComponent: () =>
+        import('./components/research-product-detail/research-product-detail.component').then(
+          (component) => component.ResearchProductDetailComponent,
+        ),
+    },
+    {
       path: 'research/test-payment',
       canActivate: [researchAuthGuard],
       loadComponent: () =>

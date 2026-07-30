@@ -1,0 +1,115 @@
+<main class="products-page">
+  <section class="portal-hero" aria-labelledby="products-heading">
+    <div class="portal-topline">
+      <a routerLink="/research" class="portal-brand" aria-label="Back to research desk">
+        <img class="portal-mark" src="assets/RM_Logo.png" alt="" aria-hidden="true" />
+        <span><strong>Research Mantra</strong><small>All products</small></span>
+      </a>
+      <div class="account-area">
+        <a routerLink="/research" class="account-link">
+          <svg class="account-link-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h16M4 12l6-6M4 12l6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Research desk</span>
+        </a>
+        <a routerLink="/research/purchases" class="account-link">
+          <svg class="account-link-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 7V6a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v1m-13 0h14l-1 13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span>Purchases</span>
+        </a>
+        <span class="welcome">Hello, {{ session()?.name || 'Investor' }}</span>
+        <button type="button" class="logout-button" (click)="logout()">Log out</button>
+      </div>
+    </div>
+
+    <div class="hero-copy">
+      <p class="eyebrow">Explore the marketplace</p>
+      <h1 id="products-heading">Every Research Mantra product, in one place.</h1>
+      <p>Browse our research, trade and advisory products. Open any product to see the full details before you subscribe.</p>
+    </div>
+
+    <form class="search-bar" (submit)="$event.preventDefault()" role="search">
+      <span aria-hidden="true">⌕</span>
+      <label class="sr-only" for="product-search">Search products</label>
+      <input id="product-search" type="search" placeholder="Search by product name or category" [formControl]="search" />
+    </form>
+  </section>
+
+  <section class="products-content" aria-label="Products">
+    <div class="content-heading">
+      <div>
+        <p class="section-kicker">Product catalogue</p>
+        <h2>Products</h2>
+        <p>{{ visibleItems().length }} product{{ visibleItems().length === 1 ? '' : 's' }} available</p>
+      </div>
+      @if (categories().length > 0) {
+        <div class="filter-tabs" aria-label="Filter by category">
+          <button type="button" [class.active]="activeCategory() === 'all'" (click)="setCategory('all')">All</button>
+          @for (category of categories(); track category) {
+            <button type="button" [class.active]="activeCategory() === category" (click)="setCategory(category)">{{ category }}</button>
+          }
+        </div>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="product-grid" aria-label="Loading products" aria-live="polite">
+        @for (item of [1, 2, 3, 4, 5, 6]; track item) { <div class="skeleton-card"></div> }
+      </div>
+    } @else if (errorMessage()) {
+      <div class="state-card" role="alert">
+        <h3>Products are temporarily unavailable</h3>
+        <p>{{ errorMessage() }}</p>
+        <button type="button" (click)="load()">Try again</button>
+      </div>
+    } @else if (visibleItems().length === 0) {
+      <div class="state-card">
+        <h3>No products found</h3>
+        <p>Try a different search term or reset the category filter.</p>
+        <button type="button" (click)="search.reset(); setCategory('all')">Clear filters</button>
+      </div>
+    } @else {
+      <div class="product-grid">
+        @for (product of visibleItems(); track product.id) {
+          <article class="product-card" (click)="openProduct(product)" tabindex="0"
+                   (keydown.enter)="openProduct(product)" (keydown.space)="$event.preventDefault(); openProduct(product)"
+                   role="button" [attr.aria-label]="'View details for ' + product.name">
+            <div class="product-thumb" aria-hidden="true">
+              @if (product.listImage || product.landscapeImage) {
+                <img [src]="product.listImage || product.landscapeImage" [alt]="product.name" loading="lazy" />
+              } @else {
+                <span class="thumb-monogram">{{ monogram(product.name) }}</span>
+              }
+              @if (product.isInMyBucket) { <span class="thumb-badge owned">In your bucket</span> }
+              @else if (product.isFreeTrailAvailable) { <span class="thumb-badge trial">Free trial</span> }
+            </div>
+
+            <div class="product-body">
+              <div class="badge-row">
+                @if (product.category || product.groupName) { <span class="cat-badge">{{ product.category || product.groupName }}</span> }
+                @if (product.productTag) { <span class="tag-badge">{{ product.productTag }}</span> }
+              </div>
+              <h3>{{ product.name }}</h3>
+              <p class="product-summary">{{ product.descriptionTitle || product.description || 'Open to view the full details of this product.' }}</p>
+
+              <div class="product-foot">
+                <div class="price-block">
+                  @if (product.price > 0) {
+                    <span class="price">₹{{ product.price | number:'1.0-0' }}</span>
+                  } @else {
+                    <span class="price free">Free</span>
+                  }
+                  @if (product.overAllRating && product.overAllRating > 0) {
+                    <span class="rating" aria-label="Rating">★ {{ product.overAllRating | number:'1.1-1' }}</span>
+                  }
+                </div>
+                <span class="view-link">{{ product.buyButtonText || 'View details' }} <span aria-hidden="true">→</span></span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+    <p class="products-disclaimer">
+      Investment in securities market is subject to market risks. Read all related documents carefully before investing. Past performance is not indicative of future returns.
+    </p>
+  </section>
+</main>

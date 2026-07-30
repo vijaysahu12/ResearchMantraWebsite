@@ -9,11 +9,26 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Heights of the two fixed top bars (announcement promo + floating header).
+   Content reserves space for both; the home hero rises up behind the header. */
+:root {
+    --promo-h: 40px;
+    --header-h: 72px;
+}
+
 body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    padding-top: 72px;
+    /* Default pages: clear the promo bar + the floating header. */
+    padding-top: calc(var(--promo-h) + var(--header-h));
+}
+
+/* Home: reserve nothing — the dark hero background rises all the way to the
+   top (behind the promo bar + floating header), so there is no white gap.
+   The hero's own top padding pushes its content below the bars. */
+body.home-route {
+    padding-top: 0;
 }
 
 body.portal-route {
@@ -21,41 +36,30 @@ body.portal-route {
 }
 
 section[id] {
-    scroll-margin-top: 72px;
-    /* Matches header height for sticky navigation */
+    /* Keep anchored sections clear of both fixed bars. */
+    scroll-margin-top: calc(var(--promo-h) + var(--header-h));
 }
 
-/* Responsive adjustments for body padding */
+/* Responsive: the header grows a little as its content wraps on small screens,
+   and the promo bar wraps to more lines. */
 @media (max-width: 640px) {
-    body {
-        padding-top: 80px;
-        /* Slightly more padding for wrapped header */
-    }
-
-    section[id] {
-        scroll-margin-top: 80px;
+    :root {
+        --promo-h: 56px;
+        --header-h: 80px;
     }
 }
 
 @media (max-width: 480px) {
-    body {
-        padding-top: 85px;
-        /* Account for potentially taller header with wrapped text */
-    }
-
-    section[id] {
-        scroll-margin-top: 85px;
+    :root {
+        --promo-h: 62px;
+        --header-h: 85px;
     }
 }
 
 @media (max-width: 375px) {
-    body {
-        padding-top: 90px;
-        /* Extra padding for very small screens */
-    }
-
-    section[id] {
-        scroll-margin-top: 90px;
+    :root {
+        --promo-h: 68px;
+        --header-h: 90px;
     }
 }
 

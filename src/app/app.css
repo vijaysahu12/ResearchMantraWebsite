@@ -1,4 +1,27 @@
 /* ===================== TOP ANNOUNCEMENT BAR ===================== */
+/* Fixed shell holding the promo bar + floating header. It slides up out of
+   view on scroll-down and back in on scroll-up. Transparent so the page
+   (dark hero on home) shows through behind the floating header. */
+.top-shell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: transform 0.35s ease;
+    will-change: transform;
+}
+
+.top-shell--hidden {
+    transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .top-shell {
+        transition: none;
+    }
+}
+
 .top-promo-bar {
     display: flex;
     align-items: center;

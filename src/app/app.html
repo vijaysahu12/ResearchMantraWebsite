@@ -1,3 +1,5 @@
+@if (!isPortalRoute()) {
+<div class="top-shell" [class.top-shell--hidden]="topBarsHidden()">
 <div class="top-promo-region" role="region" aria-label="App promotion">
     <a routerLink="/mobile" class="top-promo-bar">
         <span class="tpb-flame" aria-hidden="true">🔥</span>
@@ -14,19 +16,16 @@
 </div>
 
 <app-header></app-header>
+</div>
+}
 
 <main id="main-content">
     <router-outlet />
 </main>
 
-<app-footer></app-footer>
-
-<app-enquiry-form></app-enquiry-form>
-<app-floating-social></app-floating-social>
 <app-install-bottom-bar></app-install-bottom-bar>
-<app-accessibility></app-accessibility>
 
-@if (isPromoOpen()) {
+@if (isPromoOpen() && !isPortalRoute()) {
 <div class="promo-overlay" (click)="closePromo()" role="dialog" aria-modal="true" aria-labelledby="promo-title">
     <div class="promo-content" (click)="$event.stopPropagation()">
         <button class="promo-close" (click)="closePromo()" aria-label="Close">&times;</button>
@@ -45,7 +44,7 @@
             <div class="promo-qr-row">
                 <div class="promo-qr-item">
                     <div class="promo-qr-frame">
-                        <img ngSrc="/assets/rm_playstore_qr.jpg" width="130" height="130" alt="Scan to download on Android" priority />
+                        <img ngSrc="/assets/rm_playstore_qr.jpeg" width="130" height="130" alt="Scan to download on Android" priority />
                     </div>
                     <div class="promo-qr-platform">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
@@ -67,7 +66,7 @@
 
                 <div class="promo-qr-item">
                     <div class="promo-qr-frame">
-                        <img ngSrc="/assets/rm_appstore_qr.jpg" width="130" height="130" alt="Scan to download on iOS" priority />
+                        <img ngSrc="/assets/rm_appstore_qr.jpeg" width="130" height="130" alt="Scan to download on iOS" priority />
                     </div>
                     <div class="promo-qr-platform">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
