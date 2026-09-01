@@ -26,7 +26,34 @@ import { SeoService } from '../../services/seo.service';
                     <div class="hero-overlay"></div>
                     <div class="hero-content">
                         <h1 class="blog-title">{{ blog()?.title }}</h1>
-                        <p class="blog-byline">By {{ blog()?.author }} @if (blog()?.date) { · {{ blog()?.date }} } @if (blog()?.readTime) { · {{ blog()?.readTime }} }</p>
+                        <div class="blog-byline">
+                            @if (blog()?.date) {
+                                <span class="byline-item">
+                                    <svg class="byline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span>{{ blog()?.date }}</span>
+                                </span>
+                                <span class="byline-sep" aria-hidden="true">·</span>
+                            }
+                            <span class="byline-item">
+                                <svg class="byline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <span>By {{ blog()?.author }}</span>
+                            </span>
+                            <span class="byline-sep" aria-hidden="true">·</span>
+                            <span class="byline-item byline-badge">
+                                <svg class="byline-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                                <span>SEBI Registered</span>
+                            </span>
+                        </div>
                     </div>
 
                     <div class="bg-text-overlay">
@@ -38,7 +65,6 @@ import { SeoService } from '../../services/seo.service';
                     <!-- Main Content -->
                     <main class="article-body">
                         <div class="content-card">
-                            <h2 class="article-inner-title">{{ blog()?.title }}</h2>
                             <div class="content-wrapper" [innerHTML]="sanitizedContent()"></div>
 
                             <!-- Interaction Bar (Likes & Comments Count) -->
@@ -181,9 +207,51 @@ import { SeoService } from '../../services/seo.service';
         }
 
         .blog-byline {
-            margin: 18px 0 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px 14px;
+            margin: 22px auto 0;
+            padding: 10px 22px;
+            width: fit-content;
+            max-width: 100%;
+            font-size: 15px;
             font-weight: 600;
             color: #f8fafc;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(248, 250, 252, 0.14);
+            border-radius: 999px;
+            backdrop-filter: blur(4px);
+        }
+
+        .byline-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+        }
+
+        .byline-icon {
+            flex-shrink: 0;
+            opacity: 0.9;
+        }
+
+        .byline-sep {
+            color: rgba(248, 250, 252, 0.5);
+        }
+
+        .byline-badge {
+            color: #FACC15;
+        }
+
+        @media (max-width: 480px) {
+            .blog-byline {
+                font-size: 13px;
+                padding: 10px 16px;
+                gap: 8px 10px;
+                border-radius: 16px;
+            }
         }
 
         .hero-content {
@@ -233,15 +301,6 @@ import { SeoService } from '../../services/seo.service';
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
         }
 
-        .article-inner-title {
-            font-size: 32px;
-            font-weight: 800;
-            color: #1e3a8a;
-            margin-bottom: 40px;
-            line-height: 1.3;
-            display: none; /* Hidden because content now has its own h1 */
-        }
-
         .content-wrapper {
             font-size: 18px;
             line-height: 1.8;
@@ -282,6 +341,235 @@ import { SeoService } from '../../services/seo.service';
 
         .content-wrapper ::ng-deep a:hover {
             text-decoration: underline;
+        }
+
+        .content-wrapper ::ng-deep a:focus-visible {
+            outline: 3px solid #1e3a8a;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* Checklists inside blog content */
+        .content-wrapper ::ng-deep .checklist {
+            list-style: none;
+            padding-left: 0;
+            margin: 0 0 24px;
+        }
+
+        .content-wrapper ::ng-deep .checklist li {
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 10px;
+        }
+
+        .content-wrapper ::ng-deep .checklist li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 6px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #94a3b8;
+            border-radius: 4px;
+        }
+
+        /* Vertical step flow (trading plan / process diagrams) */
+        .content-wrapper ::ng-deep .process-flow {
+            list-style: none;
+            padding: 0;
+            margin: 28px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-wrapper ::ng-deep .process-flow li {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            padding: 12px 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .content-wrapper ::ng-deep .process-flow li + li {
+            margin-top: 34px;
+        }
+
+        .content-wrapper ::ng-deep .process-flow li + li::before {
+            content: "↓";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            line-height: 1;
+            color: #94a3b8;
+        }
+
+        /* Comparison tables inside blog content */
+        .content-wrapper ::ng-deep .table-container {
+            overflow-x: auto;
+            margin: 28px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .content-wrapper ::ng-deep .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        .content-wrapper ::ng-deep .comparison-table th,
+        .content-wrapper ::ng-deep .comparison-table td {
+            padding: 14px 18px;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .content-wrapper ::ng-deep .comparison-table thead th {
+            background: #1e3a8a;
+            color: #ffffff;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .content-wrapper ::ng-deep .comparison-table tbody th {
+            font-weight: 700;
+            color: #111827;
+            background: #f8fafc;
+        }
+
+        .content-wrapper ::ng-deep .comparison-table tbody tr:last-child th,
+        .content-wrapper ::ng-deep .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Inline "Related Guide" callout cards */
+        .content-wrapper ::ng-deep .related-guide {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #1e3a8a;
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 36px 0;
+        }
+
+        .content-wrapper ::ng-deep .related-guide-label {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .content-wrapper ::ng-deep .related-guide-title {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .content-wrapper ::ng-deep .related-guide-title a {
+            color: #1e3a8a;
+        }
+
+        .content-wrapper ::ng-deep .related-guide-text {
+            font-size: 16px;
+            color: #475569;
+            margin-bottom: 16px;
+        }
+
+        .content-wrapper ::ng-deep .related-guide-cta {
+            margin-bottom: 0;
+        }
+
+        .content-wrapper ::ng-deep .related-guide-cta a {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Call-to-action boxes (contact / app) */
+        .content-wrapper ::ng-deep .cta-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 44px 0;
+        }
+
+        .content-wrapper ::ng-deep .cta-box-primary {
+            background: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .content-wrapper ::ng-deep .cta-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .content-wrapper ::ng-deep .cta-text {
+            font-size: 16px;
+            color: #374151;
+        }
+
+        .content-wrapper ::ng-deep .cta-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0 0 24px;
+        }
+
+        .content-wrapper ::ng-deep .cta-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #374151;
+        }
+
+        .content-wrapper ::ng-deep .cta-list li::before {
+            content: "\\2714";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #15803d;
+            font-weight: 700;
+        }
+
+        .content-wrapper ::ng-deep .cta-action {
+            margin-bottom: 0;
+        }
+
+        .content-wrapper ::ng-deep .cta-action a {
+            display: inline-block;
+            background: #1e3a8a;
+            color: #ffffff;
+            padding: 12px 26px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .content-wrapper ::ng-deep .cta-action a:hover {
+            background: #1e40af;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper ::ng-deep .related-guide,
+            .content-wrapper ::ng-deep .cta-box {
+                padding: 20px;
+            }
         }
 
         .content-wrapper {
@@ -357,9 +645,6 @@ import { SeoService } from '../../services/seo.service';
             .content-card {
                 padding: 32px 20px;
                 margin-top: -40px;
-            }
-            .article-inner-title {
-                font-size: 24px;
             }
             .content-layout {
                 margin-top: -60px;
