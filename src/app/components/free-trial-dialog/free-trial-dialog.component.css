@@ -1,0 +1,62 @@
+:host { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+
+.ft-overlay { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; padding: 20px; background: rgba(6,20,36,.6); backdrop-filter: blur(4px); animation: ftOverlayIn .22s ease both; overflow: hidden; }
+.ft-modal { position: relative; width: min(100%, 420px); max-height: 92vh; overflow: auto; background: #fff; border-radius: 24px; box-shadow: 0 40px 100px rgba(6,24,48,.5); animation: ftModalIn .34s cubic-bezier(.22,1,.36,1) both; }
+@keyframes ftOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ftModalIn { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: none; } }
+
+.ft-close { position: absolute; top: 16px; right: 16px; z-index: 2; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid #dce5ef; border-radius: 50%; background: rgba(255,255,255,.9); color: #5b7088; font-size: 22px; line-height: 1; cursor: pointer; transition: background .2s, color .2s, transform .25s; }
+.ft-close:hover:not(:disabled) { background: #ffe9ec; color: #8c2131; transform: rotate(90deg); }
+.ft-close:disabled { opacity: .5; cursor: not-allowed; }
+
+.ft-body, .ft-status { position: relative; z-index: 1; padding: 46px 30px 32px; text-align: center; }
+
+/* Urgency badge */
+.ft-badge { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 16px; padding: 6px 14px; border-radius: 999px; color: #9a3412; background: #ffedd5; font-size: 12px; font-weight: 850; letter-spacing: .02em; animation: ftPulse 1.8s ease-in-out infinite; }
+@keyframes ftPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+.ft-body h3, .ft-status h3 { margin: 0 0 10px; font-size: 22px; letter-spacing: -.02em; color: #0f2b47; }
+.ft-body p, .ft-status p { margin: 0 0 22px; color: #607086; font-size: 14.5px; line-height: 1.55; }
+
+.ft-cta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border: 0; border-radius: 12px; color: #fff; background: linear-gradient(135deg,#0f75db,#0757a4); font: inherit; font-weight: 850; text-decoration: none; cursor: pointer; box-shadow: 0 10px 22px rgba(13,108,202,.24); transition: transform .18s, box-shadow .2s, filter .2s; }
+.ft-cta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(13,108,202,.3); filter: brightness(1.04); }
+.ft-cta:disabled { opacity: .75; cursor: default; transform: none; }
+.ft-cta.success-btn { background: linear-gradient(135deg,#0f9d58,#0b7a43); box-shadow: 0 10px 22px rgba(15,157,88,.24); }
+.ft-textbtn { display: block; width: 100%; margin-top: 12px; padding: 10px; border: 0; background: transparent; color: #64778a; font: inherit; font-weight: 750; font-size: 13.5px; cursor: pointer; }
+.ft-textbtn:hover:not(:disabled) { color: #0f2b47; }
+.ft-textbtn:disabled { opacity: .6; cursor: not-allowed; }
+
+.ft-error { margin: -6px 0 20px; padding: 10px 12px; border: 1px solid #ffd9dc; border-radius: 10px; background: #fff1f2; color: #9f1d25; font-size: 13px; text-align: left; }
+
+.ft-spinner { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; animation: ftSpin .7s linear infinite; }
+@keyframes ftSpin { to { transform: rotate(360deg); } }
+
+/* Celebration popup */
+.ft-overlay--celebrate { background: rgba(6,20,36,.72); }
+.ft-modal--celebrate { overflow: hidden; }
+.ft-pop { display: block; font-size: 54px; line-height: 1; margin-bottom: 6px; animation: ftPop .6s cubic-bezier(.22,1.5,.36,1) both; }
+@keyframes ftPop { 0% { transform: scale(0) rotate(-20deg); opacity: 0; } 60% { transform: scale(1.15) rotate(6deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+
+.ft-product-list { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 8px; text-align: left; max-height: 220px; overflow-y: auto; }
+.ft-product-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 10px 14px; border: 1px solid #e4ebf3; border-radius: 12px; background: #f8fbfe; animation: ftReveal .4s ease both; }
+.ft-product-list li:nth-child(1) { animation-delay: .05s; }
+.ft-product-list li:nth-child(2) { animation-delay: .1s; }
+.ft-product-list li:nth-child(3) { animation-delay: .15s; }
+.ft-product-list li:nth-child(4) { animation-delay: .2s; }
+.ft-product-list li:nth-child(n+5) { animation-delay: .25s; }
+@keyframes ftReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.ft-product-name { font-weight: 750; color: #0f2b47; font-size: 13.5px; }
+.ft-product-dates { color: #8797a7; font-size: 12px; white-space: nowrap; }
+
+/* Confetti burst */
+.ft-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ft-confetti-piece { position: absolute; top: -5%; display: block; animation-name: ftConfettiFall; animation-timing-function: cubic-bezier(.35,0,.65,1); animation-fill-mode: forwards; }
+.ft-confetti-piece.circle { border-radius: 50%; }
+@keyframes ftConfettiFall {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--drift), 720px) rotate(var(--rot)); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-overlay, .ft-modal, .ft-cta, .ft-spinner, .ft-badge, .ft-pop, .ft-product-list li, .ft-confetti-piece { animation: none; transition: none; }
+}

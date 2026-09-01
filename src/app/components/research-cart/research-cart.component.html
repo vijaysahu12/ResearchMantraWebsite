@@ -1,0 +1,311 @@
+<main class="cart-page">
+  <div class="checkout-stepper" aria-label="Checkout progress">
+    <div class="stepper-step" [class.done]="currentStep() !== 'cart'" [class.active]="currentStep() === 'cart'">
+      <span class="step-dot">
+        @if (currentStep() !== 'cart') {
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        } @else {
+          1
+        }
+      </span>
+      <span class="step-label">Cart</span>
+    </div>
+
+    <span class="stepper-line" [class.fill]="currentStep() !== 'cart'"></span>
+
+    <div class="stepper-step" [class.done]="currentStep() === 'confirmation'" [class.active]="currentStep() === 'payment'">
+      <span class="step-dot">
+        @if (currentStep() === 'confirmation') {
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        } @else {
+          2
+        }
+      </span>
+      <span class="step-label">Payment</span>
+    </div>
+
+    <span class="stepper-line" [class.fill]="currentStep() === 'confirmation'"></span>
+
+    <div class="stepper-step" [class.active]="currentStep() === 'confirmation'">
+      <span class="step-dot">3</span>
+      <span class="step-label">Confirmation</span>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <section class="state-card" aria-live="polite"><div class="loader"></div><p>Loading your cart…</p></section>
+  } @else {
+    @if (error()) {
+      <div class="error-banner" role="alert">
+        <span>{{ error() }}</span>
+        <button type="button" (click)="bootstrap()">Retry</button>
+      </div>
+    }
+
+    @if (payStatus() !== 'idle') {
+      <section class="payment-step" aria-live="polite">
+        @if (payStatus() === 'pending') {
+          <div class="payment-status">
+            <span class="status-spinner" aria-hidden="true"></span>
+            <h2>Waiting for your payment…</h2>
+            <p>Complete the payment in the secure window. We'll unlock your products automatically.</p>
+            @if (paymentRequestId()) {
+              <button type="button" class="pay-button" (click)="checkStatusNow()" [disabled]="statusChecking()">
+                {{ statusChecking() ? 'Checking…' : 'I completed payment' }}
+              </button>
+            }
+            <button type="button" class="ghost-btn" (click)="cancelPending()">Cancel and go back</button>
+          </div>
+        } @else if (payStatus() === 'success') {
+          <div class="payment-status success-status">
+            <div class="confetti-layer burst" aria-hidden="true">
+              @for (p of confettiPieces; track $index) {
+                <span
+                  class="confetti-piece"
+                  [style.left.%]="p.left"
+                  [style.background]="p.color"
+                  [style.animation-duration.ms]="p.duration"
+                  [style.animation-delay.ms]="p.delay"
+                  [style.--x-end]="p.xEnd"
+                  [style.--rot]="p.rot"
+                ></span>
+              }
+            </div>
+            <span class="status-tick" aria-hidden="true">
+              <svg viewBox="0 0 52 52"><circle class="st-ring" cx="26" cy="26" r="24" fill="none"/><path class="st-check" fill="none" d="M14 27l8 8 16-17"/></svg>
+            </span>
+            <h2>🎉 Hurray! Your purchase is confirmed</h2>
+            <p>
+              {{ items().length }} product{{ items().length === 1 ? '' : 's' }} unlocked and added to your account.
+              You're all set to start using them right away.
+            </p>
+            <button type="button" class="pay-button" (click)="goToMyBucket()">Go to My Bucket →</button>
+            <a routerLink="/research/products" class="ghost-btn">Keep browsing products</a>
+          </div>
+        } @else if (payStatus() === 'failed') {
+          <div class="payment-status">
+            <span class="status-x" aria-hidden="true">!</span>
+            <h2>Payment not completed</h2>
+            <p>{{ purchaseError() || 'The payment was not completed. Please try again.' }}</p>
+            <button type="button" class="pay-button" (click)="retryFailed()">Try again</button>
+          </div>
+        }
+      </section>
+    } @else if (isEmpty()) {
+      <section class="state-card">
+        <h2>Your cart is empty</h2>
+        <p>Browse our research products and add what you need.</p>
+        <a routerLink="/research/products" class="ghost-btn">Browse products</a>
+      </section>
+    } @else {
+      <header class="cart-hero">
+        <svg class="hero-wave" viewBox="0 0 400 320" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,0 C160,50 70,190 0,320 Z" fill="url(#cartWaveGrad)"></path>
+          <defs>
+            <linearGradient id="cartWaveGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#dcecff"></stop>
+              <stop offset="100%" stop-color="#f2f8ff"></stop>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <nav class="hero-topbar" aria-label="Cart navigation">
+          <a routerLink="/research" class="nav-link nav-back">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Continue shopping
+          </a>
+          <div class="hero-topbar-right">
+            <a routerLink="/research/purchases" class="nav-link">Purchase history</a>
+            <span class="nav-brand">Research Mantra</span>
+          </div>
+        </nav>
+
+        <div class="hero-inner">
+          <div class="hero-title-row">
+            <h1>Your cart</h1>
+            <span class="item-count-pill">{{ items().length }} item{{ items().length === 1 ? '' : 's' }}</span>
+          </div>
+          <p>Pick a duration below and check out in one payment.</p>
+        </div>
+      </header>
+
+      <section class="cart-content">
+        <div class="items-panel">
+          @for (item of items(); track item.id) {
+            <article class="item-card" [class.expanded]="expandedId() === item.id">
+              <div class="item-summary">
+                @if (item.listImage || item.productImage) {
+                  <img [src]="item.listImage || item.productImage" [alt]="item.productName" class="item-thumb" />
+                }
+                <div class="item-info">
+                  <h3>{{ item.productName }}</h3>
+                  @if (item.appliedCouponCode) {
+                    <span class="coupon-chip">{{ item.appliedCouponCode }} applied</span>
+                  }
+                </div>
+                <div class="item-price">
+                  @if (item.actualPrice > item.price) {
+                    <span class="old-price">₹{{ item.actualPrice | number: '1.0-0' }}</span>
+                  }
+                  <strong>₹{{ item.price | number: '1.0-0' }}</strong>
+                </div>
+                <div class="item-actions">
+                  <button
+                    type="button"
+                    class="icon-btn chevron-btn"
+                    [class.rotated]="expandedId() === item.id"
+                    (click)="toggleExpand(item)"
+                    [attr.aria-expanded]="expandedId() === item.id"
+                    [attr.aria-label]="(expandedId() === item.id ? 'Hide details for' : 'Show details for') + ' ' + item.productName"
+                  >
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4"
+                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    (click)="removeItem(item)"
+                    [disabled]="removingId() === item.id"
+                    [attr.aria-label]="'Remove ' + item.productName"
+                  >
+                    🗑
+                  </button>
+                </div>
+              </div>
+
+              @if (expandedId() === item.id) {
+                <div class="item-details">
+                  @if (item.description) {
+                    <p class="item-description">{{ item.description }}</p>
+                  }
+
+                  <div class="coupon-row">
+                    @if (item.appliedCouponCode) {
+                      <span>Coupon <strong>{{ item.appliedCouponCode }}</strong> applied</span>
+                      <button type="button" (click)="removeCoupon(item)">Remove</button>
+                    } @else {
+                      <input
+                        type="text"
+                        [formControl]="couponControl(item.productMId)"
+                        placeholder="Coupon code"
+                        maxlength="50"
+                        [attr.aria-label]="'Coupon code for ' + item.productName"
+                      />
+                      <button type="button" (click)="applyCoupon(item)" [disabled]="couponBusyId() === item.productMId">
+                        {{ couponBusyId() === item.productMId ? 'Applying…' : 'Apply' }}
+                      </button>
+                    }
+                  </div>
+                  @if (couponErrorFor(item.productMId)) {
+                    <p class="coupon-error">{{ couponErrorFor(item.productMId) }}</p>
+                  }
+
+                  <div class="savings-row"><span>Original Price</span><strong>₹{{ item.actualPrice | number: '1.0-0' }}</strong></div>
+                  <div class="savings-row"><span>Price</span><strong>₹{{ item.price | number: '1.0-0' }}</strong></div>
+                  @if (item.actualPrice > item.price) {
+                    <div class="savings-row highlight">
+                      <span>You Save</span>
+                      <strong>₹{{ item.actualPrice - item.price | number: '1.0-0' }}</strong>
+                    </div>
+                  }
+                </div>
+              }
+            </article>
+          }
+        </div>
+
+        <aside class="summary-panel" aria-labelledby="summary-heading">
+          <h2 id="summary-heading">Order Summary</h2>
+
+          @if (durations().length > 0) {
+            <div class="duration-grid" role="radiogroup" aria-label="Bundle duration">
+              @for (duration of durations(); track duration.subscriptionDurationId) {
+                <button
+                  type="button"
+                  class="duration-card"
+                  [class.selected]="selectedDurationId() === duration.subscriptionDurationId"
+                  [attr.aria-checked]="selectedDurationId() === duration.subscriptionDurationId"
+                  role="radio"
+                  [disabled]="refreshing()"
+                  (click)="selectDuration(duration.subscriptionDurationId)"
+                >
+                  <strong>{{ duration.subscriptionDurationName }}</strong>
+                  <span class="price">₹{{ duration.finalAmount | number: '1.0-0' }}</span>
+                  <span class="monthly">₹{{ duration.monthlyAmount | number: '1.0-0' }}/m</span>
+                  @if (duration.saving > 0) {
+                    <span class="saving">Save ₹{{ duration.saving | number: '1.0-0' }}</span>
+                  }
+                </button>
+              }
+            </div>
+          }
+
+          @if (bundleDiscountPercent() > 0) {
+            <div class="discount-badge">
+              🎉 {{ bundleDiscountPercent() }}% bundle discount for {{ items().length }} product{{ items().length === 1 ? '' : 's' }}
+            </div>
+          }
+
+          <div class="summary-row"><span>Original Price</span><strong class="strike">₹{{ originalTotal() | number: '1.0-0' }}</strong></div>
+
+          @if (planDiscount() > 0) {
+            <div class="summary-row discount">
+              <span>Plan discount ({{ selectedDuration()?.subscriptionDurationName }} pricing)</span>
+              <strong>−₹{{ planDiscount() | number: '1.0-0' }}</strong>
+            </div>
+          }
+          @if (bundleDiscount() > 0) {
+            <div class="summary-row discount">
+              <span>Bundle discount ({{ bundleDiscountPercent() }}% OFF, {{ items().length }} products)</span>
+              <strong>−₹{{ bundleDiscount() | number: '1.0-0' }}</strong>
+            </div>
+          }
+          @if (couponDiscount() > 0) {
+            <div class="summary-row discount">
+              <span>Coupon discount</span>
+              <strong>−₹{{ couponDiscount() | number: '1.0-0' }}</strong>
+            </div>
+          }
+
+          <div class="total"><span>Total</span><strong>₹{{ finalAmount() | number: '1.0-0' }}</strong></div>
+          @if (totalSavingsPercent() > 0) {
+            <p class="total-savings-note">You save ₹{{ totalDiscount() | number: '1.0-0' }} in total ({{ totalSavingsPercent() }}% off list price)</p>
+          }
+          <div class="summary-row"><span>Total Items</span><strong>{{ items().length }}</strong></div>
+
+          <div class="contact-fields">
+            <label for="cart-name">Full name</label>
+            <input id="cart-name" type="text" [formControl]="fullName" autocomplete="name" />
+            <label for="cart-email">Email address</label>
+            <input id="cart-email" type="email" [formControl]="email" autocomplete="email" />
+          </div>
+
+          @if (purchaseError()) {
+            <p class="error-message" role="alert">{{ purchaseError() }}</p>
+          }
+
+          <button type="button" class="pay-button" (click)="proceedToPay()" [disabled]="paying() || refreshing()">
+            @if (paying()) {
+              Creating payment…
+            } @else {
+              Pay ₹{{ finalAmount() | number: '1.0-0' }}
+            }
+          </button>
+          <p class="secure-note">By completing your purchase, you agree to our <a routerLink="/terms-conditions">Terms of Use</a>.</p>
+        </aside>
+      </section>
+    }
+  }
+</main>

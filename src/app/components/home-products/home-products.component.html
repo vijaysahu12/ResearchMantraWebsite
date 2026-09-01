@@ -43,7 +43,7 @@
               <p class="hp-desc">{{ product.descriptionTitle || product.description || 'Open to view the full details.' }}</p>
               <div class="hp-foot">
                 @if (product.price && product.price > 0) {
-                  <span class="hp-price">₹{{ product.price | number:'1.0-0' }}</span>
+                  <span class="hp-price"><small>Starting at</small><strong>₹{{ product.price | number:'1.0-0' }}</strong></span>
                 } @else {
                   <span class="hp-price free">Free</span>
                 }

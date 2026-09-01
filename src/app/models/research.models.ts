@@ -21,6 +21,17 @@ export interface OtpVerificationData {
   isExistingUser: boolean;
 }
 
+export interface UserBasicDetails {
+  fullName?: string;
+  emailId?: string;
+  mobile?: string;
+  city?: string;
+  dob?: string;
+  gender?: string;
+  publicKey?: string;
+  isMobileVerified?: boolean;
+}
+
 export interface AuthSession {
   publicKey: string;
   mobileNumber: string;
@@ -58,6 +69,9 @@ export interface PaymentRequestResult {
   link_url: string;
   link_id: string;
   link_status?: string;
+  /** Set when a 100%-off coupon zeroed out the amount — the subscription is already
+   * granted server-side, so there's no payment link to open. */
+  is_free?: boolean;
 }
 
 export interface PaymentLinkResult {
@@ -68,6 +82,9 @@ export interface PaymentLinkResult {
   merchantTransactionId?: string;
   paymentGateway?: string;
   paymentLinkId?: string;
+  /** Set by the backend when a 100%-off coupon zeroed out the amount — the purchase is
+   * already granted server-side, so there's no gateway link to open. */
+  isFree?: boolean;
 }
 
 export interface PaymentStatusProduct {
@@ -87,6 +104,92 @@ export interface PaymentStatusResult {
   link_status: string;
   link_amount?: number;
   link_amount_paid?: number;
+}
+
+export interface CartItem {
+  id: number;
+  productMId: number;
+  durationId: number;
+  productName?: string;
+  productCode?: string;
+  productImage?: string;
+  listImage?: string;
+  description?: string;
+  descriptionTitle?: string;
+  monthlyPrice: number;
+  actualPrice: number;
+  price: number;
+  isCombo?: boolean;
+  comboCode?: string;
+  couponDiscountAmount?: number;
+  appliedCouponCode?: string;
+}
+
+export interface CartSummary {
+  items: CartItem[];
+  durationId: number;
+  totalAmount: number;
+  discountPercent: number;
+  discountAmount: number;
+  finalAmount: number;
+  productCount: number;
+}
+
+export interface CartDurationSummary {
+  subscriptionDurationId: number;
+  subscriptionDurationName: string;
+  months: number;
+  totalAmount: number;
+  /** Discount already baked into this duration's pricing (e.g. quarterly/yearly plan pricing), independent of cart size. */
+  planDiscountAmount?: number;
+  couponDiscountAmount?: number;
+  /** The product-count bundle discount tier (or 50 once every eligible product is in the cart). */
+  discountPercent: number;
+  discountAmount: number;
+  finalAmount: number;
+  monthlyAmount: number;
+  saving: number;
+  productCount: number;
+  expireOn: string;
+}
+
+export interface CartWithDurations {
+  items: CartItem[];
+  productCount: number;
+  currentDurationId: number;
+  durations: CartDurationSummary[];
+}
+
+export interface AppliedCouponInput {
+  productId: number;
+  couponCode: string;
+}
+
+export interface GroupedPurchaseOrder {
+  transactionId: string;
+  paymentDate: string;
+  paidAmount: number;
+  productCount: number;
+  productNames: string[];
+  purchaseOrderIds: number[];
+}
+
+export interface GroupedReceiptLineItem {
+  id: number;
+  productId?: number;
+  productName?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface GroupedReceipt {
+  transactionId: string;
+  customerName?: string;
+  email?: string;
+  mobile?: string;
+  paymentDate: string;
+  paidAmount: number;
+  items: GroupedReceiptLineItem[];
 }
 
 export interface PurchaseHistoryItem {
@@ -281,4 +384,81 @@ export interface SharedPost {
 
 export interface SharedPostFeed {
   blogs: SharedPost[];
+}
+
+export interface FreeTrialOffer {
+  freeTrialImageUrl?: string;
+  buttonText?: string;
+}
+
+export interface ActiveTopicsData {
+  activeTopics: string[];
+  isFreeTrialActive: boolean;
+  freeTrial?: FreeTrialOffer;
+  discountName?: string;
+  discountStatus?: boolean;
+  quote?: string;
+  author?: string;
+  promotionUrl?: string;
+  actionUrl?: string;
+  appIntroductionUrl?: string;
+  showPerformaceTab?: boolean;
+}
+
+export interface FreeTrialNewProduct {
+  productId: number;
+  productName: string;
+  startDate: string;
+  endDate: string;
+}
+
+export interface ActivateFreeTrialResult {
+  result: string;
+  message: string;
+  newProducts: FreeTrialNewProduct[];
+}
+
+export interface ProductPerformanceItem {
+  id: number;
+  stockSymbol: string;
+  entryPrice: number;
+  exitPrice: number;
+  roi: number;
+  profit: number;
+  duration?: string;
+  entryDateTime?: string;
+}
+
+/** Dashboard carousel entry — id/name/image only, from GetActiveProductBaskets. */
+export interface BasketSummary {
+  id: string;
+  name: string;
+  listImage?: string;
+  sortOrder?: number;
+}
+
+export interface BasketOverviewItem {
+  productId: number;
+  productName: string;
+  listImage?: string;
+  durationName?: string;
+  originalPrice: number;
+}
+
+/** Full "Basket Overview" breakdown — from GetProductBasketOverview/{id}. */
+export interface BasketOverview {
+  id: string;
+  name: string;
+  description?: string;
+  listImage?: string;
+  /** "PERCENT" | "FLAT" */
+  discountType: string;
+  discountPercent?: number;
+  discountFlatAmount?: number;
+  isCurrentlyPurchasable: boolean;
+  alreadyPurchased: boolean;
+  items: BasketOverviewItem[];
+  totalOriginalValue: number;
+  totalSavings: number;
+  finalAmount: number;
 }

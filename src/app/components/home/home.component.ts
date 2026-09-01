@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { RmIntroComponent } from '../rm-intro/rm-intro.component';
+import { HomeBasketOfferComponent } from '../home-basket-offer/home-basket-offer.component';
 import { HomeProductsComponent } from '../home-products/home-products.component';
 import { TradeSetupsComponent } from '../trade-setups/trade-setups.component';
 import { WhyChooseRmComponent } from '../why-choose-rm/why-choose-rm.component';
@@ -16,6 +17,7 @@ import { ContactComponent } from '../contact/contact.component';
   selector: 'app-home',
   imports: [
     RmIntroComponent,
+    HomeBasketOfferComponent,
     HomeProductsComponent,
     TradeSetupsComponent,
     WhyChooseRmComponent,
@@ -29,6 +31,7 @@ import { ContactComponent } from '../contact/contact.component';
   ],
   template: `
     <app-rm-intro></app-rm-intro>
+    <app-home-basket-offer></app-home-basket-offer>
     <app-home-products></app-home-products>
     <app-trade-setups></app-trade-setups>
     <app-why-choose-rm></app-why-choose-rm>

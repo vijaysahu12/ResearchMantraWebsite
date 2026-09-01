@@ -119,6 +119,22 @@ export const routes: Routes = [
         ),
     },
     {
+      path: 'research/cart',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-cart/research-cart.component').then(
+          (component) => component.ResearchCartComponent,
+        ),
+    },
+    {
+      path: 'research/basket/:id',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-basket-overview/research-basket-overview.component').then(
+          (component) => component.ResearchBasketOverviewComponent,
+        ),
+    },
+    {
       path: 'share/research',
       canActivate: [researchAuthGuard],
       loadComponent: () =>

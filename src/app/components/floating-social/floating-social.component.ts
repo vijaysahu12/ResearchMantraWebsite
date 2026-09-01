@@ -35,15 +35,13 @@ import { NgOptimizedImage } from '@angular/common';
       width: 55px;
       height: 55px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(15, 43, 71, 0.22);
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(15, 43, 71, 0.14);
       position: relative;
     }
     .social-icon::after {
@@ -78,7 +76,9 @@ import { NgOptimizedImage } from '@angular/common';
     }
     @media (max-width: 768px) {
       .floating-container {
-        bottom: 1rem;
+        /* Cleared above the fixed install-app bottom bar so icons never sit on its
+           near-white background (where a white circle would blend in and vanish). */
+        bottom: 4.75rem;
         right: 0.75rem;
         gap: 0.6rem;
       }
@@ -94,7 +94,7 @@ import { NgOptimizedImage } from '@angular/common';
 
     @media (max-width: 480px) {
       .floating-container {
-        bottom: 0.75rem;
+        bottom: 4.5rem;
         right: 0.5rem;
         gap: 0.5rem;
       }

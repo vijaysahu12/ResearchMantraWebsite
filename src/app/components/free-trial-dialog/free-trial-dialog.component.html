@@ -1,0 +1,69 @@
+@if (trial.showOffer()) {
+  <div class="ft-overlay" (click)="onOfferOverlayClick()">
+    <div class="ft-modal" role="dialog" aria-modal="true" aria-labelledby="ft-title" (click)="$event.stopPropagation()">
+      <button type="button" class="ft-close" (click)="closeOffer()" aria-label="Close" [disabled]="trial.activating()">×</button>
+
+      <div class="ft-body">
+        <span class="ft-badge">⏳ Lucky you — limited-time offer</span>
+
+        <h3 id="ft-title">Your free trial is ready!</h3>
+        <p>Hurry, activate now to unlock premium research and trade calls at no cost, before this offer disappears.</p>
+
+        @if (trial.activateError()) {
+          <p class="ft-error" role="alert">{{ trial.activateError() }}</p>
+        }
+
+        <button type="button" class="ft-cta" (click)="activate()" [disabled]="trial.activating()">
+          @if (trial.activating()) { <span class="ft-spinner" aria-hidden="true"></span> }
+          <span>{{ trial.activating() ? 'Activating…' : (trial.offer()?.buttonText || 'Avail free trial now') }}</span>
+        </button>
+        <button type="button" class="ft-textbtn" (click)="closeOffer()" [disabled]="trial.activating()">Maybe later</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (trial.showCelebration()) {
+  <div class="ft-overlay ft-overlay--celebrate" (click)="closeCelebration()">
+    <div class="ft-confetti" aria-hidden="true">
+      @for (piece of confetti(); track $index) {
+        <span
+          class="ft-confetti-piece"
+          [class.circle]="piece.shape === 'circle'"
+          [style.left.%]="piece.left"
+          [style.width.px]="piece.size"
+          [style.height.px]="piece.size"
+          [style.background]="piece.color"
+          [style.animationDelay.s]="piece.delay"
+          [style.animationDuration.s]="piece.duration"
+          [style.--drift]="piece.drift + 'px'"
+          [style.--rot]="piece.rotate + 'deg'"
+        ></span>
+      }
+    </div>
+
+    <div class="ft-modal ft-modal--celebrate" role="dialog" aria-modal="true" aria-labelledby="ft-celebrate-title" (click)="$event.stopPropagation()">
+      <button type="button" class="ft-close" (click)="closeCelebration()" aria-label="Close">×</button>
+
+      <div class="ft-status">
+        <span class="ft-pop" aria-hidden="true">🎉</span>
+        <h3 id="ft-celebrate-title">Free trial activated!</h3>
+        <p>{{ trial.celebrationMessage() }}</p>
+
+        @if (trial.activatedProducts().length > 0) {
+          <ul class="ft-product-list">
+            @for (product of trial.activatedProducts(); track product.productId) {
+              <li>
+                <span class="ft-product-name">{{ product.productName }}</span>
+                <span class="ft-product-dates">till {{ product.endDate | date:'d MMM y' }}</span>
+              </li>
+            }
+          </ul>
+        }
+
+        <a routerLink="/mobile" class="ft-cta success-btn">Open in the app <span aria-hidden="true">→</span></a>
+        <button type="button" class="ft-textbtn" (click)="closeCelebration()">Done</button>
+      </div>
+    </div>
+  </div>
+}

@@ -15,6 +15,7 @@ import { RouterLink } from '@angular/router';
 import { Subscription, catchError, finalize, of, switchMap, timer } from 'rxjs';
 import { PaymentStatusProduct, SubscriptionDuration } from '../../models/research.models';
 import { ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { ResearchAuthService } from '../../services/research-auth.service';
 
 type PayStatus = 'idle' | 'pending' | 'success' | 'failed';
 
@@ -28,6 +29,7 @@ type PayStatus = 'idle' | 'pending' | 'success' | 'failed';
 })
 export class PurchaseDialogComponent implements OnInit, OnDestroy {
   private readonly subscriptions = inject(ResearchSubscriptionService);
+  private readonly auth = inject(ResearchAuthService);
 
   readonly productId = input.required<number>();
   readonly productName = input('');
@@ -53,6 +55,8 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
   readonly statusChecking = signal(false);
 
   readonly coupon = new FormControl('', { nonNullable: true, validators: [Validators.maxLength(50)] });
+  readonly fullName = new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] });
+  readonly email = new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] });
 
   private pollSub?: Subscription;
   private pollCount = 0;
@@ -95,6 +99,14 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadPlans();
+    const name = this.auth.session()?.name;
+    if (name) this.fullName.setValue(name);
+
+    // The login/OTP APIs don't return an email address — fetch it from the user's profile.
+    this.auth.getUserBasicDetails().subscribe((details) => {
+      if (details?.emailId) this.email.setValue(details.emailId);
+      if (details?.fullName) this.fullName.setValue(details.fullName);
+    });
   }
 
   ngOnDestroy(): void {
@@ -172,24 +184,42 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
     const duration = this.selectedDuration();
     if (!duration || this.paying()) return;
 
+    this.fullName.markAsTouched();
+    this.email.markAsTouched();
+    if (this.fullName.invalid || this.email.invalid) {
+      this.purchaseError.set('Please add your name and email address to continue.');
+      return;
+    }
+
+    // A 100%-off coupon needs no payment gateway at all — the backend grants the
+    // purchase directly, so skip the popup window and the payment polling entirely.
+    const isFree = this.finalAmount() === 0;
+
     // Open the tab synchronously (within the click) so pop-up blockers allow it.
-    const paymentWindow = window.open('', '_blank');
+    const paymentWindow = isFree ? null : window.open('', '_blank');
     this.paying.set(true);
     this.purchaseError.set('');
 
-    const merchantTransactionId = this.newMerchantTransactionId();
+    const merchantTransactionId = this.subscriptions.newMerchantTransactionId();
 
     this.subscriptions
       .addPaymentRequest({
-        productId: this.productId(),
+        productIds: [this.productId()],
         amount: this.finalAmount(),
         couponCode: this.appliedCoupon(),
         subscriptionDurationId: duration.subscriptionDurationId,
         merchantTransactionId,
+        customerName: this.fullName.value.trim(),
+        customerEmail: this.email.value.trim(),
       })
       .pipe(finalize(() => this.paying.set(false)))
       .subscribe({
         next: (result) => {
+          if (isFree) {
+            this.payStatus.set('success');
+            this.purchased.emit();
+            return;
+          }
           if (!result?.url) {
             paymentWindow?.close();
             this.purchaseError.set('The payment link could not be created. Please try again.');
@@ -207,7 +237,11 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
         error: (error: unknown) => {
           paymentWindow?.close();
           this.purchaseError.set(
-            error instanceof Error ? error.message : 'The payment link could not be created.',
+            error instanceof Error
+              ? error.message
+              : isFree
+                ? 'We could not activate your free subscription. Please try again.'
+                : 'The payment link could not be created.',
           );
         },
       });
@@ -292,14 +326,5 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
   private onPaymentFailed(): void {
     this.stopPolling();
     this.payStatus.set('failed');
-  }
-
-  private newMerchantTransactionId(): string {
-    const now = new Date();
-    const pad = (value: number, length = 2) => value.toString().padStart(length, '0');
-    const stamp =
-      `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
-      `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}${pad(now.getMilliseconds(), 3)}`;
-    return `RMWEB-${stamp}`;
   }
 }

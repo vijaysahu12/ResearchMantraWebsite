@@ -120,6 +120,8 @@ label { display: block; font-weight: 750; font-size: 14px; margin-bottom: 9px; }
 .phone-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; padding: 0 16px; font: inherit; border-radius: 12px; background: transparent; }
 .field-error { border-color: #c62e36; }
 .field-help { min-height: 20px; margin: 8px 0 18px; color: #6b7d91; font-size: 12px; }
+.whatsapp-optin { display: flex; align-items: center; gap: 9px; margin: -6px 0 18px; font-weight: 550; font-size: 13.5px; color: #45586b; cursor: pointer; }
+.whatsapp-optin input { width: 17px; height: 17px; accent-color: #0d6dca; cursor: pointer; flex: 0 0 auto; }
 .primary-button,.resend-button { position: relative; width: 100%; min-height: 50px; border-radius: 12px; font: inherit; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; overflow: hidden; }
 .primary-button { border: 0; color: #fff; background: linear-gradient(135deg,#0f75db,#0757a4); box-shadow: 0 10px 22px rgba(13,108,202,.22); transition: transform .18s, box-shadow .25s, filter .2s; }
 .primary-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(13,108,202,.3); filter: brightness(1.04); }

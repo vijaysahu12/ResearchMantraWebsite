@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { ApiEnvelope, ProductDetail, ProductListItem, TopProduct } from '../models/research.models';
+import { ApiEnvelope, ProductDetail, ProductListItem, ProductPerformanceItem, TopProduct } from '../models/research.models';
 import { environment } from '../../environments/environment';
 import { ResearchAuthService } from './research-auth.service';
 
@@ -64,6 +64,28 @@ export class ProductService {
           return data;
         }),
       );
+  }
+
+  /**
+   * Closed-trade performance for a product. Public endpoint — works with or
+   * without a session, so it can be shown on product pages before login.
+   */
+  getProductPerformance(
+    productId: number | string,
+    pageSize = 10,
+    pageNumber = 1,
+  ): Observable<ProductPerformanceItem[]> {
+    const params = new HttpParams()
+      .set('productId', String(productId))
+      .set('pageSize', String(pageSize))
+      .set('pageNumber', String(pageNumber));
+
+    return this.http
+      .get<ApiEnvelope<ProductPerformanceItem[]>>(`${environment.gatewayUrl}Product/Product_PerformanceByID`, {
+        ...this.authOptions(),
+        params,
+      })
+      .pipe(map((response) => this.unwrap(response)));
   }
 
   /** Bearer header when a session exists, otherwise no auth header (anonymous). */

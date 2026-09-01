@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { finalize, tap } from 'rxjs';
+import { finalize, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApiEnvelope,
   AuthSession,
   OtpLoginData,
   OtpVerificationData,
+  UserBasicDetails,
 } from '../models/research.models';
 
 const SESSION_KEY = 'rm-web-research-session';
@@ -32,7 +33,7 @@ export class ResearchAuthService {
     });
   }
 
-  verifyOtp(mobileUserKey: string, mobileNumber: string, otp: string) {
+  verifyOtp(mobileUserKey: string, mobileNumber: string, otp: string, whatsappOptIn = true) {
     return this.http
       .post<ApiEnvelope<OtpVerificationData>>(`${environment.gatewayUrl}auth/verify-otp`, {
         mobileUserKey,
@@ -40,10 +41,27 @@ export class ResearchAuthService {
         otp,
         deviceType: 'web',
         version: '1.0.0',
+        // Not yet read by the backend's verify-otp model — sent ahead so the
+        // API can start persisting it once a field is added there.
+        whatsappOptIn,
       })
       .pipe(
         tap((response) => this.storeSession(response, mobileNumber)),
       );
+  }
+
+  /** The logged-in user's profile (email, DOB, etc.) — none of this is returned by the login/OTP APIs. */
+  getUserBasicDetails(): Observable<UserBasicDetails | null> {
+    const session = this.sessionState();
+    if (!session) return of(null);
+
+    const params = new HttpParams().set('userId', session.publicKey);
+    return this.http
+      .get<ApiEnvelope<UserBasicDetails>>(`${environment.gatewayUrl}auth/user-basic-details`, {
+        params,
+        headers: { Authorization: `Bearer ${session.accessToken}` },
+      })
+      .pipe(map((response) => response.data ?? null));
   }
 
   logout(): void {

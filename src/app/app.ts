@@ -1,5 +1,5 @@
 import { isPlatformBrowser, DOCUMENT, NgOptimizedImage } from '@angular/common';
-import { Component, signal, ChangeDetectionStrategy, inject, effect, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy, inject, effect, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -7,15 +7,18 @@ import { EnquiryFormComponent } from './components/enquiry-form/enquiry-form.com
 import { FloatingSocialComponent } from './components/floating-social/floating-social.component';
 import { AccessibilityComponent } from './components/accessibility/accessibility.component';
 import { InstallBottomBarComponent } from './components/install-bottom-bar/install-bottom-bar.component';
+import { FreeTrialDialogComponent } from './components/free-trial-dialog/free-trial-dialog.component';
 import { RouterLink } from '@angular/router';
 import { SeoService } from './services/seo.service';
 import { AccessibilityService } from './services/accessibility.service';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import Clarity from '@microsoft/clarity';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent, InstallBottomBarComponent, NgOptimizedImage],
+  imports: [RouterOutlet, RouterLink, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent, InstallBottomBarComponent, FreeTrialDialogComponent, NgOptimizedImage],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +34,14 @@ export class App {
   protected readonly topBarsHidden = signal(false);
   private lastScrollY = 0;
 
+  // Rotating campaigns shown in the site-wide top announcement bar
+  protected readonly topPromoCampaigns: Array<{ pre: string; bold: string; post: string; cta: string; link: string; returnUrl?: string; theme: 'trial' | 'gold' | 'green' }> = [
+    { pre: 'Grab your ', bold: 'Exclusive Free Trial', post: ' on the Research Mantra App', cta: 'Install Now', link: '/mobile', theme: 'trial' },
+  ];
+  protected readonly activeTopPromoIndex = signal(0);
+  protected readonly activeTopPromo = computed(() => this.topPromoCampaigns[this.activeTopPromoIndex()]);
+  private topPromoTimer: ReturnType<typeof setInterval> | null = null;
+
   private readonly seoService = inject(SeoService);
   private readonly accessibilityService = inject(AccessibilityService);
   private readonly document = inject(DOCUMENT);
@@ -44,6 +55,13 @@ export class App {
     this.seoService.init();
     this.initAccessibilityEffect();
     this.schedulePromoPopup();
+    this.startTopPromoRotation();
+    this.initClarity();
+  }
+
+  private initClarity(): void {
+    if (!this.isBrowser || !environment.production) return;
+    Clarity.init('y32b0yanv1');
   }
 
   closePromo(): void {
@@ -74,6 +92,15 @@ export class App {
     setTimeout(() => {
       this.isPromoOpen.set(true);
     }, 7000);
+  }
+
+  /** Cycle the top announcement bar through Free Trial / bundle / combo campaigns. */
+  private startTopPromoRotation(): void {
+    if (!this.isBrowser) return;
+    this.topPromoTimer = setInterval(() => {
+      this.activeTopPromoIndex.update(i => (i + 1) % this.topPromoCampaigns.length);
+    }, 4500);
+    this.destroyRef.onDestroy(() => { if (this.topPromoTimer) clearInterval(this.topPromoTimer); });
   }
 
   private initPortalShell(): void {

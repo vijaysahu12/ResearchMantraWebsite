@@ -72,6 +72,15 @@
 
     <div class="right-section">
       @if (isAuthenticated()) {
+        <div class="profile-dropdown" [class.open]="isProfileOpen()">
+          <button type="button" class="profile-btn" (click)="toggleProfile($event)" [attr.aria-expanded]="isProfileOpen()" aria-label="Account details">
+            <span class="profile-avatar" aria-hidden="true">{{ monogram(session()?.name) }}</span>
+          </button>
+          <div class="profile-menu" role="menu">
+            <p class="profile-name">{{ session()?.name || 'Investor' }}</p>
+            <p class="profile-phone">+91 {{ session()?.mobileNumber }}</p>
+          </div>
+        </div>
         <a class="research-link" routerLink="/research">Research</a>
         <button class="btn-login" type="button" (click)="logout()">Log out</button>
       } @else {

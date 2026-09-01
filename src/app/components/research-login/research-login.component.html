@@ -37,13 +37,17 @@
           <div class="step-pane" [class.back]="direction() === 'back'">
             <p class="step-label">Secure investor access</p>
             <h2>Login with mobile number</h2>
-            <p class="helper">We’ll send a 6-digit OTP to your registered WhatsApp number.</p>
+            <p class="helper">
+              We’ll send a 6-digit OTP to your registered WhatsApp number. New here? The same number
+              signs you up automatically — there’s no separate registration step.
+            </p>
 
             <form (submit)="$event.preventDefault(); sendOtp()" novalidate>
               <label for="mobile">Mobile number</label>
               <div class="phone-field" [class.field-error]="mobile.invalid && mobile.touched">
                 <span class="country-code">+91</span>
                 <input
+                  #mobileInput
                   id="mobile"
                   type="tel"
                   inputmode="numeric"
@@ -51,6 +55,7 @@
                   maxlength="10"
                   placeholder="Enter 10-digit number"
                   [formControl]="mobile"
+                  (input)="onNumericInput($event, mobile, 10)"
                   aria-describedby="mobile-help"
                 />
               </div>
@@ -61,6 +66,12 @@
                   Your existing Research Mantra account will work here.
                 }
               </p>
+
+              <label class="whatsapp-optin">
+                <input type="checkbox" [formControl]="whatsappOptIn" />
+                <span>I want to receive WhatsApp notifications</span>
+              </label>
+
               <button class="primary-button" type="submit" [disabled]="isLoading()">
                 @if (isLoading()) { <span class="btn-spinner" aria-hidden="true"></span> }
                 <span>{{ isLoading() ? 'Sending OTP…' : 'Continue securely' }}</span>
@@ -79,6 +90,7 @@
             <form (submit)="$event.preventDefault(); verifyOtp()" novalidate>
               <label for="otp">One-time password</label>
               <input
+                #otpInput
                 id="otp"
                 class="otp-field"
                 type="text"
@@ -87,6 +99,7 @@
                 maxlength="6"
                 placeholder="• • • • • •"
                 [formControl]="otp"
+                (input)="onNumericInput($event, otp, 6)"
               />
               <p class="field-help">
                 @if (otp.invalid && otp.touched) { Enter the complete 6-digit OTP. } @else { The OTP is

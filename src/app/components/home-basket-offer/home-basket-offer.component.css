@@ -1,0 +1,115 @@
+:host { display: block; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+
+.bo-section {
+  padding: clamp(40px, 5.5vw, 72px) 0;
+  background: linear-gradient(135deg, #0a3158 0%, #0d1f38 55%, #1a1200 140%);
+  color: #fff;
+}
+.bo-inner { max-width: 1260px; margin: 0 auto; }
+
+.bo-head { text-align: center; max-width: 680px; margin: 0 auto clamp(28px, 4.5vw, 44px); padding: 0 20px; }
+.bo-eyebrow {
+  display: inline-block; margin-bottom: 14px; padding: 6px 15px;
+  color: #1a1200; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em;
+  background: #FACC15; border-radius: 100px; box-shadow: 0 8px 20px rgba(250, 204, 21, .3);
+}
+.bo-head h2 { margin: 0; font-size: clamp(26px, 3.4vw, 40px); letter-spacing: -.03em; line-height: 1.15; }
+.bo-sub { margin: 12px auto 0; color: rgba(255, 255, 255, .78); font-size: 15.5px; line-height: 1.6; }
+
+/* ===================== SINGLE BASKET — HERO CARD ===================== */
+.bo-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  align-items: stretch;
+  max-width: 980px;
+  margin: 0 clamp(16px, 5vw, 40px);
+  border-radius: 26px;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(250, 204, 21, .4);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .4);
+  cursor: pointer;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.bo-hero:hover { transform: translateY(-6px); border-color: #FACC15; box-shadow: 0 40px 90px rgba(0, 0, 0, .5); }
+.bo-hero:focus-visible { outline: 3px solid #FACC15; outline-offset: 3px; }
+
+.bo-hero-media {
+  position: relative;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 30% 20%, #12406e, #0a2140 75%);
+  padding: clamp(16px, 2.5vw, 28px);
+  min-height: 260px;
+}
+.bo-hero-media img { width: 100%; height: 100%; max-height: 340px; object-fit: contain; display: block; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, .35)); transition: transform .35s; }
+.bo-hero:hover .bo-hero-media img { transform: scale(1.03); }
+
+.bo-hero-body { display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: clamp(28px, 4vw, 44px); }
+.bo-hero-body h3 { margin: 0; font-size: clamp(22px, 2.6vw, 30px); font-weight: 850; letter-spacing: -.01em; line-height: 1.2; }
+.bo-hero-body p { margin: 0; color: rgba(255, 255, 255, .78); font-size: 15px; line-height: 1.6; }
+.bo-hero-body .bo-cta { margin-top: 10px; align-self: flex-start; padding: 14px 26px; font-size: 15px; }
+
+/* ===================== MULTIPLE BASKETS — CARD ROW ===================== */
+.bo-row {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px clamp(16px, 5vw, 40px) 10px;
+  justify-content: safe center;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, .35) transparent;
+}
+.bo-row::-webkit-scrollbar { height: 8px; }
+.bo-row::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .3); border-radius: 8px; }
+.bo-row::-webkit-scrollbar-track { background: transparent; }
+
+.bo-card {
+  flex: 0 0 auto;
+  width: min(380px, 84vw);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(250, 204, 21, .35);
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, .35);
+  cursor: pointer;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.bo-card:hover { transform: translateY(-6px); border-color: #FACC15; box-shadow: 0 30px 60px rgba(0, 0, 0, .45); }
+.bo-card:focus-visible { outline: 3px solid #FACC15; outline-offset: 2px; }
+
+.bo-media { position: relative; aspect-ratio: 16 / 10; background: radial-gradient(circle at 30% 20%, #12406e, #0a2140 75%); display: grid; place-items: center; overflow: hidden; padding: 14px; }
+.bo-media img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .35s; }
+.bo-card:hover .bo-media img { transform: scale(1.05); }
+.bo-mono { color: #fff; font-size: 54px; font-weight: 900; opacity: .9; }
+
+.bo-body { display: flex; flex-direction: column; gap: 12px; padding: 18px 20px 20px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.bo-body h3 { margin: 0; font-size: 17.5px; font-weight: 800; letter-spacing: -.01em; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; }
+
+.bo-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 12px 18px; color: #1a1200; background: #FACC15;
+  border-radius: 999px; font-weight: 850; font-size: 14px; white-space: nowrap;
+}
+.bo-cta svg { width: 15px; height: 15px; transition: transform .2s; }
+.bo-card:hover .bo-cta svg, .bo-hero:hover .bo-cta svg { transform: translateX(3px); }
+
+.bo-skeleton { width: min(420px, 84vw); height: 280px; margin: 0 auto; cursor: default; background: linear-gradient(100deg, rgba(255,255,255,.05) 30%, rgba(255,255,255,.12) 48%, rgba(255,255,255,.05) 66%); background-size: 250% 100%; animation: boShimmer 1.2s infinite; border-radius: 22px; }
+@keyframes boShimmer { to { background-position-x: -250%; } }
+
+@media (max-width: 760px) {
+  .bo-hero { grid-template-columns: 1fr; }
+  .bo-hero-media { min-height: 200px; }
+  .bo-hero-body { text-align: center; align-items: center; }
+  .bo-hero-body .bo-cta { align-self: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bo-card, .bo-hero, .bo-media img, .bo-hero-media img, .bo-cta svg { transition: none; }
+  .bo-skeleton { animation: none; }
+  .bo-row { scroll-snap-type: none; }
+}

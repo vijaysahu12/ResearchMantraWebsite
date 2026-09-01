@@ -1,0 +1,336 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #172b43;
+  background: linear-gradient(180deg, #fbfcfe 0%, #f4f7fb 100%);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.basket-page { position: relative; min-height: 100vh; overflow: clip; }
+
+/* ===================== DECORATIVE PAGE BACKGROUND ===================== */
+/* Same soft, "designed" background treatment used on the About and FAQ
+   sections elsewhere on the site — blurred colour blobs, a faint dotted
+   texture, and a couple of giant low-opacity watermark glyphs — instead of
+   a flat, empty fill either side of the content cards. Sits behind the
+   opaque hero, so it only shows through the light area below it.
+   Height is a fixed value, NOT `inset:0` — the basket item list can make
+   the page arbitrarily tall, and top/bottom percentages against that full,
+   variable scroll height put "bottom: 4%" thousands of pixels down (off
+   whatever the user is actually looking at). Bounding it to a fixed band
+   keeps both watermarks anchored to the same visible "offer" area. */
+.bp-bg { position: absolute; top: 0; left: 0; right: 0; height: 1180px; overflow: hidden; pointer-events: none; z-index: 0; }
+
+.bp-grid {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.06) 1.4px, transparent 1.4px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 72%);
+}
+
+.bp-blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.55; }
+.bp-blob--one {
+  width: 460px; height: 460px; top: 260px; left: -160px;
+  background: radial-gradient(circle, rgba(248, 176, 24, 0.32) 0%, transparent 70%);
+  animation: bpBlobFloat 18s ease-in-out infinite;
+}
+.bp-blob--two {
+  width: 420px; height: 420px; bottom: -140px; right: -140px;
+  background: radial-gradient(circle, rgba(13, 109, 202, 0.16) 0%, transparent 70%);
+  animation: bpBlobFloat 22s ease-in-out infinite reverse;
+}
+@keyframes bpBlobFloat {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(24px, -22px); }
+}
+
+.bp-watermark {
+  position: absolute;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: rgba(248, 176, 24, 0.1);
+  user-select: none;
+}
+.bp-watermark--left { top: 160px; left: -3%; transform: rotate(-10deg); font-size: clamp(200px, 26vw, 380px); }
+
+/* Mirrors the left "%" in the bottom-right of the same band. A line-art SVG,
+   not an emoji — an emoji is a full-colour picture, so fading one down just
+   turns it into an illegible grey smudge instead of staying a clean,
+   recognisable shape the way a flat glyph like "%" does. */
+.bp-watermark-icon--right {
+  position: absolute;
+  bottom: 40px;
+  right: -1%;
+  width: clamp(220px, 26vw, 360px);
+  height: clamp(220px, 26vw, 360px);
+  transform: rotate(6deg);
+  color: rgba(13, 109, 202, 0.14);
+}
+
+
+/* ===================== HERO ===================== */
+.basket-hero {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding: 22px clamp(20px, 8vw, 120px) 34px;
+  background: linear-gradient(135deg, #0a3158 0%, #0d6dca 100%);
+  color: #fff;
+}
+
+/* Ambient party-popper decoration — purely festive, sits behind the hero text. */
+.hero-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.hero-confetti-piece {
+  position: absolute;
+  opacity: 0;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .25));
+  animation-name: heroConfettiFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes heroConfettiFloat {
+  0% { opacity: 0; transform: translateY(6px) rotate(-8deg) scale(.85); }
+  20% { opacity: .9; }
+  50% { opacity: .55; transform: translateY(-10px) rotate(6deg) scale(1); }
+  80% { opacity: .9; }
+  100% { opacity: 0; transform: translateY(6px) rotate(-8deg) scale(.85); }
+}
+
+.hero-topbar { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 26px; flex-wrap: wrap; }
+.nav-link { position: relative; display: inline-flex; align-items: center; gap: 6px; color: #eaf4ff; font-weight: 700; text-decoration: none; padding-bottom: 2px; }
+.nav-link::after { content: ''; position: absolute; left: 0; bottom: -3px; width: 0; height: 2px; background: currentColor; transition: width 0.25s ease; }
+.nav-link:hover::after { width: 100%; }
+.nav-link svg { transition: transform 0.2s ease; }
+.nav-back:hover svg { transform: translateX(-3px); }
+.nav-brand { font-weight: 850; letter-spacing: -0.01em; opacity: 0.9; }
+
+.hero-eyebrow {
+  position: relative; z-index: 1;
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 13px;
+  color: #1a1200;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #FACC15;
+  border-radius: 100px;
+}
+
+.basket-hero h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.01em; max-width: 720px; }
+.hero-desc { position: relative; z-index: 1; margin: 12px 0 0; color: rgba(255, 255, 255, 0.85); font-size: 1rem; line-height: 1.6; max-width: 680px; }
+
+/* ===================== CONTENT LAYOUT ===================== */
+.basket-content { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, .75fr); gap: 28px; width: min(1180px, calc(100% - 40px)); margin: -14px auto 60px; align-items: start; position: relative; z-index: 1; }
+
+/* "Stock offer celebration" — stock-chart + firecracker/party icons anchored
+   to the content column itself (not the viewport), so they land reliably in
+   the wide-screen empty margin right beside the cards instead of drifting
+   off toward the browser edge or getting lost behind the hero. Sized to
+   actually read as decoration, faded with `opacity` (not color, which emoji
+   ignore) so it stays background, not clutter. */
+.bc-decor { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.bp-celebration {
+  position: absolute;
+  opacity: 0;
+  filter: drop-shadow(0 6px 14px rgba(15, 23, 42, .12));
+  animation-name: bpCelebrationFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.bp-celebration.side-left { right: calc(100% + clamp(20px, 5vw, 70px)); }
+.bp-celebration.side-right { left: calc(100% + clamp(20px, 5vw, 70px)); }
+@keyframes bpCelebrationFloat {
+  0% { opacity: 0; transform: translateY(8px) rotate(-6deg) scale(.85); }
+  15% { opacity: .75; }
+  50% { opacity: .5; transform: translateY(-12px) rotate(5deg) scale(1); }
+  85% { opacity: .75; }
+  100% { opacity: 0; transform: translateY(8px) rotate(-6deg) scale(.85); }
+}
+/* No side margin to sit in once the content column fills the viewport. */
+@media (max-width: 1400px) {
+  .bp-celebration { display: none; }
+}
+
+.items-panel { display: grid; gap: 18px; }
+
+.basket-banner { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 45px rgba(15, 48, 79, .16); }
+.basket-banner img { display: block; width: 100%; max-height: 320px; object-fit: cover; }
+
+.basket-banner-stamp {
+  position: absolute; top: 16px; right: 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  width: 92px; height: 92px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe27a, #FACC15 55%, #e0a90c 100%);
+  color: #1a1200; text-align: center;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .3), 0 0 0 4px rgba(255, 255, 255, .85);
+  transform: rotate(8deg);
+  animation: stampPulse 2.6s ease-in-out infinite;
+}
+.basket-banner-stamp strong { font-size: 17px; font-weight: 900; line-height: 1.1; letter-spacing: -0.01em; }
+.basket-banner-stamp small { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; opacity: .75; }
+@keyframes stampPulse {
+  0%, 100% { transform: rotate(8deg) scale(1); }
+  50% { transform: rotate(8deg) scale(1.06); }
+}
+
+.notice-banner { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; border-radius: 14px; font-size: .9rem; }
+.notice-banner span { font-size: 22px; line-height: 1; }
+.notice-banner strong { display: block; margin-bottom: 3px; }
+.notice-banner p { margin: 0; color: inherit; opacity: .85; }
+.notice-banner.owned { color: #08663f; background: #daf6e8; border: 1px solid #b7ecce; }
+.notice-banner.expired { color: #7a4a08; background: #fff2cf; border: 1px solid #f3dfa3; }
+
+.items-heading { margin: 6px 0 0; font-size: 1.15rem; }
+.items-heading span { color: #647b90; font-weight: 600; font-size: .9rem; }
+
+.item-list { display: grid; gap: 12px; }
+.item-card {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 18px; background: #fff; border: 1px solid #dfe8f0; border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(15, 48, 79, .05); transition: box-shadow .2s ease, border-color .2s ease;
+}
+.item-card:hover { box-shadow: 0 12px 28px rgba(15, 48, 79, .09); }
+.item-thumb { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 12px; border: 1px solid #eef2f7; object-fit: cover; }
+.item-mono {
+  flex: 0 0 auto; width: 52px; height: 52px; border-radius: 12px; display: grid; place-items: center;
+  color: #fff; font-weight: 900; font-size: 20px; background: linear-gradient(135deg, #0a3158, #0d6dca);
+}
+.item-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.item-info h3 { margin: 0; font-size: .98rem; font-weight: 750; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-duration { align-self: flex-start; padding: 2px 8px; color: #095fae; background: #e6f1fd; border-radius: 999px; font-size: .72rem; font-weight: 750; }
+.item-price { flex: 0 0 auto; font-size: 1rem; font-weight: 800; color: #172b43; }
+
+/* ===================== SUMMARY PANEL ===================== */
+.summary-panel { position: sticky; top: 20px; padding: 24px; background: #fff; border: 1px solid #dfe8f0; border-radius: 20px; box-shadow: 0 18px 45px rgba(15, 48, 79, .1); }
+.summary-panel h2 { margin: 0 0 18px; font-size: 1.3rem; }
+
+/* ===== Price hero — the single most important number on the page ===== */
+.price-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 22px 16px 20px;
+  text-align: center;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0a3158 0%, #0d6dca 60%, #0a3158 130%);
+  box-shadow: 0 16px 34px rgba(13, 109, 202, .28);
+}
+.price-hero-confetti {
+  position: absolute; top: 8px; left: 12px; font-size: 20px; opacity: .8;
+  animation: priceHeroBob 2.8s ease-in-out infinite;
+}
+.price-hero-confetti.alt { top: auto; left: auto; bottom: 10px; right: 12px; animation-delay: .6s; }
+@keyframes priceHeroBob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-6px) rotate(6deg); }
+}
+.price-hero-label { color: rgba(255, 255, 255, .8); font-size: .82rem; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; }
+.price-hero-amount { color: #fff; font-size: clamp(2.4rem, 6vw, 3rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; }
+.price-hero-savings {
+  margin-top: 8px; padding: 7px 14px; color: #1a1200; font-weight: 850; font-size: .82rem;
+  background: #FACC15; border-radius: 100px; box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+}
+
+.summary-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid #edf1f5; }
+.summary-row span { flex: 1 1 auto; min-width: 0; color: #647b90; line-height: 1.4; }
+.summary-row strong { flex: 0 0 auto; white-space: nowrap; }
+.summary-row strong.strike { color: #97a8b8; font-weight: 700; text-decoration: line-through; }
+.summary-row.discount strong { color: #087a4b; }
+
+.error-message { margin: 14px 0 0; padding: 10px 12px; color: #8c2131; background: #fff0f2; border: 1px solid #e8abb4; border-radius: 9px; font-size: .85rem; }
+.pay-button {
+  width: 100%; margin-top: 18px; padding: 15px; color: #1a1200; font-weight: 850; font-size: 1.05rem;
+  background: linear-gradient(135deg, #ffe27a, #FACC15 60%, #f5b90c); border: 0; border-radius: 12px; cursor: pointer;
+  box-shadow: 0 10px 26px rgba(250, 204, 21, .4);
+  animation: payButtonGlow 2.4s ease-in-out infinite;
+}
+.pay-button:hover { filter: brightness(1.05); }
+.pay-button:disabled { cursor: not-allowed; opacity: .55; animation: none; box-shadow: none; }
+@keyframes payButtonGlow {
+  0%, 100% { box-shadow: 0 10px 26px rgba(250, 204, 21, .4); }
+  50% { box-shadow: 0 10px 34px rgba(250, 204, 21, .7); }
+}
+.secure-note { margin: 14px 0 0; color: #71869a; font-size: .75rem; line-height: 1.45; text-align: center; }
+.secure-note a { color: #1267b7; }
+
+/* Loading / error states */
+.state-card { position: relative; z-index: 1; width: min(600px, calc(100% - 40px)); margin: 90px auto; padding: 45px; text-align: center; background: #fff; border: 1px solid #dfe8f0; border-radius: 20px; box-shadow: 0 18px 45px rgba(15, 48, 79, .1); }
+.state-card h2 { margin: 0 0 10px; }
+.state-card p { margin: 0 0 20px; color: #647b90; }
+.loader { width: 32px; height: 32px; margin: 0 auto; border: 3px solid #d6e6f4; border-top-color: #1267b7; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===================== PAYMENT MODAL (overlays the basket page) ===================== */
+.payment-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: grid; place-items: center; padding: 20px;
+  background: rgba(6, 20, 36, .62); backdrop-filter: blur(4px);
+  animation: overlayIn .22s ease both;
+}
+.payment-modal {
+  position: relative; width: min(100%, 460px); max-height: 92vh; overflow: auto;
+  background: #fff; border-radius: 22px; box-shadow: 0 40px 100px rgba(6, 24, 48, .5);
+  animation: modalIn .34s cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalIn { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: none; } }
+
+.payment-status { padding: clamp(32px, 5vw, 44px); text-align: center; }
+.payment-status h2 { margin: 0 0 10px; font-size: 1.3rem; }
+.payment-status p { margin: 0 0 22px; color: #647b90; line-height: 1.55; }
+.payment-status .pay-button { margin-bottom: 10px; }
+.ghost-btn { display: block; width: 100%; padding: 12px; border: 1px solid #cbd7e5; border-radius: 11px; color: #37506b; background: #fff; font: inherit; font-weight: 750; cursor: pointer; text-decoration: none; text-align: center; transition: background .2s, border-color .2s; }
+.ghost-btn:hover { background: #f2f7fc; border-color: #9fc7e9; }
+
+.status-spinner { display: block; width: 44px; height: 44px; margin: 0 auto 18px; border: 4px solid #d6e6f4; border-top-color: #1267b7; border-radius: 50%; animation: spin .8s linear infinite; }
+.status-tick { display: block; width: 60px; height: 60px; margin: 0 auto 14px; color: #087a4b; }
+.st-ring { stroke: #cdf3df; stroke-width: 3; }
+.st-check { stroke: #087a4b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 40; stroke-dashoffset: 40; animation: stCheck .4s .1s ease forwards; }
+@keyframes stCheck { to { stroke-dashoffset: 0; } }
+.status-x { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%; background: #fff0f2; color: #b3232b; font-size: 26px; font-weight: 900; }
+
+.success-status { position: relative; overflow: hidden; }
+.success-status h2 { color: #087a4b; }
+
+.confetti-layer { position: absolute; inset: 0; overflow: visible; pointer-events: none; z-index: 1; }
+.confetti-piece { position: absolute; top: 30%; width: 8px; height: 12px; border-radius: 2px; opacity: 0; }
+.confetti-layer.burst .confetti-piece {
+  animation-name: confettiFly;
+  animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes confettiFly {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(var(--x-end, 0), 260px) rotate(var(--rot, 360deg)) scale(0.5); }
+}
+.success-status .status-tick,
+.success-status h2,
+.success-status p,
+.success-status .pay-button { position: relative; z-index: 2; }
+
+@media (max-width: 900px) {
+  .basket-content { grid-template-columns: 1fr; }
+  .summary-panel { position: static; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader, .status-spinner { animation: none; }
+  .st-check { animation: none; stroke-dashoffset: 0; }
+  .confetti-layer.burst .confetti-piece { animation: none; opacity: 0; }
+  .nav-link svg { transition: none; }
+  .hero-confetti-piece { animation: none; opacity: .7; }
+  .basket-banner-stamp { animation: none; }
+  .price-hero-confetti { animation: none; }
+  .pay-button { animation: none; }
+  .bp-blob { animation: none; }
+  .bp-celebration { animation: none; opacity: .3; }
+  .payment-overlay, .payment-modal { animation: none; }
+}

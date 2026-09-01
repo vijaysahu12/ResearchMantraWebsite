@@ -33,7 +33,7 @@
         <span class="status-tick" aria-hidden="true">
           <svg viewBox="0 0 52 52"><circle class="st-ring" cx="26" cy="26" r="24" fill="none"/><path class="st-check" fill="none" d="M14 27l8 8 16-17"/></svg>
         </span>
-        <h3>Payment successful! 🎉</h3>
+        <h3>{{ finalAmount() === 0 ? 'Subscription activated! 🎉' : 'Payment successful! 🎉' }}</h3>
         <p>Your subscription is now active. Open the Research Mantra app to start using it.</p>
         <a routerLink="/mobile" class="pm-pay success-btn">Open in the app <span aria-hidden="true">→</span></a>
         <button type="button" class="pm-textbtn" (click)="close()">Done</button>
@@ -81,6 +81,21 @@
           }
         </div>
 
+        <p class="pm-label reveal" style="--d:.24s">Your details</p>
+        <div class="contact-fields reveal" style="--d:.26s">
+          <div class="contact-field" [class.field-error]="fullName.invalid && fullName.touched">
+            <label for="pm-fullname">Full name</label>
+            <input id="pm-fullname" type="text" placeholder="Your full name" [formControl]="fullName" autocomplete="name" />
+          </div>
+          <div class="contact-field" [class.field-error]="email.invalid && email.touched">
+            <label for="pm-email">Email address</label>
+            <input id="pm-email" type="email" placeholder="you@example.com" [formControl]="email" autocomplete="email" />
+          </div>
+        </div>
+        @if ((fullName.invalid && fullName.touched) || (email.invalid && email.touched)) {
+          <p class="pm-error">Please enter a valid name and email address to continue.</p>
+        }
+
         <div class="coupon-row reveal" style="--d:.3s">
           <div class="coupon-field" [class.applied]="appliedCoupon().length > 0">
             <svg class="coupon-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
@@ -112,9 +127,13 @@
           @if (totalSavings() > 0) { <div class="save-pill">🎉 You save ₹{{ totalSavings() | number:'1.0-0' }} ({{ savingsPercent() }}%)</div> }
         </div>
 
-        <button type="button" class="pm-pay reveal" style="--d:.42s" (click)="proceedToPay()" [disabled]="paying() || !selectedDuration()">
+        <button type="button" class="pm-pay reveal" style="--d:.42s" (click)="proceedToPay()" [disabled]="paying() || !selectedDuration() || fullName.invalid || email.invalid">
           @if (paying()) { <span class="pm-spinner small" aria-hidden="true"></span> }
-          <span>{{ paying() ? 'Creating secure payment…' : 'Proceed to pay ₹' + (finalAmount() | number:'1.0-0') }}</span>
+          <span>
+            @if (paying()) { {{ finalAmount() === 0 ? 'Activating…' : 'Creating secure payment…' }} }
+            @else if (finalAmount() === 0) { Activate for free }
+            @else { Proceed to pay ₹{{ finalAmount() | number:'1.0-0' }} }
+          </span>
         </button>
 
         <div class="pm-trust reveal" style="--d:.48s">

@@ -92,7 +92,7 @@
               <div class="product-foot">
                 <div class="price-block">
                   @if (product.price > 0) {
-                    <span class="price">₹{{ product.price | number:'1.0-0' }}</span>
+                    <span class="price"><small>Starting at</small><strong>₹{{ product.price | number:'1.0-0' }}</strong></span>
                   } @else {
                     <span class="price free">Free</span>
                   }

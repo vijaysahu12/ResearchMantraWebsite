@@ -1,11 +1,13 @@
 @if (!isPortalRoute()) {
 <div class="top-shell" [class.top-shell--hidden]="topBarsHidden()">
 <div class="top-promo-region" role="region" aria-label="App promotion">
-    <a routerLink="/mobile" class="top-promo-bar">
+    <a [routerLink]="activeTopPromo().link" class="top-promo-bar"
+        [class]="'tpb-theme-' + activeTopPromo().theme"
+        [queryParams]="activeTopPromo().returnUrl ? { returnUrl: activeTopPromo().returnUrl } : {}">
         <span class="tpb-flame" aria-hidden="true">🔥</span>
-        <span class="tpb-text">Grab your <strong>Exclusive Free Trial</strong> on the Research Mantra App</span>
+        <span class="tpb-text">{{ activeTopPromo().pre }}<strong>{{ activeTopPromo().bold }}</strong>{{ activeTopPromo().post }}</span>
         <span class="tpb-cta">
-            Install Now
+            {{ activeTopPromo().cta }}
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6"
                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -24,6 +26,7 @@
 </main>
 
 <app-install-bottom-bar></app-install-bottom-bar>
+<app-free-trial-dialog></app-free-trial-dialog>
 
 @if (isPromoOpen() && !isPortalRoute()) {
 <div class="promo-overlay" (click)="closePromo()" role="dialog" aria-modal="true" aria-labelledby="promo-title">

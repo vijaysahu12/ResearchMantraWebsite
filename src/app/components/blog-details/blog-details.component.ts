@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -114,7 +114,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
                                                     [attr.inert]="expandedFaqIndex() === $index ? null : ''"
                                                     [id]="'blog-faq-answer-' + $index">
                                                     <div class="blog-faq-answer-inner">
-                                                        <div [innerHTML]="sanitizeHtml(faq.answer)"></div>
+                                                        <p>{{ faq.answer }}</p>
                                                     </div>
                                                 </div>
                                             </section>
@@ -1724,7 +1724,7 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlogDetailsComponent implements OnInit {
+export class BlogDetailsComponent implements OnInit, OnDestroy {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private blogService = inject(BlogService);
@@ -1870,10 +1870,6 @@ export class BlogDetailsComponent implements OnInit {
         return content ? this.sanitizer.bypassSecurityTrustHtml(content) : '';
     });
 
-    sanitizeHtml(content: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(content);
-    }
-
     onContentClick(event: MouseEvent) {
         if (!this.isBrowser) return;
 
@@ -1889,7 +1885,13 @@ export class BlogDetailsComponent implements OnInit {
 
         event.preventDefault();
         destination.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, '', `#${fragment}`);
+        // Build the full URL (not just "#fragment") — a bare fragment is resolved against
+        // the document's <base href="/">, which would silently rewrite the path to "/".
+        const pathname = window.location.pathname.endsWith('/')
+            ? window.location.pathname
+            : `${window.location.pathname}/`;
+        const newUrl = `${pathname}${window.location.search}#${fragment}`;
+        window.history.replaceState(null, '', newUrl);
     }
 
     ngOnInit() {
@@ -2144,5 +2146,11 @@ export class BlogDetailsComponent implements OnInit {
             type: 'article',
             canonicalUrl
         });
+
+        this.seoService.setFaqSchema(blog.faqs);
+    }
+
+    ngOnDestroy() {
+        this.seoService.setFaqSchema(null);
     }
 }

@@ -50,6 +50,15 @@
     50% { background-position: 100% 50%; }
 }
 
+/* Per-campaign background themes */
+.top-promo-bar.tpb-theme-gold {
+    background-image: linear-gradient(90deg, #7c2d12 0%, #d97706 50%, #7c2d12 100%);
+}
+
+.top-promo-bar.tpb-theme-green {
+    background-image: linear-gradient(90deg, #064e3b 0%, #059669 50%, #064e3b 100%);
+}
+
 .tpb-flame {
     animation: tpbFlame 1.2s ease-in-out infinite;
 }

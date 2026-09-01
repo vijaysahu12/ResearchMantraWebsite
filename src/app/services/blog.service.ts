@@ -1216,82 +1216,63 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is the Stock Market in India?",
-                    answer: `<p>The Stock Market India is a regulated marketplace where investors buy and sell shares of publicly listed companies through recognized stock exchanges such as the National Stock Exchange (NSE) and the Bombay Stock Exchange (BSE). It helps companies raise capital while giving investors opportunities to participate in their growth.</p>`
+                    answer: `The Stock Market India is a regulated marketplace where investors buy and sell shares of publicly listed companies through recognized stock exchanges such as the National Stock Exchange (NSE) and the Bombay Stock Exchange (BSE). It helps companies raise capital while giving investors opportunities to participate in their growth.`
                 },
                 {
                     question: "Who regulates the Indian stock market?",
-                    answer: `<p>The Indian stock market is regulated by the Securities and Exchange Board of India (SEBI), which works to protect investors, regulate market participants, and promote transparent and fair trading practices.</p>
-                <p>👉 Read more about what is <a href="/sebi">SEBI</a>.</p>`
+                    answer: `The Indian stock market is regulated by the Securities and Exchange Board of India (SEBI), which works to protect investors, regulate market participants, and promote transparent and fair trading practices.`
                 },
                 {
                     question: "What is the difference between investing and trading?",
-                    answer: `<p>Investing generally focuses on building wealth over the long term by holding quality companies for years. Trading involves buying and selling securities over shorter periods based on market movements.</p>
-                <p>Neither approach is inherently better—the appropriate choice depends on an individual’s financial goals, risk tolerance, and time horizon.</p>`
+                    answer: `Investing generally focuses on building wealth over the long term by holding quality companies for years. Trading involves buying and selling securities over shorter periods based on market movements. Neither approach is inherently better—the appropriate choice depends on an individual’s financial goals, risk tolerance, and time horizon.`
                 },
                 {
                     question: "Can beginners invest in the Indian stock market?",
-                    answer: `<p>Yes. Anyone who understands the basics of investing, has a Demat and Trading Account, and is willing to learn can begin investing.</p>
-                <p>Beginners should focus on education, research, diversification, and long-term planning rather than attempting to generate quick profits.</p>`
+                    answer: `Yes. Anyone who understands the basics of investing, has a Demat and Trading Account, and is willing to learn can begin investing. Beginners should focus on education, research, diversification, and long-term planning rather than attempting to generate quick profits.`
                 },
                 {
                     question: "What is a Demat Account?",
-                    answer: `<p>A Demat Account stores shares electronically after they are purchased. Think of it as a digital locker for your investments.</p>
-                <p>👉 Learn more about a <a href="/demat-account">Demat Account</a>.</p>`
+                    answer: `A Demat Account stores shares electronically after they are purchased. Think of it as a digital locker for your investments.`
                 },
                 {
                     question: "What is a Trading Account?",
-                    answer: `<p>A Trading Account allows investors to place buy and sell orders on stock exchanges. Without it, you cannot trade listed securities.</p>
-                <p>👉 Discover how a <a href="/trading-account">Trading Account</a> works.</p>`
+                    answer: `A Trading Account allows investors to place buy and sell orders on stock exchanges. Without it, you cannot trade listed securities.`
                 },
                 {
                     question: "How much money do I need to start investing?",
-                    answer: `<p>There is no fixed minimum amount required to begin investing. The amount depends on:</p>
-                <ul>
-                    <li>Your financial goals</li>
-                    <li>The price of the securities you choose</li>
-                    <li>Your investment strategy</li>
-                </ul>
-                <p>The key is to invest responsibly according to your financial circumstances.</p>`
+                    answer: `There is no fixed minimum amount required to begin investing. The amount depends on: Your financial goals; The price of the securities you choose; Your investment strategy. The key is to invest responsibly according to your financial circumstances.`
                 },
                 {
                     question: "What are the major stock exchanges in India?",
-                    answer: `<p>India has two primary stock exchanges:</p>
-                <ul>
-                    <li>National Stock Exchange (NSE)</li>
-                    <li>Bombay Stock Exchange (BSE)</li>
-                </ul>
-                <p>Both are regulated by SEBI.</p>`
+                    answer: `India has two primary stock exchanges: National Stock Exchange (NSE); Bombay Stock Exchange (BSE). Both are regulated by SEBI.`
                 },
                 {
                     question: "What is an IPO?",
-                    answer: `<p>An Initial Public Offering (IPO) is when a private company offers its shares to the public for the first time before listing on a stock exchange.</p>
-                <p>👉 Explore our complete guide to <a href="/ipo-guide">IPOs</a>.</p>`
+                    answer: `An Initial Public Offering (IPO) is when a private company offers its shares to the public for the first time before listing on a stock exchange.`
                 },
                 {
                     question: "Is investing in the stock market risky?",
-                    answer: `<p>Yes. Like any investment, the stock market involves risks. Share prices may rise or fall due to company performance, economic conditions, industry developments, and market sentiment.</p>
-                <p>Understanding these risks and investing according to your financial goals is important.</p>`
+                    answer: `Yes. Like any investment, the stock market involves risks. Share prices may rise or fall due to company performance, economic conditions, industry developments, and market sentiment. Understanding these risks and investing according to your financial goals is important.`
                 },
                 {
                     question: "What is the difference between NSE and BSE?",
-                    answer: `<p>Both are stock exchanges. NSE is known for higher trading volumes, while BSE is Asia’s oldest stock exchange and has the largest number of listed companies.</p>
-                <p>👉 Understand the difference between <a href="/nse-vs-bse">NSE vs BSE</a>.</p>`
+                    answer: `Both are stock exchanges. NSE is known for higher trading volumes, while BSE is Asia’s oldest stock exchange and has the largest number of listed companies.`
                 },
                 {
                     question: "What is Sensex?",
-                    answer: `<p>Sensex is the benchmark index of the Bombay Stock Exchange. It tracks the performance of 30 leading companies.</p>`
+                    answer: `Sensex is the benchmark index of the Bombay Stock Exchange. It tracks the performance of 30 leading companies.`
                 },
                 {
                     question: "What is Nifty?",
-                    answer: `<p>Nifty 50 is the benchmark index of the National Stock Exchange. It tracks the performance of 50 leading companies.</p>`
+                    answer: `Nifty 50 is the benchmark index of the National Stock Exchange. It tracks the performance of 50 leading companies.`
                 },
                 {
                     question: "Why is diversification important?",
-                    answer: `<p>Diversification helps spread investment risk across different companies, sectors, and asset classes. It can reduce the impact of poor performance from any single investment.</p>`
+                    answer: `Diversification helps spread investment risk across different companies, sectors, and asset classes. It can reduce the impact of poor performance from any single investment.`
                 },
                 {
                     question: "How can I learn more about the Indian stock market?",
-                    answer: `<p>Continuous learning is one of the best ways to improve your understanding of investing. Reading educational resources, following market developments, and understanding company fundamentals can help investors make informed decisions over time.</p>`
+                    answer: `Continuous learning is one of the best ways to improve your understanding of investing. Reading educational resources, following market developments, and understanding company fundamentals can help investors make informed decisions over time.`
                 }
             ],
             content: `
@@ -2513,48 +2494,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is the stock market in simple words?",
-                    answer: `<p>The stock market is a marketplace where investors buy and sell shares of publicly listed companies through recognized stock exchanges like NSE and BSE.</p>`
+                    answer: `The stock market is a marketplace where investors buy and sell shares of publicly listed companies through recognized stock exchanges like NSE and BSE.`
                 },
                 {
                     question: "Is the stock market and share market the same?",
-                    answer: `<p>The terms are often used interchangeably. However, the stock market includes multiple financial securities, while the share market mainly refers to company shares.</p>`
+                    answer: `The terms are often used interchangeably. However, the stock market includes multiple financial securities, while the share market mainly refers to company shares.`
                 },
                 {
                     question: "Can beginners invest in the stock market?",
-                    answer: `<p>Yes. Beginners can start investing after understanding the basics, opening the required accounts, and investing according to their financial goals and risk tolerance.</p>`
+                    answer: `Yes. Beginners can start investing after understanding the basics, opening the required accounts, and investing according to their financial goals and risk tolerance.`
                 },
                 {
                     question: "Who regulates the Indian stock market?",
-                    answer: `<p>The Securities and Exchange Board of India (SEBI) regulates the Indian securities market.</p>`
+                    answer: `The Securities and Exchange Board of India (SEBI) regulates the Indian securities market.`
                 },
                 {
                     question: "What is a share?",
-                    answer: `<p>A share represents partial ownership in a company.</p>`
+                    answer: `A share represents partial ownership in a company.`
                 },
                 {
                     question: "Why do companies list on the stock exchange?",
-                    answer: `<p>Companies list to raise capital for expansion, innovation, business growth, and other corporate objectives.</p>`
+                    answer: `Companies list to raise capital for expansion, innovation, business growth, and other corporate objectives.`
                 },
                 {
                     question: "What is the difference between NSE and BSE?",
-                    answer: `<p>Both are recognized stock exchanges in India, but they differ in history, benchmark indices, listed companies, and trading volume.</p>`
+                    answer: `Both are recognized stock exchanges in India, but they differ in history, benchmark indices, listed companies, and trading volume.`
                 },
                 {
                     question: "What accounts are required to invest?",
-                    answer: `<p>Typically, investors need:</p>
-<ul>
-    <li>Bank Account</li>
-    <li>Demat Account</li>
-    <li>Trading Account</li>
-</ul>`
+                    answer: `Typically, investors need: Bank Account; Demat Account; Trading Account.`
                 },
                 {
                     question: "Can I lose money in the stock market?",
-                    answer: `<p>Yes. Market investments are subject to risk, and share prices can rise or fall based on various factors.</p>`
+                    answer: `Yes. Market investments are subject to risk, and share prices can rise or fall based on various factors.`
                 },
                 {
                     question: "Is long-term investing better than short-term trading?",
-                    answer: `<p>The right approach depends on an individual’s financial goals, investment horizon, and risk tolerance. Long-term investing is commonly used for wealth creation, while trading focuses on shorter-term market movements.</p>`
+                    answer: `The right approach depends on an individual’s financial goals, investment horizon, and risk tolerance. Long-term investing is commonly used for wealth creation, while trading focuses on shorter-term market movements.`
                 }
             ],
             content: `
@@ -2890,43 +2866,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "How does the stock market work in simple words?",
-                    answer: `<p>The stock market works by connecting buyers and sellers of shares through stock exchanges such as the NSE and BSE. Orders placed through brokers are matched electronically, and completed trades are settled through a regulated process.</p>`
+                    answer: `The stock market works by connecting buyers and sellers of shares through stock exchanges such as the NSE and BSE. Orders placed through brokers are matched electronically, and completed trades are settled through a regulated process.`
                 },
                 {
                     question: "Can I buy shares directly from the stock exchange?",
-                    answer: `<p>No. Individual investors cannot trade directly on stock exchanges. They need a SEBI-registered stock broker to place buy and sell orders.</p>`
+                    answer: `No. Individual investors cannot trade directly on stock exchanges. They need a SEBI-registered stock broker to place buy and sell orders.`
                 },
                 {
                     question: "What is the role of a stock broker?",
-                    answer: `<p>A stock broker acts as an intermediary between investors and stock exchanges by executing buy and sell orders on behalf of investors.</p>`
+                    answer: `A stock broker acts as an intermediary between investors and stock exchanges by executing buy and sell orders on behalf of investors.`
                 },
                 {
                     question: "Why do I need a Demat Account?",
-                    answer: `<p>A Demat Account stores your shares electronically, making it easier and safer to hold and transfer securities.</p>`
+                    answer: `A Demat Account stores your shares electronically, making it easier and safer to hold and transfer securities.`
                 },
                 {
                     question: "What is order matching?",
-                    answer: `<p>Order matching is the automated process where the stock exchange pairs compatible buy and sell orders based on price and quantity.</p>`
+                    answer: `Order matching is the automated process where the stock exchange pairs compatible buy and sell orders based on price and quantity.`
                 },
                 {
                     question: "What happens after a trade is executed?",
-                    answer: `<p>After execution, the settlement process transfers shares to the buyer’s Demat Account and funds to the seller.</p>`
+                    answer: `After execution, the settlement process transfers shares to the buyer’s Demat Account and funds to the seller.`
                 },
                 {
                     question: "Who regulates the Indian stock market?",
-                    answer: `<p>The Securities and Exchange Board of India (SEBI) regulates the Indian securities market and protects investors.</p>`
+                    answer: `The Securities and Exchange Board of India (SEBI) regulates the Indian securities market and protects investors.`
                 },
                 {
                     question: "Is the stock market safe?",
-                    answer: `<p>The Indian stock market is regulated by SEBI and operates through recognized exchanges. However, investments in securities are subject to market risks, and prices can fluctuate.</p>`
+                    answer: `The Indian stock market is regulated by SEBI and operates through recognized exchanges. However, investments in securities are subject to market risks, and prices can fluctuate.`
                 },
                 {
                     question: "What is the difference between a Demat Account and a Trading Account?",
-                    answer: `<p>A Trading Account is used to place buy and sell orders, while a Demat Account is used to hold purchased securities in electronic form.</p>`
+                    answer: `A Trading Account is used to place buy and sell orders, while a Demat Account is used to hold purchased securities in electronic form.`
                 },
                 {
                     question: "What is settlement in the stock market?",
-                    answer: `<p>Settlement is the final stage of a trade where shares are transferred to the buyer and funds are transferred to the seller through the clearing system.</p>`
+                    answer: `Settlement is the final stage of a trade where shares are transferred to the buyer and funds are transferred to the seller through the clearing system.`
                 }
             ],
             content: `
@@ -3270,43 +3246,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "When did the Indian stock market begin?",
-                    answer: `<p>The origins of the Indian stock market can be traced back to informal securities trading in the nineteenth century, before organized exchanges were established.</p>`
+                    answer: `The origins of the Indian stock market can be traced back to informal securities trading in the nineteenth century, before organized exchanges were established.`
                 },
                 {
                     question: "Which was India’s first stock exchange?",
-                    answer: `<p>The Bombay Stock Exchange (BSE), established in 1875, is India’s first organized stock exchange.</p>`
+                    answer: `The Bombay Stock Exchange (BSE), established in 1875, is India’s first organized stock exchange.`
                 },
                 {
                     question: "Why was the establishment of BSE important?",
-                    answer: `<p>It created an organized marketplace for securities trading and contributed significantly to the development of India’s capital market.</p>`
+                    answer: `It created an organized marketplace for securities trading and contributed significantly to the development of India’s capital market.`
                 },
                 {
                     question: "What role does SEBI play in the Indian stock market?",
-                    answer: `<p>SEBI regulates the securities market, promotes transparency, protects investors, and oversees various market participants.</p>`
+                    answer: `SEBI regulates the securities market, promotes transparency, protects investors, and oversees various market participants.`
                 },
                 {
                     question: "When was the National Stock Exchange established?",
-                    answer: `<p>The National Stock Exchange (NSE) was established in 1994 and introduced a nationwide electronic trading system.</p>`
+                    answer: `The National Stock Exchange (NSE) was established in 1994 and introduced a nationwide electronic trading system.`
                 },
                 {
                     question: "How has technology changed the Indian stock market?",
-                    answer: `<p>Technology has enabled electronic trading, online investing, faster order execution, improved transparency, and easier access for investors.</p>`
+                    answer: `Technology has enabled electronic trading, online investing, faster order execution, improved transparency, and easier access for investors.`
                 },
                 {
                     question: "Why is it important to learn the history of the Indian stock market?",
-                    answer: `<p>Understanding market history helps investors appreciate how regulations, technology, and market institutions have evolved over time.</p>`
+                    answer: `Understanding market history helps investors appreciate how regulations, technology, and market institutions have evolved over time.`
                 },
                 {
                     question: "Is the Indian stock market fully electronic today?",
-                    answer: `<p>Yes. Modern trading on recognized stock exchanges is conducted through electronic trading systems.</p>`
+                    answer: `Yes. Modern trading on recognized stock exchanges is conducted through electronic trading systems.`
                 },
                 {
                     question: "How has investor participation changed over the years?",
-                    answer: `<p>Advancements in technology, greater awareness, and easier access to investment platforms have increased participation from both retail and institutional investors.</p>`
+                    answer: `Advancements in technology, greater awareness, and easier access to investment platforms have increased participation from both retail and institutional investors.`
                 },
                 {
                     question: "What is the next topic beginners should learn after market history?",
-                    answer: `<p>After understanding the market’s evolution, beginners should explore stock exchanges, investment accounts, market terminology, and trading processes to build a stronger foundation.</p>`
+                    answer: `After understanding the market’s evolution, beginners should explore stock exchanges, investment accounts, market terminology, and trading processes to build a stronger foundation.`
                 }
             ],
             content: `
@@ -3631,43 +3607,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What are the main types of stock market?",
-                    answer: `<p>The two primary types are the Primary Market and the Secondary Market. The broader financial ecosystem also includes equity, debt, commodity, and derivatives markets.</p>`
+                    answer: `The two primary types are the Primary Market and the Secondary Market. The broader financial ecosystem also includes equity, debt, commodity, and derivatives markets.`
                 },
                 {
                     question: "What is the difference between the Primary Market and the Secondary Market?",
-                    answer: `<p>The Primary Market is where new securities are issued by companies, while the Secondary Market is where investors trade existing securities.</p>`
+                    answer: `The Primary Market is where new securities are issued by companies, while the Secondary Market is where investors trade existing securities.`
                 },
                 {
                     question: "What is the Equity Market?",
-                    answer: `<p>The Equity Market is the segment where investors buy and sell shares representing ownership in publicly listed companies.</p>`
+                    answer: `The Equity Market is the segment where investors buy and sell shares representing ownership in publicly listed companies.`
                 },
                 {
                     question: "What is the Debt Market?",
-                    answer: `<p>The Debt Market is where debt instruments such as government securities and corporate bonds are issued and traded.</p>`
+                    answer: `The Debt Market is where debt instruments such as government securities and corporate bonds are issued and traded.`
                 },
                 {
                     question: "What is the Derivatives Market?",
-                    answer: `<p>The Derivatives Market involves contracts whose value is based on underlying assets such as shares, indices, commodities, or currencies.</p>`
+                    answer: `The Derivatives Market involves contracts whose value is based on underlying assets such as shares, indices, commodities, or currencies.`
                 },
                 {
                     question: "Is the Commodity Market part of the stock market?",
-                    answer: `<p>The Commodity Market is part of the broader financial market ecosystem, but it focuses on trading commodity contracts rather than company shares.</p>`
+                    answer: `The Commodity Market is part of the broader financial market ecosystem, but it focuses on trading commodity contracts rather than company shares.`
                 },
                 {
                     question: "Why are different market segments necessary?",
-                    answer: `<p>Different market segments support different financial activities, such as raising capital, trading securities, borrowing funds, and managing investment risk.</p>`
+                    answer: `Different market segments support different financial activities, such as raising capital, trading securities, borrowing funds, and managing investment risk.`
                 },
                 {
                     question: "Who regulates these market segments in India?",
-                    answer: `<p>Different financial regulators oversee various market segments. Within the securities market, SEBI plays an important regulatory role.</p>`
+                    answer: `Different financial regulators oversee various market segments. Within the securities market, SEBI plays an important regulatory role.`
                 },
                 {
                     question: "Which market should beginners understand first?",
-                    answer: `<p>Most beginners benefit from first understanding the Primary Market, Secondary Market, and Equity Market before exploring more advanced segments.</p>`
+                    answer: `Most beginners benefit from first understanding the Primary Market, Secondary Market, and Equity Market before exploring more advanced segments.`
                 },
                 {
                     question: "Can an investor participate in more than one market?",
-                    answer: `<p>Yes. Depending on their knowledge, financial goals, and the services offered by their broker, investors may choose to participate in multiple market segments.</p>`
+                    answer: `Yes. Depending on their knowledge, financial goals, and the services offered by their broker, investors may choose to participate in multiple market segments.`
                 }
             ],
             content: `
@@ -4035,43 +4011,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is the primary difference between the primary market and the secondary market?",
-                    answer: `<p>The primary market is where companies issue new securities to raise capital, while the secondary market is where investors buy and sell existing securities through stock exchanges.</p>`
+                    answer: `The primary market is where companies issue new securities to raise capital, while the secondary market is where investors buy and sell existing securities through stock exchanges.`
                 },
                 {
                     question: "What is an example of the primary market?",
-                    answer: `<p>An Initial Public Offering (IPO) is one of the most common examples of the primary market, where a company offers shares to the public for the first time.</p>`
+                    answer: `An Initial Public Offering (IPO) is one of the most common examples of the primary market, where a company offers shares to the public for the first time.`
                 },
                 {
                     question: "What is an example of the secondary market?",
-                    answer: `<p>Buying or selling listed shares through stock exchanges such as NSE or BSE is an example of activity in the secondary market.</p>`
+                    answer: `Buying or selling listed shares through stock exchanges such as NSE or BSE is an example of activity in the secondary market.`
                 },
                 {
                     question: "Does the company receive money in the secondary market?",
-                    answer: `<p>No. In the secondary market, transactions take place between investors, so the issuing company does not receive funds from these trades.</p>`
+                    answer: `No. In the secondary market, transactions take place between investors, so the issuing company does not receive funds from these trades.`
                 },
                 {
                     question: "Why is the secondary market important?",
-                    answer: `<p>The secondary market provides liquidity, enables price discovery, and allows investors to trade listed securities according to their investment objectives.</p>`
+                    answer: `The secondary market provides liquidity, enables price discovery, and allows investors to trade listed securities according to their investment objectives.`
                 },
                 {
                     question: "Can investors participate in both markets?",
-                    answer: `<p>Yes. Eligible investors can participate in public issues in the primary market and trade listed securities in the secondary market through registered brokers.</p>`
+                    answer: `Yes. Eligible investors can participate in public issues in the primary market and trade listed securities in the secondary market through registered brokers.`
                 },
                 {
                     question: "Which market comes first?",
-                    answer: `<p>The primary market comes first because securities must be issued before they can be listed and traded in the secondary market.</p>`
+                    answer: `The primary market comes first because securities must be issued before they can be listed and traded in the secondary market.`
                 },
                 {
                     question: "What role do stock exchanges play?",
-                    answer: `<p>Stock exchanges facilitate trading in the secondary market by providing an organized platform where buyers and sellers can execute transactions.</p>`
+                    answer: `Stock exchanges facilitate trading in the secondary market by providing an organized platform where buyers and sellers can execute transactions.`
                 },
                 {
                     question: "Who regulates the primary and secondary markets in India?",
-                    answer: `<p>SEBI regulates India’s securities market and oversees various market participants to promote transparency and investor protection.</p>`
+                    answer: `SEBI regulates India’s securities market and oversees various market participants to promote transparency and investor protection.`
                 },
                 {
                     question: "Why should beginners understand both markets?",
-                    answer: `<p>Learning how the primary and secondary markets work helps beginners understand the complete lifecycle of securities, from issuance to everyday trading.</p>`
+                    answer: `Learning how the primary and secondary markets work helps beginners understand the complete lifecycle of securities, from issuance to everyday trading.`
                 }
             ],
             content: `
@@ -4350,43 +4326,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is the difference between NSE and BSE?",
-                    answer: `<p>NSE and BSE are India’s two major stock exchanges. They differ in their history, benchmark indices, listed companies, and certain market characteristics, but both facilitate securities trading under SEBI’s regulatory framework.</p>`
+                    answer: `NSE and BSE are India’s two major stock exchanges. They differ in their history, benchmark indices, listed companies, and certain market characteristics, but both facilitate securities trading under SEBI’s regulatory framework.`
                 },
                 {
                     question: "Which exchange is older?",
-                    answer: `<p>The Bombay Stock Exchange (BSE) is one of Asia’s oldest stock exchanges and has a much longer history than the National Stock Exchange (NSE).</p>`
+                    answer: `The Bombay Stock Exchange (BSE) is one of Asia’s oldest stock exchanges and has a much longer history than the National Stock Exchange (NSE).`
                 },
                 {
                     question: "What are the benchmark indices of NSE and BSE?",
-                    answer: `<p>The benchmark index of NSE is Nifty 50, while the benchmark index of BSE is Sensex.</p>`
+                    answer: `The benchmark index of NSE is Nifty 50, while the benchmark index of BSE is Sensex.`
                 },
                 {
                     question: "Can I trade on both exchanges?",
-                    answer: `<p>Yes. Most registered brokers provide access to both exchanges through a single Trading Account.</p>`
+                    answer: `Yes. Most registered brokers provide access to both exchanges through a single Trading Account.`
                 },
                 {
                     question: "Are the same companies listed on both exchanges?",
-                    answer: `<p>Many companies are listed on both exchanges, although some securities may be listed on only one exchange depending on the company’s listing decisions.</p>`
+                    answer: `Many companies are listed on both exchanges, although some securities may be listed on only one exchange depending on the company’s listing decisions.`
                 },
                 {
                     question: "Who regulates NSE and BSE?",
-                    answer: `<p>Both exchanges operate under the regulatory oversight of the Securities and Exchange Board of India (SEBI).</p>`
+                    answer: `Both exchanges operate under the regulatory oversight of the Securities and Exchange Board of India (SEBI).`
                 },
                 {
                     question: "Which exchange has more listed companies?",
-                    answer: `<p>Both exchanges list thousands of securities, although the number and type of listings may differ over time.</p>`
+                    answer: `Both exchanges list thousands of securities, although the number and type of listings may differ over time.`
                 },
                 {
                     question: "Does the share price differ on NSE and BSE?",
-                    answer: `<p>Minor price differences may occur due to trading activity and market conditions, but prices generally remain closely aligned through market mechanisms.</p>`
+                    answer: `Minor price differences may occur due to trading activity and market conditions, but prices generally remain closely aligned through market mechanisms.`
                 },
                 {
                     question: "Do I need separate Demat Accounts for NSE and BSE?",
-                    answer: `<p>No. A single Demat Account can hold securities purchased through either exchange.</p>`
+                    answer: `No. A single Demat Account can hold securities purchased through either exchange.`
                 },
                 {
                     question: "Should beginners choose NSE or BSE?",
-                    answer: `<p>Beginners should focus on understanding the stock market, investment fundamentals, and risk management rather than selecting one exchange over the other.</p>`
+                    answer: `Beginners should focus on understanding the stock market, investment fundamentals, and risk management rather than selecting one exchange over the other.`
                 }
             ],
             content: `
@@ -4693,43 +4669,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is the main difference between Sensex and Nifty?",
-                    answer: `<p>Sensex is the benchmark index of the Bombay Stock Exchange (BSE) and tracks 30 companies, while Nifty is the benchmark index of the National Stock Exchange (NSE) and tracks 50 companies.</p>`
+                    answer: `Sensex is the benchmark index of the Bombay Stock Exchange (BSE) and tracks 30 companies, while Nifty is the benchmark index of the National Stock Exchange (NSE) and tracks 50 companies.`
                 },
                 {
                     question: "Which index is older?",
-                    answer: `<p>Sensex is older than Nifty and has been widely used as a benchmark for the Indian stock market for many years.</p>`
+                    answer: `Sensex is older than Nifty and has been widely used as a benchmark for the Indian stock market for many years.`
                 },
                 {
                     question: "Why are Sensex and Nifty important?",
-                    answer: `<p>They help investors understand overall market performance and are commonly used as benchmark indicators by analysts and financial institutions.</p>`
+                    answer: `They help investors understand overall market performance and are commonly used as benchmark indicators by analysts and financial institutions.`
                 },
                 {
                     question: "Do both indices include the same companies?",
-                    answer: `<p>Some companies are included in both indices, while others may appear in only one, depending on the eligibility criteria followed by each index.</p>`
+                    answer: `Some companies are included in both indices, while others may appear in only one, depending on the eligibility criteria followed by each index.`
                 },
                 {
                     question: "How often are the indices reviewed?",
-                    answer: `<p>The composition of benchmark indices is reviewed periodically based on the methodology established by the respective index providers.</p>`
+                    answer: `The composition of benchmark indices is reviewed periodically based on the methodology established by the respective index providers.`
                 },
                 {
                     question: "Can beginners use these indices to learn about the market?",
-                    answer: `<p>Yes. Following benchmark indices can help beginners understand market trends, although investment decisions should not rely solely on index movements.</p>`
+                    answer: `Yes. Following benchmark indices can help beginners understand market trends, although investment decisions should not rely solely on index movements.`
                 },
                 {
                     question: "Why do the values of Sensex and Nifty change every day?",
-                    answer: `<p>Their values change because the share prices of the companies included in the indices fluctuate during market hours.</p>`
+                    answer: `Their values change because the share prices of the companies included in the indices fluctuate during market hours.`
                 },
                 {
                     question: "Are Sensex and Nifty regulated by SEBI?",
-                    answer: `<p>SEBI regulates the securities market and stock exchanges, while the benchmark indices are maintained by their respective index providers.</p>`
+                    answer: `SEBI regulates the securities market and stock exchanges, while the benchmark indices are maintained by their respective index providers.`
                 },
                 {
                     question: "Which index is better for tracking the Indian stock market?",
-                    answer: `<p>Both indices are widely used and provide valuable insights into market performance. Many investors follow both rather than choosing only one.</p>`
+                    answer: `Both indices are widely used and provide valuable insights into market performance. Many investors follow both rather than choosing only one.`
                 },
                 {
                     question: "Do international investors follow Sensex and Nifty?",
-                    answer: `<p>Yes. These benchmark indices are widely monitored by domestic and international market participants as indicators of the Indian equity market.</p>`
+                    answer: `Yes. These benchmark indices are widely monitored by domestic and international market participants as indicators of the Indian equity market.`
                 }
             ],
             content: `
@@ -5036,43 +5012,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is a Demat Account?",
-                    answer: `<p>A Demat Account is an account used to hold shares and other eligible securities in electronic form instead of physical certificates.</p>`
+                    answer: `A Demat Account is an account used to hold shares and other eligible securities in electronic form instead of physical certificates.`
                 },
                 {
                     question: "Is a Demat Account mandatory for investing?",
-                    answer: `<p>For most exchange-traded equity investments in India, a Demat Account is generally required to hold securities electronically.</p>`
+                    answer: `For most exchange-traded equity investments in India, a Demat Account is generally required to hold securities electronically.`
                 },
                 {
                     question: "Can I have multiple Demat Accounts?",
-                    answer: `<p>Yes. Investors may open multiple Demat Accounts with different Depository Participants, subject to applicable regulations.</p>`
+                    answer: `Yes. Investors may open multiple Demat Accounts with different Depository Participants, subject to applicable regulations.`
                 },
                 {
                     question: "What is the difference between a Demat Account and a Trading Account?",
-                    answer: `<p>A Demat Account stores securities electronically, while a Trading Account is used to place buy and sell orders.</p>`
+                    answer: `A Demat Account stores securities electronically, while a Trading Account is used to place buy and sell orders.`
                 },
                 {
                     question: "Who maintains Demat Accounts in India?",
-                    answer: `<p>Demat Accounts are maintained through the two authorized depositories—NSDL and CDSL—via registered Depository Participants.</p>`
+                    answer: `Demat Accounts are maintained through the two authorized depositories—NSDL and CDSL—via registered Depository Participants.`
                 },
                 {
                     question: "Can I transfer shares from one Demat Account to another?",
-                    answer: `<p>Yes. Shares can generally be transferred between eligible Demat Accounts by following the prescribed process.</p>`
+                    answer: `Yes. Shares can generally be transferred between eligible Demat Accounts by following the prescribed process.`
                 },
                 {
                     question: "Is there a minimum balance required in a Demat Account?",
-                    answer: `<p>The minimum balance requirements depend on the Depository Participant or broker. Investors should review the applicable terms before opening an account.</p>`
+                    answer: `The minimum balance requirements depend on the Depository Participant or broker. Investors should review the applicable terms before opening an account.`
                 },
                 {
                     question: "What types of securities can be held in a Demat Account?",
-                    answer: `<p>A Demat Account can hold eligible securities such as equity shares, ETFs, bonds, government securities, Sovereign Gold Bonds, and REITs.</p>`
+                    answer: `A Demat Account can hold eligible securities such as equity shares, ETFs, bonds, government securities, Sovereign Gold Bonds, and REITs.`
                 },
                 {
                     question: "Can I open a Demat Account online?",
-                    answer: `<p>Many SEBI-registered brokers offer an online account opening process, subject to KYC and verification requirements.</p>`
+                    answer: `Many SEBI-registered brokers offer an online account opening process, subject to KYC and verification requirements.`
                 },
                 {
                     question: "Is a Demat Account safe?",
-                    answer: `<p>Yes. Securities are held electronically through regulated depositories, reducing the risks associated with physical certificates. Investors should also follow recommended security practices for their accounts.</p>`
+                    answer: `Yes. Securities are held electronically through regulated depositories, reducing the risks associated with physical certificates. Investors should also follow recommended security practices for their accounts.`
                 }
             ],
             content: `
@@ -5415,43 +5391,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is a Trading Account?",
-                    answer: `<p>A Trading Account allows investors to place buy and sell orders for securities through a registered stock broker.</p>`
+                    answer: `A Trading Account allows investors to place buy and sell orders for securities through a registered stock broker.`
                 },
                 {
                     question: "Is a Trading Account different from a Demat Account?",
-                    answer: `<p>Yes. A Trading Account is used to execute trades, while a Demat Account stores purchased securities in electronic form.</p>`
+                    answer: `Yes. A Trading Account is used to execute trades, while a Demat Account stores purchased securities in electronic form.`
                 },
                 {
                     question: "Can I buy shares without a Trading Account?",
-                    answer: `<p>No. Investors need a Trading Account with a registered broker to place orders on the stock exchange.</p>`
+                    answer: `No. Investors need a Trading Account with a registered broker to place orders on the stock exchange.`
                 },
                 {
                     question: "Do I need both a Trading Account and a Demat Account?",
-                    answer: `<p>For most equity investments in India, both accounts are generally required—one for executing trades and the other for holding securities.</p>`
+                    answer: `For most equity investments in India, both accounts are generally required—one for executing trades and the other for holding securities.`
                 },
                 {
                     question: "Can I have more than one Trading Account?",
-                    answer: `<p>Yes. Investors can open Trading Accounts with multiple brokers, subject to applicable regulations and broker policies.</p>`
+                    answer: `Yes. Investors can open Trading Accounts with multiple brokers, subject to applicable regulations and broker policies.`
                 },
                 {
                     question: "What documents are required to open a Trading Account?",
-                    answer: `<p>Typically, you’ll need a PAN Card, identity and address proof, bank account details, a photograph, and contact information for KYC verification.</p>`
+                    answer: `Typically, you’ll need a PAN Card, identity and address proof, bank account details, a photograph, and contact information for KYC verification.`
                 },
                 {
                     question: "What is a market order?",
-                    answer: `<p>A market order is executed at the best available market price at the time it reaches the exchange.</p>`
+                    answer: `A market order is executed at the best available market price at the time it reaches the exchange.`
                 },
                 {
                     question: "What is a limit order?",
-                    answer: `<p>A limit order is executed only if the market reaches the price specified by the investor or a better price.</p>`
+                    answer: `A limit order is executed only if the market reaches the price specified by the investor or a better price.`
                 },
                 {
                     question: "Who regulates stock brokers in India?",
-                    answer: `<p>Stock brokers operate under regulations issued by the Securities and Exchange Board of India (SEBI).</p>`
+                    answer: `Stock brokers operate under regulations issued by the Securities and Exchange Board of India (SEBI).`
                 },
                 {
                     question: "Can I monitor my trades online?",
-                    answer: `<p>Yes. Most brokers provide online platforms and mobile applications where investors can monitor orders, holdings, and transaction history.</p>`
+                    answer: `Yes. Most brokers provide online platforms and mobile applications where investors can monitor orders, holdings, and transaction history.`
                 }
             ],
             content: `
@@ -5813,43 +5789,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What do I need before buying shares in India?",
-                    answer: `<p>You’ll generally need a registered broker, a Trading Account, a Demat Account, completed KYC verification, and sufficient funds in your Trading Account.</p>`
+                    answer: `You’ll generally need a registered broker, a Trading Account, a Demat Account, completed KYC verification, and sufficient funds in your Trading Account.`
                 },
                 {
                     question: "Can I buy shares online?",
-                    answer: `<p>Yes. Registered brokers provide online platforms and mobile applications that allow investors to buy and sell listed securities electronically.</p>`
+                    answer: `Yes. Registered brokers provide online platforms and mobile applications that allow investors to buy and sell listed securities electronically.`
                 },
                 {
                     question: "Why do I need both a Demat Account and a Trading Account?",
-                    answer: `<p>A Trading Account is used to place buy and sell orders, while a Demat Account stores purchased securities in electronic form.</p>`
+                    answer: `A Trading Account is used to place buy and sell orders, while a Demat Account stores purchased securities in electronic form.`
                 },
                 {
                     question: "What is KYC in the stock market?",
-                    answer: `<p>Know Your Customer (KYC) is the identity verification process required before opening investment accounts and participating in securities transactions.</p>`
+                    answer: `Know Your Customer (KYC) is the identity verification process required before opening investment accounts and participating in securities transactions.`
                 },
                 {
                     question: "What is the difference between a Market Order and a Limit Order?",
-                    answer: `<p>A Market Order is generally executed at the best available market price, while a Limit Order is executed only if the market reaches the price specified by the investor.</p>`
+                    answer: `A Market Order is generally executed at the best available market price, while a Limit Order is executed only if the market reaches the price specified by the investor.`
                 },
                 {
                     question: "When do purchased shares appear in my Demat Account?",
-                    answer: `<p>After your order is executed, the shares are credited to your Demat Account according to the applicable settlement cycle.</p>`
+                    answer: `After your order is executed, the shares are credited to your Demat Account according to the applicable settlement cycle.`
                 },
                 {
                     question: "Can beginners invest in shares?",
-                    answer: `<p>Yes. Beginners can invest after understanding the investment process, completing the required account setup, and learning the basics of the stock market.</p>`
+                    answer: `Yes. Beginners can invest after understanding the investment process, completing the required account setup, and learning the basics of the stock market.`
                 },
                 {
                     question: "Is it necessary to research a company before buying shares?",
-                    answer: `<p>Research helps investors understand a company’s business, financial position, and potential risks before making investment decisions.</p>`
+                    answer: `Research helps investors understand a company’s business, financial position, and potential risks before making investment decisions.`
                 },
                 {
                     question: "Can I buy shares through a mobile app?",
-                    answer: `<p>Yes. Many registered brokers offer secure mobile applications that allow investors to manage their investments and place orders online.</p>`
+                    answer: `Yes. Many registered brokers offer secure mobile applications that allow investors to manage their investments and place orders online.`
                 },
                 {
                     question: "What should I learn after understanding how to buy shares?",
-                    answer: `<p>After learning the buying process, it’s helpful to explore topics such as investment risk, market indices, stock market terminology, and different market segments.</p>`
+                    answer: `After learning the buying process, it’s helpful to explore topics such as investment risk, market indices, stock market terminology, and different market segments.`
                 }
             ],
             content: `
@@ -6153,43 +6129,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What are the regular stock market timings in India?",
-                    answer: `<p>For the equity cash segment, regular trading generally takes place from 9:15 AM to 3:30 PM on business days.</p>`
+                    answer: `For the equity cash segment, regular trading generally takes place from 9:15 AM to 3:30 PM on business days.`
                 },
                 {
                     question: "What is the pre-open session?",
-                    answer: `<p>The pre-open session takes place before regular trading begins and supports orderly market opening and price discovery.</p>`
+                    answer: `The pre-open session takes place before regular trading begins and supports orderly market opening and price discovery.`
                 },
                 {
                     question: "Do NSE and BSE follow the same trading hours?",
-                    answer: `<p>Yes. For the equity cash market, both exchanges generally follow the same trading schedule.</p>`
+                    answer: `Yes. For the equity cash market, both exchanges generally follow the same trading schedule.`
                 },
                 {
                     question: "What is Muhurat Trading?",
-                    answer: `<p>Muhurat Trading is a special trading session conducted during Diwali, subject to the official schedule announced by the stock exchanges.</p>`
+                    answer: `Muhurat Trading is a special trading session conducted during Diwali, subject to the official schedule announced by the stock exchanges.`
                 },
                 {
                     question: "Is the stock market open on Saturdays?",
-                    answer: `<p>The equity market is generally closed on Saturdays and Sundays, except for any special sessions announced by the exchanges.</p>`
+                    answer: `The equity market is generally closed on Saturdays and Sundays, except for any special sessions announced by the exchanges.`
                 },
                 {
                     question: "Can I place an order after market hours?",
-                    answer: `<p>Some brokers may allow eligible orders outside regular trading hours. Execution depends on broker facilities and applicable exchange rules.</p>`
+                    answer: `Some brokers may allow eligible orders outside regular trading hours. Execution depends on broker facilities and applicable exchange rules.`
                 },
                 {
                     question: "Why is the closing price important?",
-                    answer: `<p>The closing price is widely used to review daily market performance and analyze historical price trends.</p>`
+                    answer: `The closing price is widely used to review daily market performance and analyze historical price trends.`
                 },
                 {
                     question: "Where can I check the latest trading holidays?",
-                    answer: `<p>The official holiday calendar is published by the stock exchanges each year and should be referred to for the latest updates.</p>`
+                    answer: `The official holiday calendar is published by the stock exchanges each year and should be referred to for the latest updates.`
                 },
                 {
                     question: "Do derivatives and commodity markets follow the same timings?",
-                    answer: `<p>Different market segments may have different trading schedules. Investors should verify the applicable timings for the specific segment they are trading.</p>`
+                    answer: `Different market segments may have different trading schedules. Investors should verify the applicable timings for the specific segment they are trading.`
                 },
                 {
                     question: "What should beginners learn after understanding market timings?",
-                    answer: `<p>After learning trading hours, beginners should understand trading accounts, market terminology, order types, and the overall stock market process.</p>`
+                    answer: `After learning trading hours, beginners should understand trading accounts, market terminology, order types, and the overall stock market process.`
                 }
             ],
             content: `
@@ -6502,43 +6478,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is the meaning of IPO?",
-                    answer: `<p>An Initial Public Offering (IPO) is the process through which a private company offers its shares to the public for the first time and becomes eligible for listing on a stock exchange.</p>`
+                    answer: `An Initial Public Offering (IPO) is the process through which a private company offers its shares to the public for the first time and becomes eligible for listing on a stock exchange.`
                 },
                 {
                     question: "Why do companies launch an IPO?",
-                    answer: `<p>Companies may launch an IPO to raise capital for expansion, business development, debt reduction, or other objectives described in their offer documents.</p>`
+                    answer: `Companies may launch an IPO to raise capital for expansion, business development, debt reduction, or other objectives described in their offer documents.`
                 },
                 {
                     question: "Who regulates IPOs in India?",
-                    answer: `<p>The Securities and Exchange Board of India (SEBI) regulates the IPO process and oversees the securities market.</p>`
+                    answer: `The Securities and Exchange Board of India (SEBI) regulates the IPO process and oversees the securities market.`
                 },
                 {
                     question: "What is the difference between a Fresh Issue and an Offer for Sale?",
-                    answer: `<p>In a Fresh Issue, the company issues new shares and receives the funds. In an Offer for Sale, existing shareholders sell their shares, and they receive the proceeds.</p>`
+                    answer: `In a Fresh Issue, the company issues new shares and receives the funds. In an Offer for Sale, existing shareholders sell their shares, and they receive the proceeds.`
                 },
                 {
                     question: "Can anyone apply for an IPO?",
-                    answer: `<p>Eligible investors who meet the applicable requirements and complete the application process can apply during the subscription period.</p>`
+                    answer: `Eligible investors who meet the applicable requirements and complete the application process can apply during the subscription period.`
                 },
                 {
                     question: "Is a Demat Account required for an IPO?",
-                    answer: `<p>Yes. A Demat Account is generally required to receive allotted shares in electronic form.</p>`
+                    answer: `Yes. A Demat Account is generally required to receive allotted shares in electronic form.`
                 },
                 {
                     question: "When can I sell IPO shares?",
-                    answer: `<p>If shares are allotted, they can generally be sold after they are listed on the stock exchange, subject to applicable market rules.</p>`
+                    answer: `If shares are allotted, they can generally be sold after they are listed on the stock exchange, subject to applicable market rules.`
                 },
                 {
                     question: "What is the IPO issue price?",
-                    answer: `<p>The issue price is the price at which shares are offered to investors during the IPO.</p>`
+                    answer: `The issue price is the price at which shares are offered to investors during the IPO.`
                 },
                 {
                     question: "What happens if I don’t receive an allotment?",
-                    answer: `<p>If shares are not allotted, the application concludes according to the issue’s applicable procedures.</p>`
+                    answer: `If shares are not allotted, the application concludes according to the issue’s applicable procedures.`
                 },
                 {
                     question: "Should beginners invest in every IPO?",
-                    answer: `<p>Every IPO is different. Investors should review the company’s business, financial information, objectives of the issue, and associated risks before making an investment decision.</p>`
+                    answer: `Every IPO is different. Investors should review the company’s business, financial information, objectives of the issue, and associated risks before making an investment decision.`
                 }
             ],
             content: `
@@ -6909,43 +6885,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What is SEBI?",
-                    answer: `<p>SEBI stands for the Securities and Exchange Board of India, the regulatory authority responsible for overseeing India’s securities market.</p>`
+                    answer: `SEBI stands for the Securities and Exchange Board of India, the regulatory authority responsible for overseeing India’s securities market.`
                 },
                 {
                     question: "What is the full form of SEBI?",
-                    answer: `<p>SEBI stands for Securities and Exchange Board of India.</p>`
+                    answer: `SEBI stands for Securities and Exchange Board of India.`
                 },
                 {
                     question: "Why was SEBI established?",
-                    answer: `<p>SEBI was established to regulate the securities market, promote transparency, protect investors, and support the orderly development of the capital market.</p>`
+                    answer: `SEBI was established to regulate the securities market, promote transparency, protect investors, and support the orderly development of the capital market.`
                 },
                 {
                     question: "What are the main functions of SEBI?",
-                    answer: `<p>Its key functions include regulating market participants, promoting investor protection, encouraging fair practices, supporting market development, and monitoring compliance with applicable regulations.</p>`
+                    answer: `Its key functions include regulating market participants, promoting investor protection, encouraging fair practices, supporting market development, and monitoring compliance with applicable regulations.`
                 },
                 {
                     question: "Does SEBI regulate stock exchanges?",
-                    answer: `<p>Yes. SEBI regulates recognized stock exchanges and various market intermediaries operating within the securities market.</p>`
+                    answer: `Yes. SEBI regulates recognized stock exchanges and various market intermediaries operating within the securities market.`
                 },
                 {
                     question: "Does SEBI guarantee investment returns?",
-                    answer: `<p>No. SEBI regulates the market but does not guarantee profits or protect investors from normal market risks.</p>`
+                    answer: `No. SEBI regulates the market but does not guarantee profits or protect investors from normal market risks.`
                 },
                 {
                     question: "How does SEBI protect investors?",
-                    answer: `<p>SEBI promotes transparency, disclosure standards, regulatory compliance, and investor awareness to support a fair and efficient market.</p>`
+                    answer: `SEBI promotes transparency, disclosure standards, regulatory compliance, and investor awareness to support a fair and efficient market.`
                 },
                 {
                     question: "Who comes under SEBI’s regulation?",
-                    answer: `<p>SEBI regulates eligible market participants such as stock exchanges, registered brokers, listed companies, mutual funds, research analysts, and other recognized intermediaries.</p>`
+                    answer: `SEBI regulates eligible market participants such as stock exchanges, registered brokers, listed companies, mutual funds, research analysts, and other recognized intermediaries.`
                 },
                 {
                     question: "Is SEBI important for beginners?",
-                    answer: `<p>Yes. Understanding SEBI helps beginners learn how the securities market is regulated and why transparency and compliance are important.</p>`
+                    answer: `Yes. Understanding SEBI helps beginners learn how the securities market is regulated and why transparency and compliance are important.`
                 },
                 {
                     question: "What should I learn after understanding SEBI?",
-                    answer: `<p>After learning about SEBI, it’s helpful to explore IPOs, stock exchanges, trading accounts, market terminology, and the overall functioning of the Indian stock market.</p>`
+                    answer: `After learning about SEBI, it’s helpful to explore IPOs, stock exchanges, trading accounts, market terminology, and the overall functioning of the Indian stock market.`
                 }
             ],
             content: `
@@ -7231,43 +7207,43 @@ export class BlogService {
             faqs: [
                 {
                     question: "What are stock market terms?",
-                    answer: `<p>Stock market terms are words and phrases commonly used to describe investing concepts, financial instruments, market activities, and trading processes.</p>`
+                    answer: `Stock market terms are words and phrases commonly used to describe investing concepts, financial instruments, market activities, and trading processes.`
                 },
                 {
                     question: "Why should beginners learn stock market terminology?",
-                    answer: `<p>Understanding basic investing terms makes it easier to read financial news, understand market updates, and build confidence before investing.</p>`
+                    answer: `Understanding basic investing terms makes it easier to read financial news, understand market updates, and build confidence before investing.`
                 },
                 {
                     question: "What is the difference between a share and equity?",
-                    answer: `<p>A share represents a unit of ownership in a company, while equity refers to the ownership interest represented by those shares.</p>`
+                    answer: `A share represents a unit of ownership in a company, while equity refers to the ownership interest represented by those shares.`
                 },
                 {
                     question: "What is market capitalization?",
-                    answer: `<p>Market capitalization is the total market value of a company’s outstanding shares and is commonly used to classify companies by size.</p>`
+                    answer: `Market capitalization is the total market value of a company’s outstanding shares and is commonly used to classify companies by size.`
                 },
                 {
                     question: "What is a portfolio?",
-                    answer: `<p>A portfolio is the collection of investments owned by an individual or institution, which may include shares, bonds, mutual funds, and other financial assets.</p>`
+                    answer: `A portfolio is the collection of investments owned by an individual or institution, which may include shares, bonds, mutual funds, and other financial assets.`
                 },
                 {
                     question: "What is liquidity in the stock market?",
-                    answer: `<p>Liquidity refers to how easily a security can be bought or sold without significantly affecting its market price.</p>`
+                    answer: `Liquidity refers to how easily a security can be bought or sold without significantly affecting its market price.`
                 },
                 {
                     question: "What does volatility mean?",
-                    answer: `<p>Volatility measures the degree of price fluctuation of a security or market over a period of time.</p>`
+                    answer: `Volatility measures the degree of price fluctuation of a security or market over a period of time.`
                 },
                 {
                     question: "What is the difference between Sensex and Nifty?",
-                    answer: `<p>Sensex is the benchmark index of the Bombay Stock Exchange (BSE), while Nifty is the benchmark index of the National Stock Exchange (NSE).</p>`
+                    answer: `Sensex is the benchmark index of the Bombay Stock Exchange (BSE), while Nifty is the benchmark index of the National Stock Exchange (NSE).`
                 },
                 {
                     question: "Why is diversification important?",
-                    answer: `<p>Diversification helps spread investments across different assets or sectors, which can reduce the impact of poor performance from a single investment.</p>`
+                    answer: `Diversification helps spread investments across different assets or sectors, which can reduce the impact of poor performance from a single investment.`
                 },
                 {
                     question: "Which stock market terms should beginners learn first?",
-                    answer: `<p>Beginners should start with terms such as shares, equity, stock exchange, broker, Demat Account, Trading Account, IPO, portfolio, Sensex, and Nifty.</p>`
+                    answer: `Beginners should start with terms such as shares, equity, stock exchange, broker, Demat Account, Trading Account, IPO, portfolio, Sensex, and Nifty.`
                 }
             ],
             content: `

@@ -68,6 +68,7 @@
                 <div class="card-field"><small>Valid until</small><span>{{ item.enddate ? (item.enddate | date:'mediumDate') : 'No expiry' }}</span></div>
                 <div class="card-actions">
                   <span class="status" [class.expired]="!isBucketActive(item)">{{ isBucketActive(item) ? 'Active' : 'Expired' }}</span>
+                  <a [routerLink]="['/research/products', item.id]" class="view-product-btn" [attr.aria-label]="'View ' + item.name + ' product details'">View Product</a>
                   @if (isBucketActive(item)) {
                     <a routerLink="/mobile" class="bucket-cta" [attr.aria-label]="'Open ' + item.name + ' in the Research Mantra app'">
                       <span>View on app</span>
@@ -98,16 +99,18 @@
         }
         @else {
           <div class="orders" aria-label="Purchase orders">
-            @for (order of purchases(); track order.id) {
+            @for (order of purchases(); track order.transactionId) {
               <article class="record-card order-card">
                 <span class="card-ico" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false"><path d="M6 2h9l4 4v16l-2.5-1.5L14 22l-2.5-1.5L9 22l-2.5-1.5L4 22V4a2 2 0 0 1 2-2Zm2 7h8M8 13h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
                 </span>
-                <div class="card-main"><small>Product</small><strong>{{ order.productName || 'Research subscription' }}</strong></div>
+                <div class="card-main">
+                  <small>{{ order.productCount === 1 ? 'Product' : order.productCount + ' Products' }}</small>
+                  <strong>{{ order.productNames.length ? order.productNames.join(', ') : 'Research subscription' }}</strong>
+                </div>
                 <div class="card-field"><small>Payment date</small><span>{{ order.paymentDate | date:'mediumDate' }}</span></div>
-                <div class="card-field"><small>Valid until</small><span>{{ order.endDate ? (order.endDate | date:'mediumDate') : '—' }}</span></div>
                 <div class="card-field amount"><small>Amount</small><strong>₹{{ order.paidAmount || 0 | number:'1.0-2' }}</strong></div>
-                <button type="button" class="ghost-btn" (click)="viewReceipt(order.id)">View receipt</button>
+                <button type="button" class="ghost-btn" (click)="viewReceipt(order.transactionId)">View receipt</button>
               </article>
             }
           </div>
@@ -116,22 +119,44 @@
       }
     }
 
-    @if (activeView() === 'purchases' && receipt(); as item) {
-      <section class="receipt" aria-label="Purchase receipt">
-        <div class="receipt-head">
-          <div><small>Research Mantra</small><h2>Payment receipt</h2></div>
-          <button type="button" class="receipt-close" (click)="receipt.set(null)" aria-label="Close receipt">×</button>
-        </div>
-        <dl>
-          <div><dt>Receipt number</dt><dd>RM-{{ item.id }}</dd></div>
-          <div><dt>Customer</dt><dd>{{ item.customerName || 'Investor' }}</dd></div>
-          <div><dt>Product</dt><dd>{{ item.productName }}</dd></div>
-          <div><dt>Payment date</dt><dd>{{ item.paymentDate | date:'medium' }}</dd></div>
-          <div><dt>Transaction</dt><dd>{{ item.transactionId || item.transactionReference || '—' }}</dd></div>
-          <div class="amount-row"><dt>Amount paid</dt><dd>₹{{ item.paidAmount || 0 | number:'1.0-2' }}</dd></div>
-        </dl>
-        <button class="print" type="button" (click)="printReceipt()">Print / save receipt</button>
-      </section>
+    @if (receipt(); as item) {
+      <div
+        class="receipt-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Purchase receipt"
+        (click)="receipt.set(null)"
+        (keydown.escape)="receipt.set(null)"
+      >
+        <section class="receipt" (click)="$event.stopPropagation()">
+          <div class="receipt-head">
+            <div><small>Research Mantra</small><h2>Payment receipt</h2></div>
+            <button type="button" class="receipt-close" (click)="receipt.set(null)" aria-label="Close receipt">×</button>
+          </div>
+          <dl>
+            <div><dt>Receipt number</dt><dd>RM-{{ item.transactionId }}</dd></div>
+            <div><dt>Customer</dt><dd>{{ item.customerName || 'Investor' }}</dd></div>
+            <div><dt>Payment date</dt><dd>{{ item.paymentDate | date:'medium' }}</dd></div>
+            <div><dt>Transaction</dt><dd>{{ item.transactionId }}</dd></div>
+          </dl>
+
+          <div class="receipt-items">
+            <div class="receipt-items-head">
+              <span>Product{{ item.items.length === 1 ? '' : 's' }} ({{ item.items.length }})</span>
+              <span>Valid until</span>
+            </div>
+            @for (line of item.items; track line.id) {
+              <div class="receipt-item-row">
+                <span>{{ line.productName || 'Research subscription' }}</span>
+                <span>{{ line.endDate ? (line.endDate | date:'mediumDate') : '—' }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="amount-row standalone"><span>Amount paid</span><strong>₹{{ item.paidAmount || 0 | number:'1.0-2' }}</strong></div>
+          <button class="print" type="button" (click)="printReceipt()">Print / save receipt</button>
+        </section>
+      </div>
     }
 
     @if (showRenew() && renewItem(); as item) {

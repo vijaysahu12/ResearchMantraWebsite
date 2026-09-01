@@ -222,6 +222,17 @@
     border-radius: 8px;
 }
 
+/* Profile icon + account popover */
+.profile-dropdown { position: relative; display: flex; align-items: center; }
+.profile-btn { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); cursor: pointer; padding: 0; transition: background .2s, border-color .2s; }
+.profile-btn:hover { background: rgba(255,255,255,.22); }
+.profile-btn:focus-visible { outline: 2px solid #FACC15; outline-offset: 2px; }
+.profile-avatar { color: #fff; font-size: 14px; font-weight: 850; }
+.profile-menu { position: absolute; top: calc(100% + 10px); right: 0; min-width: 200px; padding: 14px 16px; background: #fff; border: 1px solid #F1F5F9; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05); display: none; z-index: 1001; }
+.profile-dropdown.open .profile-menu { display: block; animation: fadeIn .2s ease-out; }
+.profile-name { margin: 0 0 2px; color: var(--text-primary); font-size: 14.5px; font-weight: 800; }
+.profile-phone { margin: 0; color: var(--text-muted); font-size: 13px; }
+
 /* Dropdown Styling */
 .dropdown {
     position: relative;

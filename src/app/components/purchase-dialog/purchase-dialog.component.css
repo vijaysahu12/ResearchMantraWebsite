@@ -52,6 +52,13 @@
 .plan-price strong { font-size: 19px; color: #0f2b47; }
 .plan-price s { color: #93a3b3; font-size: 12.5px; }
 
+/* Contact details */
+.contact-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.contact-field label { display: block; margin-bottom: 6px; font-size: 12.5px; font-weight: 750; color: #37506b; }
+.contact-field input { width: 100%; height: 48px; padding: 0 14px; border: 1px solid #cbd7e5; border-radius: 12px; font: inherit; color: #16304c; background: #fff; transition: border-color .2s, box-shadow .2s; }
+.contact-field input:focus { outline: 0; border-color: #0d6cca; box-shadow: 0 0 0 4px rgba(13,108,202,.12); }
+.contact-field.field-error input { border-color: #c62e36; }
+
 /* Coupon */
 .coupon-row { display: flex; gap: 10px; margin-top: 20px; }
 .coupon-field { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0 14px; height: 48px; border: 1px solid #cbd7e5; border-radius: 12px; background: #fff; transition: border-color .2s, box-shadow .2s; }
@@ -116,6 +123,7 @@
 @media (max-width: 560px) {
   .pm-head { padding: 22px 20px 18px; }
   .pm-body { padding: 18px 18px 22px; }
+  .contact-fields { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -13,6 +13,11 @@ interface SeoMetaConfig {
     canonicalUrl?: string;
 }
 
+interface FaqSchemaItem {
+    question: string;
+    answer: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -82,5 +87,37 @@ export class SeoService {
         } else {
             this.metaService.updateTag({ property: 'og:type', content: 'website' });
         }
+    }
+
+    /**
+     * Injects (or clears) FAQPage JSON-LD structured data for the current page,
+     * so search engines and AI answer engines can surface individual Q&As directly.
+     */
+    setFaqSchema(faqs: FaqSchemaItem[] | undefined | null) {
+        const existing = this.document.getElementById('faq-schema');
+        existing?.remove();
+
+        if (!faqs || faqs.length === 0) {
+            return;
+        }
+
+        const schema = {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqs.map(faq => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: faq.answer
+                }
+            }))
+        };
+
+        const script = this.document.createElement('script');
+        script.id = 'faq-schema';
+        script.type = 'application/ld+json';
+        script.text = JSON.stringify(schema);
+        this.document.head.appendChild(script);
     }
 }

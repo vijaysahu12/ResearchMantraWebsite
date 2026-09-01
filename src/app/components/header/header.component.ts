@@ -18,11 +18,13 @@ export class HeaderComponent {
     isMenuOpen = signal(false);
     isBlogsOpen = signal(false);
     isComplianceOpen = signal(false);
+    isProfileOpen = signal(false);
     private elementRef = inject(ElementRef);
     private readonly a11yService = inject(AccessibilityService);
     private readonly router = inject(Router);
     private readonly auth = inject(ResearchAuthService);
     readonly isAuthenticated = this.auth.isAuthenticated;
+    readonly session = this.auth.session;
 
     openAccessibilityPanel(): void {
         this.a11yService.openPanel();
@@ -57,6 +59,18 @@ export class HeaderComponent {
         this.isMenuOpen.set(false);
         this.isBlogsOpen.set(false);
         this.isComplianceOpen.set(false);
+        this.isProfileOpen.set(false);
+    }
+
+    toggleProfile(event: Event) {
+        event.stopPropagation();
+        this.isProfileOpen.update(open => !open);
+        this.isBlogsOpen.set(false);
+        this.isComplianceOpen.set(false);
+    }
+
+    monogram(name: string | undefined): string {
+        return (name || '?').trim().slice(0, 1).toUpperCase();
     }
 
     toggleMenu() {

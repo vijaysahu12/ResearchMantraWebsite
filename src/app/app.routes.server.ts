@@ -38,6 +38,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'research/basket/:id',
+    renderMode: RenderMode.Client
+  },
+  {
     path: 'share/research',
     renderMode: RenderMode.Client
   },
@@ -64,6 +68,10 @@ export const serverRoutes: ServerRoute[] = [
   {
     path: 'admin/blog-details/:slug',
     renderMode: RenderMode.Server
+  },
+  {
+    path: '',
+    renderMode: RenderMode.Prerender
   },
   {
     path: '**',

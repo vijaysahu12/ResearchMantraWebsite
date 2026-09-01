@@ -4,6 +4,8 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApiEnvelope,
+  GroupedPurchaseOrder,
+  GroupedReceipt,
   MyBucketItem,
   PaymentLinkResult,
   PaymentRequestResult,
@@ -57,24 +59,30 @@ export class ResearchSubscriptionService {
 
   /** AddPaymentRequestV2 — returns a payment link URL to open in a new tab. */
   addPaymentRequest(input: {
-    productId: number;
+    productIds: number[];
     amount: number;
     couponCode: string;
     subscriptionDurationId: number;
     merchantTransactionId: string;
+    customerName: string;
+    customerEmail: string;
   }): Observable<PaymentLinkResult> {
     const session = this.requireSession();
     return this.http
       .post<ApiEnvelope<PaymentLinkResult>>(
         `${environment.gatewayUrl}Payment/AddPaymentRequest`,
         {
-          productIds: [input.productId],
+          productIds: input.productIds,
           merchantTransactionID: input.merchantTransactionId,
           amount: input.amount,
           couponCode: input.couponCode || '',
           subcriptionModelId: input.subscriptionDurationId,
           subscriptionMappingId: 0,
           mobileUserKey: session.publicKey,
+          // Not yet read by the backend's AddPaymentRequest model — sent ahead
+          // so the API can start persisting these once fields are added there.
+          customerName: input.customerName,
+          customerEmail: input.customerEmail,
         },
         { headers: this.authHeaders(session.accessToken) },
       )
@@ -150,6 +158,27 @@ export class ResearchSubscriptionService {
     }).pipe(map((response) => this.unwrap(response)));
   }
 
+  /**
+   * One row per checkout transaction rather than per product — a multi-product "buy all" order
+   * writes one purchase-order row per product, each carrying the full order total. This groups
+   * them back into one order so the amount shown isn't repeated N times.
+   */
+  getGroupedPurchaseHistory(): Observable<GroupedPurchaseOrder[]> {
+    const session = this.requireSession();
+    return this.http.get<ApiEnvelope<GroupedPurchaseOrder[]>>(`${environment.gatewayUrl}payment/grouped-history`, {
+      headers: this.authHeaders(session.accessToken),
+    }).pipe(map((response) => this.unwrap(response)));
+  }
+
+  getGroupedReceipt(transactionId: string): Observable<GroupedReceipt> {
+    const session = this.requireSession();
+    return this.http
+      .get<ApiEnvelope<GroupedReceipt>>(`${environment.gatewayUrl}payment/grouped-receipt/${encodeURIComponent(transactionId)}`, {
+        headers: this.authHeaders(session.accessToken),
+      })
+      .pipe(map((response) => this.unwrap(response)));
+  }
+
   getMyBucket(): Observable<MyBucketItem[]> {
     const session = this.requireSession();
     return this.http.get<ApiEnvelope<MyBucketItem[]>>(`${environment.gatewayUrl}product/my-bucket-content`, {
@@ -165,6 +194,15 @@ export class ResearchSubscriptionService {
     return this.http.get<ApiEnvelope<PurchaseHistoryItem>>(`${environment.gatewayUrl}payment/receipt/${id}`, {
       headers: this.authHeaders(session.accessToken),
     }).pipe(map((response) => this.unwrap(response)));
+  }
+
+  newMerchantTransactionId(): string {
+    const now = new Date();
+    const pad = (value: number, length = 2) => value.toString().padStart(length, '0');
+    const stamp =
+      `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
+      `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}${pad(now.getMilliseconds(), 3)}`;
+    return `RMWEB-${stamp}`;
   }
 
   private requireSession() {
