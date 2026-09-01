@@ -24,7 +24,7 @@ import { BlogService } from '../../services/blog.service';
             <div class="carousel-track" [style.transform]="'translateX(-' + (currentIndex() * (100 / visibleCount())) + '%)'">
                 @for (blog of blogs(); track blog.id) {
                 <div class="blog-card-wrapper" [style.flex]="'0 0 ' + (100 / visibleCount()) + '%'">
-                    <div class="blog-card" [routerLink]="['/', blog.slug]">
+                    <a class="blog-card" [routerLink]="['/', blog.slug]">
                         <div class="card-image">
                             <img [src]="blog.image" [alt]="blog.title" loading="lazy">
                         </div>
@@ -36,7 +36,7 @@ import { BlogService } from '../../services/blog.service';
                                 <span class="date">{{ blog.date }}</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 }
             </div>

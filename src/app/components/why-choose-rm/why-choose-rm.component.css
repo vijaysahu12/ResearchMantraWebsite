@@ -3,18 +3,54 @@
     --text-primary: #111827;
     --text-muted: #64748B;
     --brand-yellow: #FACC15;
+    --brand-amber: #f8b018;
     --bg-white: #FFFFFF;
-    --card-border: #F1F5F9;
+    --card-border: #E5E7EB;
 }
 
 .why-choose-section {
-    background-color: var(--bg-white);
+    position: relative;
+    /* Warm background so it contrasts with the cool mint/teal section above */
+    background:
+        radial-gradient(70% 55% at 50% 0%, #fff4d6 0%, transparent 55%),
+        linear-gradient(180deg, #fffaf0 0%, #ffffff 55%);
+    border-top: 1px solid #f3e7c6;
     padding: 100px 0;
     color: var(--text-primary);
     font-family: 'Inter', system-ui, sans-serif;
+    overflow: clip;
+}
+
+/* Soft decorative glow blobs */
+.why-choose-section::before,
+.why-choose-section::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.why-choose-section::before {
+    width: 380px;
+    height: 380px;
+    top: -80px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(250, 204, 21, 0.28) 0%, transparent 70%);
+}
+
+.why-choose-section::after {
+    width: 420px;
+    height: 420px;
+    bottom: -140px;
+    right: -120px;
+    background: radial-gradient(circle, rgba(248, 176, 24, 0.22) 0%, transparent 70%);
 }
 
 .why-container {
+    position: relative;
+    z-index: 1;
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 40px;
@@ -67,32 +103,61 @@
 }
 
 .feature-card {
+    position: relative;
     background: #FFFFFF;
     border: 1px solid var(--card-border);
     padding: 32px;
     border-radius: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
+    overflow: hidden;
+}
+
+/* Amber accent bar that sweeps in along the top on hover */
+.feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand-yellow), var(--brand-amber));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
 }
 
 .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px);
+    border-color: var(--brand-amber);
+    box-shadow: 0 20px 38px -18px rgba(248, 176, 24, 0.45);
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
 }
 
 .icon-box {
-    width: 52px;
-    height: 52px;
-    background-color: #f8b018;
-    color: #000000;
-    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--brand-yellow) 0%, var(--brand-amber) 100%);
+    color: #1a1a1a;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 24px;
+    box-shadow: 0 8px 16px -6px rgba(248, 176, 24, 0.6);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover .icon-box {
+    transform: translateY(-2px) rotate(-4deg) scale(1.05);
+    box-shadow: 0 12px 22px -6px rgba(248, 176, 24, 0.7);
 }
 
 .feature-title {
@@ -100,6 +165,11 @@
     font-weight: 700;
     margin: 0 0 12px 0;
     color: var(--text-primary);
+    transition: color 0.2s ease;
+}
+
+.feature-card:hover .feature-title {
+    color: #92610a;
 }
 
 .feature-description {

@@ -75,7 +75,8 @@ export class AdminBlogDetails implements OnInit {
                         metaTitle: apiData.metaTitle || apiData.title || '',
                         metaDescription: apiData.metaDescription || apiData.excerpt || '',
                         keywords: apiData.keywords || apiData.category || '',
-                        enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true'
+                        enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true',
+                        publishedOn: apiData.publishedOn ?? null
                     };
 
                     this.blog.set(mappedBlog);
@@ -101,13 +102,15 @@ export class AdminBlogDetails implements OnInit {
     private updateSeoTags(blog: BlogPost) {
         const pageTitle = blog.metaTitle || blog.title;
         const description = blog.metaDescription || blog.excerpt;
+        const canonicalUrl = `https://researchmantra.in/${blog.slug}`;
 
         this.seoService.setMetaTags({
             title: pageTitle,
             description: description,
             keywords: blog.keywords,
             image: blog.image,
-            type: 'article'
+            type: 'article',
+            canonicalUrl
         });
     }
 }

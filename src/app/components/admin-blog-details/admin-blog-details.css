@@ -55,8 +55,43 @@
             font-size: clamp(32px, 5vw, 48px);
             font-weight: 800;
             line-height: 1.2;
-            margin-bottom: 0;
+            margin-bottom: 16px;
             letter-spacing: -0.02em;
+        }
+
+        .hero-tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .tagline-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.90);
+            letter-spacing: 0.01em;
+        }
+
+        .tagline-sebi {
+            color: #fde68a;
+            font-weight: 600;
+        }
+
+        .tagline-dot {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        @media (max-width: 600px) {
+            .hero-tagline { gap: 7px; }
+            .tagline-item { font-size: 12px; }
         }
 
         .content-layout {
@@ -81,6 +116,24 @@
             margin-bottom: 40px;
             line-height: 1.3;
             display: none; /* Hidden because content now has its own h1 */
+        }
+
+        .publish-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: #0369a1;
+            margin-bottom: 32px;
+        }
+
+        .publish-meta time {
+            font-weight: 600;
         }
 
         .content-wrapper {
@@ -135,7 +188,9 @@
 /* Ensure images from Quill/Database never exceed card width */
 .content-wrapper ::ng-deep img {
     max-width: 100% !important;
+    width: auto !important;
     height: auto !important;
+    max-height: 7rem !important;
     border-radius: 12px;
     margin: 20px 0;
 }

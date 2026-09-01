@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { EnquiryStateService } from '../../services/enquiry-state.service';
+import { environment } from '../../../environments/environment';
 
 interface WebsiteLead {
   Id: number;
@@ -21,6 +22,7 @@ interface WebsiteLead {
   LeadTypeKey: string;
   LeadSourceKey: string;
   Remarks: string;
+  InvestmentCapital: string;
   IsDisabled: number | null;
   IsDelete: number | null;
   CreatedOn: string | null;
@@ -42,7 +44,7 @@ interface WebsiteLead {
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <!-- Floating Button -->
-    <button class="floating-btn" (click)="toggleEnquiry()" aria-label="Enquire Now">
+    <button class="floating-btn" (click)="toggleEnquiry()" aria-label="Request a Free Demo">
       <span class="btn-text">Request a Free Demo</span>
       <span class="btn-icon">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
@@ -69,7 +71,7 @@ interface WebsiteLead {
         <form [formGroup]="enquiryForm" (ngSubmit)="onSubmit()" class="panel-body">
           <div class="form-group">
             <label for="name">Full Name*</label>
-            <input type="text" id="name" formControlName="name" placeholder="Enter your name"
+            <input type="text" id="name" formControlName="name" maxlength="50" placeholder="Enter your name"
                    (input)="onNameInput($event)" [class.error]="isFieldInvalid('name')">
           </div>
 
@@ -86,8 +88,13 @@ interface WebsiteLead {
           </div>
 
           <div class="form-group">
-            <label for="message">Your Message</label>
-            <textarea id="message" formControlName="message" rows="4" placeholder="How can we help you?"></textarea>
+            <label for="inv-capital">Investment Capital <span style="font-weight:400;color:#9ca3af;">(Optional)</span></label>
+            <input type="text" id="inv-capital" formControlName="investmentCapital" placeholder="e.g. ₹1L, ₹5L, ₹10L+">
+          </div>
+
+          <div class="form-group">
+            <label for="enquiry-message">Your Message</label>
+            <textarea id="enquiry-message" formControlName="message" rows="4" maxlength="300" placeholder="How can we help you?"></textarea>
           </div>
 
           <div class="terms-wrapper">
@@ -133,12 +140,26 @@ interface WebsiteLead {
       align-items: center;
       gap: 12px;
       box-shadow: -2px 0 15px rgba(0,0,0,0.2);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+      animation: demoZoom 1.8s ease-in-out infinite;
+    }
+
+    /* Zoom in / zoom out pulse (keeps the -90deg rotation) */
+    @keyframes demoZoom {
+      0%, 100% {
+        transform: translateY(-50%) rotate(-90deg) scale(1);
+        box-shadow: -2px 0 15px rgba(0,0,0,0.2), 0 0 0 rgba(250,204,21,0);
+      }
+      50% {
+        transform: translateY(-50%) rotate(-90deg) scale(1.1);
+        box-shadow: -2px 0 22px rgba(0,0,0,0.3), 0 0 20px rgba(250,204,21,0.55);
+      }
     }
 
     .floating-btn:hover {
       right: -55px;
       background: #000;
+      animation-play-state: paused;
     }
 
     .btn-icon {
@@ -365,6 +386,17 @@ interface WebsiteLead {
       to { transform: translateX(0); }
     }
 
+    @keyframes demoZoomMobile {
+      0%, 100% { transform: rotate(0deg) scale(1); box-shadow: -2px 0 15px rgba(0,0,0,0.3), 0 0 0 rgba(250,204,21,0); }
+      50% { transform: rotate(0deg) scale(1.1); box-shadow: -2px 0 20px rgba(0,0,0,0.35), 0 0 16px rgba(250,204,21,0.5); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .floating-btn {
+        animation: none;
+      }
+    }
+
     @media (max-width: 768px) {
       .floating-btn {
         right: 0;
@@ -375,6 +407,7 @@ interface WebsiteLead {
         flex-direction: column;
         gap: 0;
         box-shadow: -2px 0 15px rgba(0,0,0,0.3);
+        animation: demoZoomMobile 1.8s ease-in-out infinite;
       }
 
       .floating-btn:hover {
@@ -418,10 +451,11 @@ export class EnquiryFormComponent {
   successMessage = signal('');
 
   enquiryForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
+    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
     mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
     email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-    message: [''],
+    message: ['', [Validators.maxLength(300)]],
+    investmentCapital: [''],
     acceptTerms: [false, Validators.requiredTrue]
   });
 
@@ -488,6 +522,7 @@ export class EnquiryFormComponent {
         LeadTypeKey: '',
         LeadSourceKey: 'Website Enquiry',
         Remarks: formValue.message,
+        InvestmentCapital: formValue.investmentCapital?.trim() || '',
         IsDisabled: 0,
         IsDelete: 0,
         CreatedOn: now,
@@ -503,7 +538,7 @@ export class EnquiryFormComponent {
         PurchaseOrderKey: null
       };
 
-      this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
+      this.http.post(`${environment.apiurl}Leads/WebsiteLeads`, payload)
         .pipe(
           finalize(() => this.isSubmitting.set(false))
         )

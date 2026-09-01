@@ -5,7 +5,6 @@ import { PricingPlansComponent } from './components/pricing-plans/pricing-plans.
 import { AboutSushmitaComponent } from './components/about-sushmita/about-sushmita.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { TestimonialsComponent } from './components/testimonials/testimonials.component';
-import { ContactComponent } from './components/contact/contact.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { RefundPolicyComponent } from './components/refund-policy/refund-policy.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -16,6 +15,7 @@ import { ComplianceAuditComponent } from './components/compliance-audit/complian
 import { ComplaintDataComponent } from './components/complaint-data/complaint-data.component';
 import { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
 import { BlogsComponent } from './components/blogs/blogs.component';
+import { ContactComponent } from './components/contact/contact.component';
 import { BlogDetailsComponent } from './components/blog-details/blog-details.component';
 import { AdminBlogs } from './components/admin-blogs/admin-blogs';
 import { RenderMode, ServerRoute } from '@angular/ssr';
@@ -31,6 +31,7 @@ export const routes: Routes = [
     { path: 'testimonials', component: TestimonialsComponent },
     { path: 'faq', component: FaqComponent },
     { path: 'contact', component: ContactComponent },
+    { path: 'mobile', loadComponent: () => import('./components/mobile-app/mobile-app.component').then(m => m.MobileAppComponent) },
     { path: 'complaint-data', component: ComplaintDataComponent },
     { path: 'compliance-audit', component: ComplianceAuditComponent },
     { path: 'grievance-redressal', component: GrievanceRedressalComponent },
@@ -84,6 +85,22 @@ export const routes: Routes = [
         ),
     },
     {
+      path: 'research/products',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-products/research-products.component').then(
+          (component) => component.ResearchProductsComponent,
+        ),
+    },
+    {
+      // Public: anyone can view a product's details; login is only required at "Buy".
+      path: 'research/products/:id',
+      loadComponent: () =>
+        import('./components/research-product-detail/research-product-detail.component').then(
+          (component) => component.ResearchProductDetailComponent,
+        ),
+    },
+    {
       path: 'research/test-payment',
       canActivate: [researchAuthGuard],
       loadComponent: () =>
@@ -99,6 +116,22 @@ export const routes: Routes = [
       loadComponent: () =>
         import('./components/research-purchases/research-purchases.component').then(
           (component) => component.ResearchPurchasesComponent,
+        ),
+    },
+    {
+      path: 'research/cart',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-cart/research-cart.component').then(
+          (component) => component.ResearchCartComponent,
+        ),
+    },
+    {
+      path: 'research/basket/:id',
+      canActivate: [researchAuthGuard],
+      loadComponent: () =>
+        import('./components/research-basket-overview/research-basket-overview.component').then(
+          (component) => component.ResearchBasketOverviewComponent,
         ),
     },
     {

@@ -1,0 +1,204 @@
+<main class="basket-page">
+  <div class="bp-bg" aria-hidden="true">
+    <span class="bp-grid"></span>
+    <span class="bp-blob bp-blob--one"></span>
+    <span class="bp-blob bp-blob--two"></span>
+    <span class="bp-watermark bp-watermark--left">%</span>
+    <svg class="bp-watermark-icon bp-watermark-icon--right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 17 9 11 13 15 21 5"></polyline>
+      <polyline points="15 5 21 5 21 11"></polyline>
+    </svg>
+  </div>
+
+  @if (loading()) {
+    <section class="state-card" aria-live="polite"><div class="loader"></div><p>Loading your offer…</p></section>
+  } @else if (errorMessage()) {
+    <section class="state-card" role="alert">
+      <h2>We couldn't load this basket</h2>
+      <p>{{ errorMessage() }}</p>
+      <button type="button" class="pay-button" (click)="load()">Retry</button>
+    </section>
+  } @else if (basket(); as b) {
+    @if (payStatus() !== 'idle') {
+      <div class="payment-overlay" role="presentation">
+        <div class="payment-modal" role="dialog" aria-modal="true" aria-live="polite">
+          @if (payStatus() === 'pending') {
+            <div class="payment-status">
+              <span class="status-spinner" aria-hidden="true"></span>
+              <h2>Waiting for your payment…</h2>
+              <p>Complete the payment in the secure window that just opened. We'll unlock every product in this basket automatically the moment it's done.</p>
+              @if (paymentRequestId()) {
+                <button type="button" class="pay-button" (click)="checkStatusNow()" [disabled]="statusChecking()">
+                  {{ statusChecking() ? 'Checking…' : "I've completed payment" }}
+                </button>
+              }
+              <button type="button" class="ghost-btn" (click)="cancelPending()">Cancel and go back</button>
+            </div>
+          } @else if (payStatus() === 'success') {
+            <div class="payment-status success-status">
+              <div class="confetti-layer burst" aria-hidden="true">
+                @for (p of confettiPieces; track $index) {
+                  <span
+                    class="confetti-piece"
+                    [style.left.%]="p.left"
+                    [style.background]="p.color"
+                    [style.animation-duration.ms]="p.duration"
+                    [style.animation-delay.ms]="p.delay"
+                    [style.--x-end]="p.xEnd"
+                    [style.--rot]="p.rot"
+                  ></span>
+                }
+              </div>
+              <span class="status-tick" aria-hidden="true">
+                <svg viewBox="0 0 52 52"><circle class="st-ring" cx="26" cy="26" r="24" fill="none"/><path class="st-check" fill="none" d="M14 27l8 8 16-17"/></svg>
+              </span>
+              <h2>🎉 Hurray! Your basket is confirmed</h2>
+              <p>
+                All {{ b.items.length }} product{{ b.items.length === 1 ? '' : 's' }} in <strong>{{ displayName(b.name) }}</strong> are unlocked and
+                added to your account. One invoice for ₹{{ b.finalAmount | number: '1.0-0' }} has been added to your purchase history.
+              </p>
+              <button type="button" class="pay-button" (click)="goToMyBucket()">Go to My Bucket →</button>
+            </div>
+          } @else if (payStatus() === 'failed') {
+            <div class="payment-status">
+              <span class="status-x" aria-hidden="true">!</span>
+              <h2>Payment not completed</h2>
+              <p>{{ purchaseError() || 'The payment was not completed. Please try again.' }}</p>
+              <button type="button" class="pay-button" (click)="retryFailed()">Try again</button>
+              <button type="button" class="ghost-btn" (click)="cancelPending()">Close</button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <header class="basket-hero">
+        <div class="hero-confetti" aria-hidden="true">
+          @for (c of heroConfetti; track $index) {
+            <span
+              class="hero-confetti-piece"
+              [style.left.%]="c.left"
+              [style.top.%]="c.top"
+              [style.font-size.px]="c.size"
+              [style.animation-duration.ms]="c.duration"
+              [style.animation-delay.ms]="c.delay"
+            >{{ c.icon }}</span>
+          }
+        </div>
+        <nav class="hero-topbar" aria-label="Basket navigation">
+          <a routerLink="/" class="nav-link nav-back">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to home
+          </a>
+          <span class="nav-brand">Research Mantra</span>
+        </nav>
+        <span class="hero-eyebrow">🔥 Special offer basket</span>
+        <h1>{{ displayName(b.name) }}</h1>
+        @if (b.description) { <p class="hero-desc">{{ b.description }}</p> }
+      </header>
+
+      <section class="basket-content">
+        <div class="bc-decor" aria-hidden="true">
+          @for (c of pageCelebration; track $index) {
+            <span
+              class="bp-celebration"
+              [class.side-left]="c.side === 'left'"
+              [class.side-right]="c.side === 'right'"
+              [style.top.px]="c.top"
+              [style.font-size.px]="c.size"
+              [style.animation-duration.ms]="c.duration"
+              [style.animation-delay.ms]="c.delay"
+            >{{ c.icon }}</span>
+          }
+        </div>
+
+        <div class="items-panel">
+          @if (b.listImage) {
+            <div class="basket-banner">
+              <img [src]="b.listImage" [alt]="displayName(b.name)" />
+              <span class="basket-banner-stamp">
+                <strong>{{ discountLabel() }}</strong>
+                <small>Limited offer</small>
+              </span>
+            </div>
+          }
+
+          @if (b.alreadyPurchased) {
+            <div class="notice-banner owned">
+              <span aria-hidden="true">✅</span>
+              <div>
+                <strong>You already own this basket</strong>
+                <p>Every product in it is already unlocked in your account.</p>
+              </div>
+            </div>
+          } @else if (!b.isCurrentlyPurchasable) {
+            <div class="notice-banner expired">
+              <span aria-hidden="true">⏳</span>
+              <div>
+                <strong>This offer is no longer available</strong>
+                <p>The basket has expired, been deactivated, or is temporarily out of products.</p>
+              </div>
+            </div>
+          }
+
+          <h2 class="items-heading">What's included <span>({{ b.items.length }} product{{ b.items.length === 1 ? '' : 's' }})</span></h2>
+          <div class="item-list">
+            @for (item of b.items; track item.productId) {
+              <article class="item-card">
+                @if (item.listImage) {
+                  <img [src]="item.listImage" [alt]="item.productName" class="item-thumb" />
+                } @else {
+                  <span class="item-mono" aria-hidden="true">{{ monogram(item.productName) }}</span>
+                }
+                <div class="item-info">
+                  <h3>{{ item.productName }}</h3>
+                  @if (item.durationName) { <span class="item-duration">{{ item.durationName }}</span> }
+                </div>
+                <div class="item-price">₹{{ item.originalPrice | number: '1.0-0' }}</div>
+              </article>
+            }
+          </div>
+        </div>
+
+        <aside class="summary-panel" aria-labelledby="summary-heading">
+          <h2 id="summary-heading">Basket Summary</h2>
+
+          <div class="price-hero">
+            <span class="price-hero-confetti" aria-hidden="true">🎊</span>
+            <span class="price-hero-label">You pay</span>
+            <strong class="price-hero-amount">₹{{ b.finalAmount | number: '1.0-0' }}</strong>
+            @if (savingsPercent() > 0) {
+              <span class="price-hero-savings">🎉 You save ₹{{ b.totalSavings | number: '1.0-0' }} ({{ discountLabel() }})</span>
+            }
+            <span class="price-hero-confetti alt" aria-hidden="true">🎉</span>
+          </div>
+
+          <div class="summary-row"><span>Total original value</span><strong class="strike">₹{{ b.totalOriginalValue | number: '1.0-0' }}</strong></div>
+          <div class="summary-row discount"><span>Basket discount</span><strong>−₹{{ b.totalSavings | number: '1.0-0' }}</strong></div>
+
+          @if (purchaseError()) {
+            <p class="error-message" role="alert">{{ purchaseError() }}</p>
+          }
+
+          @if (b.alreadyPurchased) {
+            <button type="button" class="pay-button" (click)="goToMyBucket()">Go to My Bucket →</button>
+          } @else {
+            <button type="button" class="pay-button" (click)="buyBasket()" [disabled]="!b.isCurrentlyPurchasable || paying()">
+              @if (paying()) {
+                Creating payment…
+              } @else if (b.finalAmount === 0) {
+                Get this basket free
+              } @else {
+                Buy Basket — ₹{{ b.finalAmount | number: '1.0-0' }}
+              }
+            </button>
+          }
+          <p class="secure-note">By completing your purchase, you agree to our <a routerLink="/terms-conditions">Terms of Use</a>.</p>
+        </aside>
+      </section>
+  }
+</main>

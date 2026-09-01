@@ -25,6 +25,7 @@ export interface BlogPost {
     isLiked?: boolean;
     comments?: unknown[];
     enableComments?: boolean;
+    publishedOn?: string;
 }
 
 export interface WebsiteBlogImage {
@@ -118,10 +119,25 @@ private blogs = signal<BlogPost[]>([]);
 //   return this.blogs().find(blog => blog.slug === slug);
 // }
 
-loadBlogs(page = 1, size = 50, search = ''): void {
-  this.getPublishedBlogs(page, size, search).subscribe({
+loadBlogs(page = 1, size = 10, category = '') {
+  this.blogs.set([]);
+
+  const ts = Date.now();
+  const categoryParam = category && category !== 'ALL'
+    ? `&category=${encodeURIComponent(category)}`
+    : '';
+
+  this.http.get<any>(
+    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=${page}&pageSize=${size}${categoryParam}&_=${ts}`,
+    {
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    }
+  ).subscribe({
     next: (res) => {
-      const mappedData = (res?.data ?? []).map((b) => ({
+      const mappedData = (res?.data ?? []).map((b: any) => ({
         ...b,
         images: b.images ?? [],
         enableComments: b.enableComments === true || String(b.enableComments).toLowerCase() === 'true'
@@ -157,6 +173,13 @@ getBlogDetails(slug: string): Observable<ApiEnvelope<BlogPost>> {
   );
 }
 
+getRecentPosts(count = 6): Observable<any> {
+  const ts = Date.now();
+  return this.http.get<any>(
+    `${this.apiUrl}/GetAllWebsiteBlogs?pageNumber=1&pageSize=${count}&_=${ts}`
+  );
+}
+
   addComment(payload: any) {
     return this.http.post(`${this.apiUrl}/AddComment`, payload);
   }
@@ -169,6 +192,17 @@ toggleLike(blogId: string, userId: string): Observable<any> {
   return this.http.post(`${this.apiUrl}/${blogId}/like`, { userId });
 }
 
+getCalendarDates(year: number, month: number): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/calendar-dates?year=${year}&month=${month}`);
+}
+
+getBlogsByDate(date: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/by-date?date=${date}`);
+}
+
+getRelatedBlogs(slug: string, count = 4): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/related?slug=${encodeURIComponent(slug)}&count=${count}`);
+}
   savePost(payload: BlogEditorPayload): Observable<ApiEnvelope<BlogPost>> {
     const formData = new FormData();
     const fields: Record<string, string> = {

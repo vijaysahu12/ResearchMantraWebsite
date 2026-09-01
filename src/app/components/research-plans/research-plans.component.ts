@@ -26,6 +26,11 @@ export class ResearchPlansComponent {
   readonly errorMessage = signal('');
   readonly paymentMessage = signal('');
   readonly paymentRequestId = signal('');
+
+  /** Step 1: choose a duration and confirm details. Step 2: the payment itself. */
+  readonly step = signal<'select' | 'payment'>('select');
+  readonly payStatus = signal<'idle' | 'pending' | 'success' | 'failed'>('idle');
+  readonly paymentError = signal('');
   readonly planName = signal('Research Report');
   readonly durations = signal<SubscriptionDuration[]>([]);
   readonly selectedDuration = signal<SubscriptionDuration | null>(null);
@@ -86,15 +91,25 @@ export class ResearchPlansComponent {
       return;
     }
 
-    const paymentWindow = window.open('', 'research-mantra-payment');
+    // A 100%-off coupon needs no payment gateway at all — skip the popup window and polling.
+    const isFree = this.finalAmount() === 0;
+    const paymentWindow = isFree ? null : window.open('', 'research-mantra-payment');
     this.paying.set(true);
     this.errorMessage.set('');
-    this.paymentMessage.set('Creating your secure payment link…');
+    this.paymentError.set('');
+    this.step.set('payment');
+    this.payStatus.set('pending');
+    this.paymentMessage.set(isFree ? 'Activating your subscription…' : 'Creating your secure payment link…');
 
     this.subscriptions
       .createPaymentRequest(this.productId, duration, this.finalAmount(), this.appliedCoupon())
       .subscribe({
         next: (payment) => {
+          this.paying.set(false);
+          if (isFree || payment.is_free) {
+            this.finishPayment();
+            return;
+          }
           this.paymentRequestId.set(payment.link_id);
           if (paymentWindow) {
             paymentWindow.location.href = payment.link_url;
@@ -103,7 +118,6 @@ export class ResearchPlansComponent {
             window.location.assign(payment.link_url);
             return;
           }
-          this.paying.set(false);
           this.paymentMessage.set('Complete the payment in the secure window. We will unlock Research automatically.');
           this.pollPaymentStatus();
         },
@@ -111,7 +125,14 @@ export class ResearchPlansComponent {
           paymentWindow?.close();
           this.paying.set(false);
           this.paymentMessage.set('');
-          this.errorMessage.set(error instanceof Error ? error.message : 'The payment link could not be created.');
+          this.payStatus.set('failed');
+          this.paymentError.set(
+            error instanceof Error
+              ? error.message
+              : isFree
+                ? 'We could not activate your free subscription. Please try again.'
+                : 'The payment link could not be created.',
+          );
         },
       });
   }
@@ -133,6 +154,15 @@ export class ResearchPlansComponent {
         this.paymentMessage.set('We could not confirm the payment yet. Please try again in a moment.');
       },
     });
+  }
+
+  /** From the failed payment step, go back to plan selection without losing the chosen duration/coupon. */
+  backToSelect(): void {
+    this.step.set('select');
+    this.payStatus.set('idle');
+    this.paymentError.set('');
+    this.paymentMessage.set('');
+    this.paymentRequestId.set('');
   }
 
   formatCurrency(value: number): string {
@@ -177,8 +207,9 @@ export class ResearchPlansComponent {
 
   private finishPayment(): void {
     this.checkingPayment.set(false);
+    this.payStatus.set('success');
     this.paymentMessage.set('Payment confirmed. Your Research access is active.');
-    window.setTimeout(() => void this.router.navigateByUrl(this.returnUrl), 700);
+    window.setTimeout(() => void this.router.navigateByUrl(this.returnUrl), 1400);
   }
 
   private readProductId(): number {

@@ -2,140 +2,238 @@
   <div class="blogs-container">
     <!-- Header Area -->
     <div class="section-header">
-      <!-- <div class="blogs-eyebrow">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path
-                        d="M19 5V19H5V5H19ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM14 17H7V15H14V17ZM17 13H7V11H17V13ZM17 9H7V7H17V9Z" />
-                </svg>
-                Insights & Updates
-            </div> -->
-      <h2 class="main-heading">Stock Market Blogs & <span class="highlight">Trading Tips – Research Mantra</span></h2>
+      <h1 class="main-heading">Stock Market Blogs &amp; <span class="highlight">Trading Tips – Research Mantra</span></h1>
       <p class="sub-heading">
         Stay ahead with our latest thoughts on market trends, trading strategies, and educational
         insights.
       </p>
     </div>
 
-    <!-- Search Filter -->
-    <div class="search-container">
-      <div class="search-wrapper" [class.loading]="isSearching()">
-        @if (isSearching()) {
-          <div class="search-loader"></div>
-        } @else {
-          <svg
-            class="search-icon"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    @if (activeDateParam()) {
+
+      <!-- ===== Date Filtered View ===== -->
+      <div class="date-filter-banner">
+        <div class="date-filter-info">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
-        }
-        <input
-          type="text"
-          placeholder="Search market insights, strategies or keywords..."
-          [value]="searchQuery()"
-          (input)="onSearch($event)"
-          aria-label="Search blogs"
-        />
-        @if (searchQuery() && !isSearching()) {
-          <button class="clear-button" (click)="clearSearch()" aria-label="Clear search">
-            <svg
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        }
-      </div>
-      @if (searchQuery()) {
-        <div class="search-results-info">
-          Showing {{ filteredBlogs().length }} results for "{{ searchQuery() }}"
+          <span>Showing all posts from <strong>{{ activeDateLabel() }}</strong></span>
         </div>
-      }
-    </div>
+        <button type="button" class="clear-date-btn" (click)="clearDateFilter()">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          View All Posts
+        </button>
+      </div>
 
-    <!-- Blogs Grid -->
-    <div class="blogs-grid">
-      @for (blog of filteredBlogs(); track blog.id) {
-        <article class="blog-card" [routerLink]="['/blogs', blog.slug]" style="cursor: pointer">
-          <!-- Blog Image -->
-          <div class="blog-image">
-            <img [src]="getCurrentImage(blog)" [alt]="blog.title" />
-
-            <span class="category-badge">{{ blog.category }}</span>
-          </div>
-
-          <!-- Blog Content -->
- <div class="blog-content">
-  <div class="blog-meta">
-    <span>Author: {{ blog.author }}</span>
-  </div>
-
-  <h3 class="blog-title">{{ blog.title }}</h3>
-  <p class="blog-excerpt">{{ blog.excerpt }}</p>
-
-                    <div class="blog-footer">
-                        <a class="read-more">
-                            Read More
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
-                        </a>
-                    </div>
-</div>
-        </article>
-      } @empty {
+      @if (isLoadingDate()) {
+        <div class="date-posts-list">
+          @for (s of [1, 2]; track s) {
+            <div class="date-post-card skeleton-card">
+              <div class="sk-img-full"></div>
+              <div class="sk-body">
+                <div class="sk-line sk-short"></div>
+                <div class="sk-line sk-long"></div>
+                <div class="sk-line sk-med"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (dateBlogs().length === 0) {
         <div class="no-results">
           <div class="no-results-icon">
-            <svg
-              viewBox="0 0 24 24"
-              width="48"
-              height="48"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              <line x1="8" y1="11" x2="14" y2="11" stroke-width="2"></line>
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
           </div>
+          <h2>No posts on this date</h2>
+          <p>There are no published posts for <strong>{{ activeDateLabel() }}</strong>.</p>
+          <button class="btn clear-search-btn" (click)="clearDateFilter()">View All Posts</button>
+        </div>
+      } @else {
+        <div class="date-posts-list">
+          @for (blog of dateBlogs(); track blog.id; let idx = $index) {
+            <article class="date-post-card" style="cursor: pointer" (click)="onCardClick(blog.slug, $event)">
+              <div class="dpc-counter">Post {{ idx + 1 }}</div>
 
-          <h3>No matching insights found</h3>
+              <div class="dpc-image">
+                <img
+                  [src]="blog.image || 'assets/default-blog.jpg'"
+                  [alt]="blog.imageAlt || blog.title"
+                  loading="lazy"
+                />
+                @if (blog.category) {
+                  <span class="dpc-badge">{{ blog.category }}</span>
+                }
+              </div>
 
-          <p>
-            We couldn't find any blogs matching "{{ searchQuery() }}". Try different keywords or
-            clear the filter.
-          </p>
-
-          <button class="btn clear-search-btn" (click)="clearSearch()">Clear Search</button>
+              <div class="dpc-body">
+                <h2 class="dpc-title">{{ blog.title }}</h2>
+                <p class="dpc-excerpt">{{ blog.excerpt }}</p>
+                <div class="dpc-footer">
+                  <span class="dpc-date">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    {{ blog.date }}
+                  </span>
+                  <a class="read-more" (click)="onCardClick(blog.slug, $event)"
+                     (keydown.enter)="onCardClick(blog.slug, $event)" role="button" tabindex="0"
+                     [attr.aria-label]="'Read More about ' + blog.title">
+                    Read More
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          }
         </div>
       }
-    </div>
 
-    <!-- Newsletter CTA -->
-    <!-- <div class="newsletter-cta">
-            <div class="newsletter-content">
-                <h3>Subscribe to our Insights</h3>
-                <p>Get the latest market analysis and trading ideas delivered to your inbox.</p>
+    } @else {
+
+      <!-- ===== Normal View ===== -->
+
+      <!-- Search Filter -->
+      <div class="search-container">
+        <div class="search-wrapper" [class.loading]="isSearching()">
+          @if (isSearching()) {
+            <div class="search-loader"></div>
+          } @else {
+            <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          }
+          <input
+            type="text"
+            placeholder="Search market insights, strategies or keywords..."
+            [value]="searchQuery()"
+            (input)="onSearch($event)"
+            aria-label="Search blogs"
+          />
+          @if (searchQuery() && !isSearching()) {
+            <button class="clear-button" (click)="clearSearch()" aria-label="Clear search">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          }
+        </div>
+        @if (searchQuery()) {
+          <div class="search-results-info">
+            Showing {{ filteredBlogs().length }} results for "{{ searchQuery() }}"
+          </div>
+        }
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="category-tabs-wrapper" role="tablist" aria-label="Filter blogs by category">
+        @for (cat of categories; track cat) {
+          <button
+            type="button"
+            role="tab"
+            class="category-tab"
+            [class.active]="selectedCategory() === cat"
+            [attr.aria-selected]="selectedCategory() === cat"
+            (click)="onCategorySelect(cat)"
+          >{{ cat }}</button>
+        }
+      </div>
+
+      <!-- Blogs Grid -->
+      <div class="blogs-grid">
+        @for (blog of filteredBlogs(); track blog.id) {
+          <article class="blog-card" style="cursor: pointer" (click)="onCardClick(blog.slug, $event)">
+            <!-- Blog Image -->
+            <div class="blog-image">
+              <img [src]="getCurrentImage(blog)" [alt]="blog.title" />
+              <span class="category-badge">{{ blog.category }}</span>
             </div>
-            <form class="newsletter-form" (submit)="$event.preventDefault()">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit" class="btn primary">Subscribe</button>
-            </form>
-        </div> -->
+
+            <!-- Blog Content -->
+            <div class="blog-content">
+              <div class="blog-meta">
+                <span>Author: {{ blog.author }}</span>
+              </div>
+
+              <h2 class="blog-title">{{ blog.title }}</h2>
+              <p class="blog-excerpt">{{ blog.excerpt }}</p>
+
+              <div class="blog-footer">
+                <a class="read-more" (click)="onCardClick(blog.slug, $event)"
+                   (keydown.enter)="onCardClick(blog.slug, $event)" role="button" tabindex="0"
+                   [attr.aria-label]="'Read More about ' + blog.title">
+                  Read More
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+                <button class="share-icon-btn" type="button"
+                        (click)="openShare(blog, $event)"
+                        aria-label="Share this article">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="no-results">
+            <div class="no-results-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <line x1="8" y1="11" x2="14" y2="11" stroke-width="2"></line>
+              </svg>
+            </div>
+            <h2>No matching insights found</h2>
+            <p>We couldn't find any blogs matching "{{ searchQuery() }}". Try different keywords or clear the filter.</p>
+            <button class="btn clear-search-btn" (click)="clearSearch()">Clear Search</button>
+          </div>
+        }
+      </div>
+
+    }
+
   </div>
 </section>
+
+<!-- Lead Capture Modal -->
+@if (showLeadModal()) {
+  <app-lead-capture-modal
+    (submitted)="onLeadSubmitted($event)"
+    (closed)="onModalClosed()"
+  ></app-lead-capture-modal>
+}
+
+<!-- Share Modal -->
+@if (shareModalBlog()) {
+  <app-share-modal
+    [shareUrl]="shareModalBlog()!.url"
+    [shareTitle]="shareModalBlog()!.title"
+    (closed)="closeShare()"
+  ></app-share-modal>
+}

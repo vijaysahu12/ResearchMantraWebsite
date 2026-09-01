@@ -1,4 +1,71 @@
 <section id="home" class="hero-section">
+
+    <!-- Animated decorative background -->
+    <div class="hero-bg" aria-hidden="true">
+        <span class="hero-orb hero-orb--a"></span>
+        <span class="hero-orb hero-orb--b"></span>
+        <span class="hero-orb hero-orb--c"></span>
+        <svg class="hero-waves" viewBox="0 0 1440 320" preserveAspectRatio="none" fill="none">
+            <path class="wave wave--1"
+                d="M-720 160 Q-540 100 -360 160 T0 160 T360 160 T720 160 T1080 160 T1440 160 T1800 160 T2160 160 T2520 160 T2880 160" />
+            <path class="wave wave--2"
+                d="M-720 160 Q-540 100 -360 160 T0 160 T360 160 T720 160 T1080 160 T1440 160 T1800 160 T2160 160 T2520 160 T2880 160" />
+            <path class="wave wave--3"
+                d="M-720 160 Q-540 100 -360 160 T0 160 T360 160 T720 160 T1080 160 T1440 160 T1800 160 T2160 160 T2520 160 T2880 160" />
+        </svg>
+        <span class="hero-spark hero-spark--1"></span>
+        <span class="hero-spark hero-spark--2"></span>
+        <span class="hero-spark hero-spark--3"></span>
+        <span class="hero-spark hero-spark--4"></span>
+    </div>
+
+    <!-- Full-width limited-offer banner (centered) -->
+    <div class="offer-card" #offerCard>
+        <div class="confetti-layer" [class.burst]="showConfetti()" aria-hidden="true">
+            @for (p of confettiPieces; track $index) {
+                <span class="confetti-piece"
+                    [style.left.%]="p.left"
+                    [style.background]="p.color"
+                    [style.animation-duration.ms]="p.duration"
+                    [style.animation-delay.ms]="p.delay"
+                    [style.--x-end]="p.xEnd"
+                    [style.--rot]="p.rot"></span>
+            }
+        </div>
+
+        <div class="offer-head">
+            <span class="offer-badge">
+                <span class="offer-flame" aria-hidden="true">🔥</span> Limited Offer
+            </span>
+            <div class="offer-timer" role="timer" aria-label="Offer ends in">
+                <span class="offer-timer-label">Ends in</span>
+                <span class="cd-unit">{{ countdown().d }}<span class="cd-suffix">d</span></span>
+                <span class="cd-sep">:</span>
+                <span class="cd-unit">{{ countdown().h }}<span class="cd-suffix">h</span></span>
+                <span class="cd-sep">:</span>
+                <span class="cd-unit">{{ countdown().m }}<span class="cd-suffix">m</span></span>
+                <span class="cd-sep">:</span>
+                <span class="cd-unit">{{ countdown().s }}<span class="cd-suffix">s</span></span>
+            </div>
+        </div>
+
+        <div class="offer-body">
+            <div class="offer-value">
+                <span class="offer-free">Exclusive Free Trial</span>
+                <span class="offer-save">Grab Now</span>
+            </div>
+            <a routerLink="/mobile" class="offer-install" (mouseenter)="burstConfetti()"
+                aria-label="Install Now — exclusive free trial, limited offer">
+                Install Now
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </div>
+    </div>
+
     <div class="hero-container">
         <!-- Left Column: Content -->
         <div class="hero-content">
@@ -17,7 +84,7 @@
                             </svg>
                         </div>
                         <div class="tl-title-wrap">
-                            <h4>Get instant updates on Telegram</h4>
+                            <h2>Get instant updates on Telegram</h2>
                             <span class="tl-stats">🏆 4,500+ traders already joined</span>
                         </div>
                     </div>
@@ -53,156 +120,26 @@
                 </div>
             </div>
             <div class="cta-section">
-                <!-- Step 1: Mobile Input -->
-                @if (currentStep() === 'mobile') {
-                <form [formGroup]="mobileForm" (ngSubmit)="onMobileSubmit()" class="cta-form">
-                    <div class="input-wrapper whatsapp-highlight"
-                        [class.error]="mobileForm.get('mobile')?.touched && mobileForm.get('mobile')?.invalid">
-                        <span class="whatsapp-icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="#25D366">
-                                <path
-                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.438 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.631 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                            </svg>
-                        </span>
-                        <span class="country-code">+91</span>
-                        <input type="tel" placeholder="Enter your whatsapp mobile number" formControlName="mobile"
-                            maxlength="10" (input)="onMobileNumberInput($event)" aria-label="Mobile Number" />
-                    </div>
-                    <button type="submit" class="cta-button" [disabled]="mobileForm.invalid">
-                        Unlock Sudarshan Strategy for <span class="glow-free">FREE</span>
+                @if (currentStep() !== 'success') {
+                    <button type="button" class="cta-button unlock-strategy-btn" (click)="showStrategyModal.set(true)">
+                        🔓 Unlock Sudarshan Strategy for <span class="glow-free">FREE</span>
                     </button>
-                </form>
-                }
-
-                <!-- Step 2: Name Input -->
-                @if (currentStep() === 'name') {
-                <form [formGroup]="nameForm" (ngSubmit)="onNameSubmit()" class="cta-form fade-in">
-                    <div class="input-wrapper"
-                        [class.error]="nameForm.get('name')?.touched && nameForm.get('name')?.invalid">
-                        <input type="text" placeholder="Enter your name" formControlName="name" minlength="3"
-                            (input)="onNameInput($event)" aria-label="Name" />
-                    </div>
-
-                    <div class="terms-wrapper">
-                        <label class="checkbox-container">
-                            <input type="checkbox" formControlName="acceptTerms">
-                            <span class="checkmark"></span>
-                            <span class="terms-text">
-                                I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank"
-                                    (click)="$event.stopPropagation()">Terms & Conditions</a>
-                            </span>
-                        </label>
-                    </div>
-
-                    <button type="submit" class="cta-button" [disabled]="nameForm.invalid || isLoading()">
-                        @if (isLoading()) {
-                        <span class="spinner"></span> Verifying...
-                        } @else {
-                        Verify
-                        }
-                    </button>
-                </form>
-                }
-
-                <!-- Step 3: OTP Verification -->
-                @if (currentStep() === 'otp') {
-                <div class="otp-container fade-in">
-                    <p class="otp-instruction">Enter the 6-digit OTP sent to +91 {{ mobileNumber() | slice:0:2
-                        }}XXXXXX{{ mobileNumber() | slice:8:10 }}</p>
-
-                    <form [formGroup]="otpForm" (ngSubmit)="onOtpVerify()">
-                        @if (timer() > 0) {
-                        <div class="otp-inputs" formArrayName="otp">
-                            @for (control of otpDigits.controls; track $index) {
-                            <input #otpInput type="tel" [formControlName]="$index" maxlength="1"
-                                (input)="onOtpInput($index, $event)" (keydown)="onOtpKeyDown($index, $event)"
-                                (paste)="onOtpPaste($event)" class="otp-box" />
-                            }
+                    <span class="disclaimer">No tips. No guarantees.</span>
+                } @else {
+                    <div class="inline-success fade-in">
+                        <div class="inline-success-check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         </div>
-
-                        <div class="otp-actions">
-                            <span class="timer">
-                                Expires in {{ formatTime(timer()) }}
-                            </span>
-                        </div>
-
-                        <button type="submit" class="cta-button" [disabled]="otpForm.invalid || isLoading()">
-                            @if (isLoading()) {
-                            <span class="spinner"></span> Verifying...
-                            } @else {
-                            Submit OTP
-                            }
-                        </button>
-                        } @else {
-                        <div class="expired-state fade-in">
-                            <div class="expired-icon">
-                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#EF4444"
-                                    stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                </svg>
-                            </div>
-                            <p class="expired-text">OTP has expired</p>
-                            <button type="button" class="cta-button resend-btn-full" (click)="resendOtp()">
-                                Resend New OTP
-                            </button>
-                        </div>
-                        }
-                    </form>
-                </div>
-                }
-
-                <!-- Step 4: Success -->
-                @if (currentStep() === 'success') {
-                <div class="success-container fade-in">
-                    <div class="success-header">
-                        <div class="success-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </div>
-                        <h3>Success! Here are your trade ideas</h3>
+                        <p class="inline-success-text">Strategy Unlocked! View your free trade ideas.</p>
+                        <button type="button" class="cta-button" (click)="showStrategyModal.set(true)">View Your Link</button>
                     </div>
-
-                    <div class="video-link-wrapper">
-                        <input type="text" readonly [value]="youtubeLink()" class="link-input" />
-                        <button type="button" class="copy-btn" (click)="copyLink()" id="copyBtn">
-                            Copy Link
-                        </button>
-                    </div>
-                    @if (youtubeLink()) {
-                    <a [href]="youtubeLink()" target="_blank" class="watch-now-link">
-                        Watch Now on YouTube
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                    </a>
-                    }
-                </div>
                 }
-
-                <!-- Global Error Message -->
-                @if (errorMessage()) {
-                <div class="error-toast fade-in">
-                    {{ errorMessage() }}
-                </div>
-                }
-
-                @if (currentStep() === 'mobile') {
-                <span class="disclaimer">No tips. No guarantees.</span>
-                }
-
-
             </div>
         </div>
 
         <!-- Right Column: Enquiry Form -->
         <div class="hero-visual" id="enquiry">
-            <div class="enquiry-card">
+            <div class="enquiry-card" (mouseenter)="onCardMouseEnter()" (mouseleave)="onCardMouseLeave()">
                 <div class="tabs-header">
                     <button type="button" class="tab-btn telegram-tab" [class.active]="activeFormTab() === 'telegram'"
                         (click)="selectTab('telegram')">
@@ -235,8 +172,8 @@
                             onerror="this.style.display='none'">
                     </div>
                     <div class="telegram-text">
-                        <h3>Join The Community</h3>
-                        <p>Get daily market updates, free trade ideas, and connect with other top traders.</p>
+                        <h3>Join Our Elite Community</h3>
+                        <p>Get daily market updates, trade ideas, and connect with other top traders.</p>
                     </div>
                     <a href="https://t.me/ReasearchMantra" target="_blank" class="submit-button telegram-join-btn">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
@@ -249,10 +186,6 @@
                 }
 
                 @if (activeFormTab() === 'enquiry') {
-                <div class="card-title-section fade-in">
-                    <span class="card-title">Enquiry Form</span>
-                    <h2 class="card-headline">Request a Free Demo</h2>
-                </div>
                 <form [formGroup]="enquiryForm" (ngSubmit)="onEnquirySubmit()" class="enquiry-body fade-in">
                     <div class="form-group">
                         <label for="name" class="sr-only">Full Name</label>
@@ -270,9 +203,21 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="message" class="sr-only">Message</label>
-                        <textarea id="message" formControlName="message" rows="2" minlength="1" maxlength="300"
-                            placeholder="Message (optional)"></textarea>
+                        <label for="enquiry-email" class="sr-only">Email Address</label>
+                        <input type="email" id="enquiry-email" formControlName="email"
+                            placeholder="Email Address *">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enquiry-investment" class="sr-only">Investment Capital</label>
+                        <input type="text" id="enquiry-investment" formControlName="investmentCapital"
+                            placeholder="Investment Capital – e.g. ₹1L, ₹5L, ₹10L+">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hero-message" class="sr-only">Message</label>
+                        <textarea id="hero-message" formControlName="message" rows="2" minlength="1" maxlength="300"
+                            placeholder="How can we help you?"></textarea>
                     </div>
 
                     <div class="terms-wrapper">
@@ -286,7 +231,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="submit-button"
+                    <button type="submit" class="submit-button" aria-label="Request a Free Demo"
                         [disabled]="enquiryForm.invalid || isEnquirySubmitting()">
                         @if (isEnquirySubmitting()) {
                         <span class="spinner"></span> Sending...
@@ -325,11 +270,139 @@
         </div>
     </div>
 
-    <!-- Centered Badges Across Entire Hero Section -->
-    <div class="bottom-badges-container fade-in">
-        <div class="tl-daily-badge">⏳ Limited free access available</div>
-        <div class="tl-daily-badge">🔒 Strategy shared only with registered users</div>
-    </div>
+    <!-- Sudarshan Strategy Modal -->
+    @if (showStrategyModal()) {
+        <div class="strategy-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="strategy-modal-title"
+            (click)="showStrategyModal.set(false)" (keydown.escape)="showStrategyModal.set(false)">
+            <div class="strategy-modal-card" (click)="$event.stopPropagation()">
+                <button type="button" class="modal-close-btn" (click)="showStrategyModal.set(false)" aria-label="Close">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+
+                <div class="modal-header">
+                    <div class="modal-lock-icon" aria-hidden="true">🔓</div>
+                    <h2 id="strategy-modal-title" class="modal-title">Unlock Sudarshan Strategy</h2>
+                    <!-- <p class="modal-subtitle">Get 3 free trade ideas with entry, target &amp; stop loss.</p> -->
+                </div>
+
+                <!-- Step 1: Mobile -->
+                @if (currentStep() === 'mobile') {
+                    <form [formGroup]="mobileForm" (ngSubmit)="onMobileSubmit()" class="modal-form fade-in">
+                        <div class="modal-input-group" [class.field-error]="mobileForm.get('mobile')?.touched && mobileForm.get('mobile')?.invalid">
+                            <span class="modal-prefix">+91</span>
+                            <input type="tel" placeholder="WhatsApp mobile number" formControlName="mobile"
+                                maxlength="10" (input)="onMobileNumberInput($event)" aria-label="Mobile Number" />
+                        </div>
+                        @if (mobileForm.get('mobile')?.touched && mobileForm.get('mobile')?.invalid) {
+                            <span class="modal-field-error">Enter a valid 10-digit mobile number.</span>
+                        }
+                        <button type="submit" class="modal-submit-btn" [disabled]="mobileForm.invalid">Continue →</button>
+                    </form>
+                }
+
+                <!-- Step 2: Name + Investment Capital -->
+                @if (currentStep() === 'name') {
+                    <form [formGroup]="nameForm" (ngSubmit)="onNameSubmit()" class="modal-form fade-in">
+                        <div class="modal-edit-number">
+                            <span class="modal-edit-number-text">+91 {{ mobileNumber() }}</span>
+                            <button type="button" class="modal-back-link" (click)="goBackToMobile()">Edit</button>
+                        </div>
+                        <div class="modal-input-group" [class.field-error]="nameForm.get('name')?.touched && nameForm.get('name')?.invalid">
+                            <input type="text" placeholder="Your full name" formControlName="name"
+                                maxlength="50" (input)="onNameInput($event)" aria-label="Name" />
+                        </div>
+                        @if (nameForm.get('name')?.touched && nameForm.get('name')?.invalid) {
+                            <span class="modal-field-error">Name must be at least 3 characters.</span>
+                        }
+
+                        <div class="modal-input-group">
+                            <input type="text" placeholder="Investment capital (optional — e.g. ₹5L)"
+                                formControlName="investmentCapital" aria-label="Investment Capital" />
+                        </div>
+
+                        <div class="modal-terms">
+                            <label class="modal-checkbox-label">
+                                <input type="checkbox" formControlName="acceptTerms">
+                                <span class="modal-checkmark"></span>
+                                <span>I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank" (click)="$event.stopPropagation()">Terms &amp; Conditions</a></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="modal-submit-btn" [disabled]="nameForm.invalid || isLoading()">
+                            @if (isLoading()) { <span class="spinner"></span> Saving... } @else { Get OTP → }
+                        </button>
+                    </form>
+                }
+
+                <!-- Step 3: OTP -->
+                @if (currentStep() === 'otp') {
+                    <div class="otp-container fade-in">
+                        <p class="otp-instruction">Enter the 6-digit OTP sent to +91 {{ mobileNumber() | slice:0:2 }}XXXXXX{{ mobileNumber() | slice:8:10 }}</p>
+                        <form [formGroup]="otpForm" (ngSubmit)="onOtpVerify()">
+                            @if (timer() > 0) {
+                                <div class="otp-inputs" formArrayName="otp">
+                                    @for (control of otpDigits.controls; track $index) {
+                                        <input #otpInput type="tel" [formControlName]="$index" maxlength="1"
+                                            (input)="onOtpInput($index, $event)" (keydown)="onOtpKeyDown($index, $event)"
+                                            (paste)="onOtpPaste($event)" class="otp-box" />
+                                    }
+                                </div>
+                                <div class="otp-actions">
+                                    <span class="timer">Expires in {{ formatTime(timer()) }}</span>
+                                    <button type="button" class="modal-back-link" (click)="goBackToMobile()">Change number</button>
+                                </div>
+                                <button type="submit" class="modal-submit-btn" [disabled]="otpForm.invalid || isLoading()">
+                                    @if (isLoading()) { <span class="spinner"></span> Verifying... } @else { Verify OTP → }
+                                </button>
+                            } @else {
+                                <div class="expired-state fade-in">
+                                    <div class="expired-icon">
+                                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#EF4444" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                    </div>
+                                    <p class="expired-text">OTP has expired</p>
+                                    <button type="button" class="modal-submit-btn" (click)="resendOtp()">Resend OTP</button>
+                                </div>
+                            }
+                        </form>
+                    </div>
+                }
+
+                <!-- Step 4: Success -->
+                @if (currentStep() === 'success') {
+                    <div class="modal-success fade-in">
+                        <div class="modal-success-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <h3 class="modal-success-title">Unlocked! Here are your free trade ideas</h3>
+                        <div class="video-link-wrapper">
+                            <input type="text" readonly [value]="youtubeLink()" class="link-input" />
+                            <button type="button" class="copy-btn" (click)="copyLink()" id="copyBtn">Copy</button>
+                        </div>
+                        @if (youtubeLink()) {
+                            <a [href]="youtubeLink()" target="_blank" class="watch-now-link">
+                                Watch Now on YouTube
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                            </a>
+                        }
+                    </div>
+                }
+
+                @if (errorMessage()) {
+                    <div class="error-toast fade-in">{{ errorMessage() }}</div>
+                }
+            </div>
+        </div>
+    }
 
     <!-- Trust Section -->
     <div class="trust-section">

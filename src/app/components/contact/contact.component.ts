@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface WebsiteLead {
     Id: number;
@@ -54,11 +55,12 @@ export class ContactComponent {
 
     constructor() {
         this.contactForm = this.fb.group({
-            fullName: ['', [Validators.required]],
+            fullName: ['', [Validators.required, Validators.maxLength(50)]],
             occupation: ['', [Validators.required]],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
             email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-            message: ['', [Validators.required]],
+            investmentCapital: [''],
+            message: ['', [Validators.required, Validators.maxLength(300)]],
             acceptTerms: [false, Validators.requiredTrue],
             // UI-only fields — not sent to backend
             website: [''],
@@ -120,7 +122,7 @@ export class ContactComponent {
                 ServiceKey: '',
                 LeadTypeKey: '',
                 LeadSourceKey: 'Website Contact Form',
-                Remarks: `Occupation: ${formValue.occupation}\nMessage: ${formValue.message}`,
+                Remarks: `Occupation: ${formValue.occupation}\nMessage: ${formValue.message}${formValue.investmentCapital?.trim() ? '\nInvestment Capital: ' + formValue.investmentCapital.trim() : ''}`,
                 IsDisabled: 0,
                 IsDelete: 0,
                 CreatedOn: now,
@@ -136,7 +138,7 @@ export class ContactComponent {
                 PurchaseOrderKey: null
             };
 
-            this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
+            this.http.post(`${environment.apiurl}Leads/WebsiteLeads`, payload)
                 .pipe(
                     finalize(() => this.isSubmitting.set(false))
                 )

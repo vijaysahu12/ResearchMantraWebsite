@@ -5,24 +5,19 @@
         <img src="assets/RM_Logo.png" alt="Research Mantra Logo" class="brand-logo">
       </div>
       <div class="brand-info">
-        <span class="brand-name">Research Mantra</span>
-        <span class="brand-owner">By Susmita Sahoo</span>
-        <span class="brand-subtitle">SEBI Registered Research Analyst · INH000019150</span>
+        <span class="brand-name">Research Mantra By Susmita Sahoo</span>
+        <span class="brand-subtitle">SEBI Reg Research Analyst - INH000019150 </span>
       </div>
     </div>
 
     <nav class="center-section" [class.mobile-open]="isMenuOpen()" aria-label="Main Navigation">
       <ul class="nav-links">
-        <li><a [routerLink]="['/']" fragment="home" (click)="isMenuOpen.set(false)"><strong>Home</strong></a>
-        </li>
-        <li><a [routerLink]="['/']" fragment="features" (click)="isMenuOpen.set(false)"><strong>Features</strong></a>
-        </li>
-        <li><a [routerLink]="['/']" fragment="pricing" (click)="isMenuOpen.set(false)"><strong>Services</strong></a>
-        </li>
-        <li><a [routerLink]="['/']" fragment="about" (click)="isMenuOpen.set(false)"><strong>About</strong></a></li>
-        <li><a [routerLink]="['/']" fragment="testimonials"
-            (click)="isMenuOpen.set(false)"><strong>Testimonials</strong></a></li>
-        <li><a [routerLink]="['/']" fragment="faq" (click)="isMenuOpen.set(false)"><strong>FAQ</strong></a></li>
+        <li><a href="#home" (click)="scrollToSection($event, 'home')"><strong>Home</strong></a></li>
+        <li><a href="#features" (click)="scrollToSection($event, 'features')"><strong>Features</strong></a></li>
+        <li><a href="#pricing" (click)="scrollToSection($event, 'pricing')"><strong>Services</strong></a></li>
+        <li><a href="#about" (click)="scrollToSection($event, 'about')"><strong>About</strong></a></li>
+        <li><a href="#testimonials" (click)="scrollToSection($event, 'testimonials')"><strong>Testimonials</strong></a></li>
+        <li><a href="#faq" (click)="scrollToSection($event, 'faq')"><strong>FAQ</strong></a></li>
         <!-- <li><a [routerLink]="['/blogs']" (click)="isMenuOpen.set(false)"><strong>Blogs</strong></a></li> -->
         <li class="dropdown" [class.open]="isBlogsOpen()">
           <a class="dropdown-toggle" (click)="toggleBlogs($event)">
@@ -36,14 +31,14 @@
                 Blogs</a></li>
             <li><a [routerLink]="['/stock-market-analysis-and-nifty-updates']" (click)="isMenuOpen.set(false); isBlogsOpen.set(false)">
                 Market Analysis</a></li>
-            @if (isAuthenticated()) {
+            <!-- @if (isAuthenticated()) {
               <li><a [routerLink]="['/admin/blogs']" (click)="isMenuOpen.set(false); isBlogsOpen.set(false)">
                   Manage Blogs</a></li>
-            }
+            } -->
           </ul>
         </li>
 
-        <li><a [routerLink]="['/contact']" (click)="isMenuOpen.set(false)"><strong>Contact</strong></a></li>
+        <li><a href="#contact" (click)="scrollToSection($event, 'contact')"><strong>Contact</strong></a></li>
 
         <!-- RA Compliance Dropdown -->
         <li class="dropdown" [class.open]="isComplianceOpen()">
@@ -77,6 +72,15 @@
 
     <div class="right-section">
       @if (isAuthenticated()) {
+        <div class="profile-dropdown" [class.open]="isProfileOpen()">
+          <button type="button" class="profile-btn" (click)="toggleProfile($event)" [attr.aria-expanded]="isProfileOpen()" aria-label="Account details">
+            <span class="profile-avatar" aria-hidden="true">{{ monogram(session()?.name) }}</span>
+          </button>
+          <div class="profile-menu" role="menu">
+            <p class="profile-name">{{ session()?.name || 'Investor' }}</p>
+            <p class="profile-phone">+91 {{ session()?.mobileNumber }}</p>
+          </div>
+        </div>
         <a class="research-link" routerLink="/research">Research</a>
         <button class="btn-login" type="button" (click)="logout()">Log out</button>
       } @else {

@@ -1,26 +1,50 @@
-import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, ViewChildren, QueryList, DestroyRef, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, ViewChild, ViewChildren, QueryList, DestroyRef, OnInit, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, FormArray } from '@angular/forms';
 import { LeadService, SendOtpRequest, VerifyOtpRequest, WebsiteLead } from '../../services/lead.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 type Step = 'mobile' | 'name' | 'otp' | 'success';
 
 @Component({
     selector: 'app-rm-intro',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, RouterLink, ReactiveFormsModule],
     templateUrl: './rm-intro.component.html',
     styleUrl: './rm-intro.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RmIntroComponent implements OnInit {
+export class RmIntroComponent implements OnInit, AfterViewInit {
     private fb = inject(FormBuilder);
     private leadService = inject(LeadService);
     private destroyRef = inject(DestroyRef);
     private http = inject(HttpClient);
     private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+    // Limited-offer countdown (rolling weekly deadline — resets every Sunday)
+    countdown = signal<{ d: string; h: string; m: string; s: string }>({ d: '00', h: '00', m: '00', s: '00' });
+    private countdownTimer: ReturnType<typeof setInterval> | null = null;
+
+    // Confetti
+    showConfetti = signal<boolean>(false);
+    private offerObserver: IntersectionObserver | null = null;
+    private confettiTimer: ReturnType<typeof setTimeout> | null = null;
+    @ViewChild('offerCard') offerCardRef?: ElementRef<HTMLElement>;
+
+    readonly confettiPieces = Array.from({ length: 44 }, (_, i) => {
+        const colors = ['#FACC15', '#f8b018', '#ff9500', '#22c55e', '#3b82f6', '#ef4444', '#ffffff', '#a855f7'];
+        return {
+            left: (i * 23 + (i % 5) * 9) % 100,
+            color: colors[i % colors.length],
+            duration: 1400 + (i % 8) * 170,
+            delay: (i % 12) * 45,
+            xEnd: (((i * 61) % 220) - 110) + 'px',
+            rot: ((i * 53) % 6 * 90 + 180) + 'deg'
+        };
+    });
 
     // State Signals
     currentStep = signal<Step>('mobile');
@@ -42,6 +66,7 @@ export class RmIntroComponent implements OnInit {
     enquiryForm: FormGroup;
     isEnquirySubmitting = signal<boolean>(false);
     enquirySuccess = signal<string>('');
+    showStrategyModal = signal<boolean>(false);
     activeFormTab = signal<'telegram' | 'enquiry' | 'youtube'>('telegram');
 
     private readonly TAB_ORDER: Array<'telegram' | 'enquiry' | 'youtube'> = ['telegram', 'enquiry', 'youtube'];
@@ -53,7 +78,8 @@ export class RmIntroComponent implements OnInit {
         });
 
         this.nameForm = this.fb.group({
-            name: ['', [Validators.required, Validators.minLength(3)]],
+            name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+            investmentCapital: [''],
             acceptTerms: [false, Validators.requiredTrue]
         });
 
@@ -64,9 +90,11 @@ export class RmIntroComponent implements OnInit {
         });
 
         this.enquiryForm = this.fb.group({
-            name: ['', [Validators.required, Validators.minLength(2)]],
+            name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
             mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-            message: [''],
+            email: ['', [Validators.required, Validators.email]],
+            message: ['', [Validators.maxLength(300)]],
+            investmentCapital: [''],
             acceptTerms: [false, Validators.requiredTrue]
         });
     }
@@ -102,6 +130,9 @@ export class RmIntroComponent implements OnInit {
                 if (state.name) this.userName.set(state.name);
                 if (state.youtubeLink) this.youtubeLink.set(state.youtubeLink);
                 if (state.step) this.currentStep.set(state.step as Step);
+                if (state.step === 'name' || state.step === 'otp') {
+                    this.showStrategyModal.set(true);
+                }
 
             } catch (e) {
                 console.error('Failed to restore state', e);
@@ -111,6 +142,66 @@ export class RmIntroComponent implements OnInit {
 
         this.startTabRotation();
         this.destroyRef.onDestroy(() => this.stopTabRotation());
+
+        this.startCountdown();
+    }
+
+    ngAfterViewInit(): void {
+        if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+        const el = this.offerCardRef?.nativeElement;
+        if (!el) return;
+        if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+
+        this.offerObserver = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    this.burstConfetti();
+                    this.offerObserver?.disconnect();
+                    this.offerObserver = null;
+                    break;
+                }
+            }
+        }, { threshold: 0.5 });
+        this.offerObserver.observe(el);
+        this.destroyRef.onDestroy(() => this.offerObserver?.disconnect());
+    }
+
+    /** Fire a confetti burst (guarded so rapid re-triggers don't stack). */
+    burstConfetti(): void {
+        if (typeof window === 'undefined' || this.showConfetti()) return;
+        this.showConfetti.set(true);
+        this.confettiTimer = setTimeout(() => this.showConfetti.set(false), 2600);
+        this.destroyRef.onDestroy(() => { if (this.confettiTimer) clearTimeout(this.confettiTimer); });
+    }
+
+    /** Rolling weekly countdown — always ends the coming Sunday 23:59. */
+    private startCountdown(): void {
+        if (typeof window === 'undefined') return;
+        const tick = () => {
+            let diff = Math.max(0, this.nextDeadline().getTime() - Date.now());
+            const d = Math.floor(diff / 86_400_000); diff -= d * 86_400_000;
+            const h = Math.floor(diff / 3_600_000); diff -= h * 3_600_000;
+            const m = Math.floor(diff / 60_000); diff -= m * 60_000;
+            const s = Math.floor(diff / 1_000);
+            this.countdown.set({ d: this.pad(d), h: this.pad(h), m: this.pad(m), s: this.pad(s) });
+        };
+        tick();
+        this.countdownTimer = setInterval(tick, 1000);
+        this.destroyRef.onDestroy(() => { if (this.countdownTimer) clearInterval(this.countdownTimer); });
+    }
+
+    private pad(n: number): string {
+        return n < 10 ? '0' + n : '' + n;
+    }
+
+    private nextDeadline(): Date {
+        const now = new Date();
+        const d = new Date(now);
+        const daysUntilSun = (7 - d.getDay()) % 7;
+        d.setDate(d.getDate() + daysUntilSun);
+        d.setHours(23, 59, 59, 999);
+        if (d.getTime() <= now.getTime()) d.setDate(d.getDate() + 7);
+        return d;
     }
 
     selectTab(tab: 'telegram' | 'enquiry' | 'youtube') {
@@ -119,11 +210,22 @@ export class RmIntroComponent implements OnInit {
         this.startTabRotation();
     }
 
+    onCardMouseEnter() {
+        this.stopTabRotation();
+    }
+
+    onCardMouseLeave() {
+        this.startTabRotation();
+    }
+
     private startTabRotation() {
+        // Always clear any existing interval first so we can never stack
+        // multiple timers (which caused the tabs to rotate too fast).
+        this.stopTabRotation();
         this.rotationInterval = setInterval(() => {
             const idx = this.TAB_ORDER.indexOf(this.activeFormTab());
             this.activeFormTab.set(this.TAB_ORDER[(idx + 1) % this.TAB_ORDER.length]);
-        }, 30000);
+        }, 3000);
     }
 
     private stopTabRotation() {
@@ -185,6 +287,14 @@ export class RmIntroComponent implements OnInit {
         this.saveState();
     }
 
+    // Go back to the mobile number entry step to correct the number
+    goBackToMobile() {
+        this.errorMessage.set('');
+        this.mobileForm.get('mobile')?.setValue(this.mobileNumber(), { emitEvent: false });
+        this.currentStep.set('mobile');
+        this.saveState();
+    }
+
     // Step 2: Name Submit -> API Call (Save Lead + Send OTP)
     onNameSubmit() {
         if (this.nameForm.invalid) return;
@@ -196,6 +306,7 @@ export class RmIntroComponent implements OnInit {
         this.userName.set(name);
 
         const now = new Date().toISOString();
+        const ic = this.nameForm.get('investmentCapital')?.value?.trim() || '';
 
         // 1. Prepare WebsiteLead payload
         const leadPayload: WebsiteLead = {
@@ -214,6 +325,7 @@ export class RmIntroComponent implements OnInit {
             LeadTypeKey: '',
             LeadSourceKey: 'Website Whatsapp Enquiry form ',
             Remarks: 'Unlock 3 Free Trade Ideas Flow',
+            InvestmentCapital: ic,
             IsDisabled: 0,
             IsDelete: 0,
             CreatedOn: now,
@@ -236,7 +348,7 @@ export class RmIntroComponent implements OnInit {
         };
 
         // 3. Execute: Save Lead -> Send OTP
-        this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', leadPayload)
+        this.http.post(`${environment.apiurl}Leads/WebsiteLeads`, leadPayload)
             .pipe(
                 switchMap(() => this.leadService.sendOtp(otpPayload)),
                 takeUntilDestroyed(this.destroyRef)
@@ -462,14 +574,15 @@ export class RmIntroComponent implements OnInit {
             CountryCode: '+91',
             MobileNumber: formValue.mobile,
             AlternateMobileNumber: '',
-            EmailId: '', // Skipping email field
+            EmailId: formValue.email ?? '',
             ProfileImage: '',
             PriorityStatus: 'Normal',
             AssignedTo: '',
             ServiceKey: '',
             LeadTypeKey: '',
             LeadSourceKey: 'Website Enquiry',
-            Remarks: formValue.message,
+            Remarks: formValue.message || '',
+            InvestmentCapital: formValue.investmentCapital?.trim() || '',
             IsDisabled: 0,
             IsDelete: 0,
             CreatedOn: now,
@@ -485,7 +598,7 @@ export class RmIntroComponent implements OnInit {
             PurchaseOrderKey: null
         };
 
-        this.http.post('https://crmapi.researchmantra.in/api/Leads/WebsiteLeads', payload)
+        this.http.post(`${environment.apiurl}Leads/WebsiteLeads`, payload)
             .subscribe({
                 next: () => {
                     this.isEnquirySubmitting.set(false);

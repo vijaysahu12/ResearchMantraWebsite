@@ -49,7 +49,7 @@
 }
 
 .main-heading .highlight {
-    color: var(--brand-yellow);
+    color: #b88212;
 }
 
 .sub-heading {
@@ -130,6 +130,13 @@
     border: 0;
 }
 
+.optional-label {
+    font-size: 12px;
+    font-weight: 400;
+    color: #94a3b8;
+    margin-left: 4px;
+}
+
 /* ── Inputs / textarea / select ── */
 input,
 textarea,
@@ -205,15 +212,15 @@ select {
 }
 
 .checkbox-container {
-    display: flex;
-    align-items: center;
+    display: block;
     position: relative;
     padding-left: 28px;
     cursor: pointer;
     font-size: 13px;
+    line-height: 1.45;
     user-select: none;
     color: var(--text-muted);
-    font-weight: normal;
+    font-weight: 500;
     letter-spacing: normal;
     text-transform: none;
 }
@@ -274,18 +281,13 @@ select {
     transform: rotate(45deg);
 }
 
-.terms-text {
-    font-weight: 500;
-    line-height: 1.45;
-}
-
-.terms-text a {
-    color: var(--brand-yellow);
+.checkbox-container a {
+    color: #92680e;
     text-decoration: none;
     font-weight: 700;
 }
 
-.terms-text a:hover {
+.checkbox-container a:hover {
     text-decoration: underline;
 }
 

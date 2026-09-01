@@ -17,6 +17,107 @@
   <!-- Main Content -->
   <div class="content-wrapper">
 
+    <!-- ===== DATE-FILTER VIEW ===== -->
+    @if (activeDateParam()) {
+
+      <div class="date-filter-banner">
+        <div class="date-filter-info">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Posts from <strong>{{ activeDateLabel() }}</strong></span>
+        </div>
+        <button type="button" class="clear-date-btn" (click)="clearDateFilter()">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          Back to All Posts
+        </button>
+      </div>
+
+      <!-- Skeleton -->
+      @if (isLoadingDate()) {
+        <div class="blogs-grid">
+          @for (i of [1,2,3]; track i) {
+            <div class="skeleton-card">
+              <div class="sk-img"></div>
+              <div class="sk-body">
+                <div class="sk-line sk-short"></div>
+                <div class="sk-line sk-long"></div>
+                <div class="sk-line sk-med"></div>
+                <div class="sk-line sk-med"></div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (dateBlogs().length === 0) {
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <h3>No posts on this date</h3>
+          <p>No published posts for <strong>{{ activeDateLabel() }}</strong>.</p>
+          <button class="read-btn" style="margin:0 auto;" (click)="clearDateFilter()">View All Posts</button>
+        </div>
+      } @else {
+        <div class="blogs-grid">
+          @for (blog of dateBlogs(); track blog.id) {
+            <article class="blog-card" (click)="navigateToBlog(blog.slug)" tabindex="0" role="button"
+              [attr.aria-label]="'Read blog: ' + blog.title" (keydown.enter)="navigateToBlog(blog.slug)">
+
+              <div class="card-image">
+                <img [src]="blog.image || 'assets/default-blog.jpg'" [alt]="blog.imageAlt || blog.title" loading="lazy" />
+                <div class="cat-badges">
+                  @for (cat of getCategories(blog.category); track cat) {
+                    <span class="cat-badge">{{ cat }}</span>
+                  }
+                </div>
+              </div>
+
+              <div class="card-body">
+                <div class="card-meta-row">
+                  <span class="card-author">{{ blog.author }}</span>
+                  <span class="card-date">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    {{ blog.date }}
+                  </span>
+                </div>
+
+                <h3 class="card-title">{{ blog.title }}</h3>
+                <p class="card-excerpt">{{ blog.excerpt }}</p>
+
+                <div class="card-footer" (click)="$event.stopPropagation()">
+                  <button class="read-btn" (click)="navigateToBlog(blog.slug)">
+                    Read More
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
+
+    } @else {
+
+    <!-- ===== NORMAL VIEW ===== -->
+
     <!-- Top CTA Bar -->
     <div class="top-cta-bar">
       <div class="top-cta-left">
@@ -32,12 +133,23 @@
           <strong>Start Your Trading Journey with Confidence</strong>
           <span>Get expert market insights, trading strategies, and personalized guidance to improve your trading
             consistency.</span>
-          <span>Many traders struggle due to lack of proper strategy and risk management. Instead of guessing market
-            moves, follow a structured and research-based approach. Get expert stock market guidance from Research
-            Mantra.</span>
         </div>
       </div>
       <a [routerLink]="['/contact']" class="top-cta-btn">Get Expert Advice</a>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs-wrapper" role="tablist" aria-label="Filter blogs by category">
+      @for (cat of categories; track cat) {
+        <button
+          type="button"
+          role="tab"
+          class="category-tab"
+          [class.active]="selectedCategory() === cat"
+          [attr.aria-selected]="selectedCategory() === cat"
+          (click)="onCategorySelect(cat)"
+        >{{ cat }}</button>
+      }
     </div>
 
     <!-- Blog Grid -->
@@ -45,124 +157,170 @@
 
       <!-- Skeleton loader -->
       @if (isLoadingInitial()) {
-      @for (i of [1,2,3,4,5,6]; track i) {
-      <div class="skeleton-card">
-        <div class="sk-img"></div>
-        <div class="sk-body">
-          <div class="sk-line sk-short"></div>
-          <div class="sk-line sk-long"></div>
-          <div class="sk-line sk-med"></div>
-          <div class="sk-line sk-med"></div>
-        </div>
-      </div>
-      }
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <div class="skeleton-card">
+            <div class="sk-img"></div>
+            <div class="sk-body">
+              <div class="sk-line sk-short"></div>
+              <div class="sk-line sk-long"></div>
+              <div class="sk-line sk-med"></div>
+              <div class="sk-line sk-med"></div>
+            </div>
+          </div>
+        }
       }
 
       <!-- Blog cards -->
-      @for (blog of filteredBlogs(); track blog.id) {
-      <article class="blog-card" (click)="navigateToBlog(blog.slug)" tabindex="0" role="button"
-        [attr.aria-label]="'Read blog: ' + blog.title" (keydown.enter)="navigateToBlog(blog.slug)">
-        <div class="card-image">
-          <img [src]="getCurrentImage(blog)" [alt]="blog.title" loading="lazy" />
-          <span class="cat-badge">{{ blog.category }}</span>
-          @if (blog.images.length > 1) {
-          <button class="img-prev" (click)="prevImage(blog, $event)" aria-label="Previous image">&#8249;</button>
-          <button class="img-next" (click)="nextImage(blog, $event)" aria-label="Next image">&#8250;</button>
-          <div class="img-dots">
-            @for (img of blog.images; track $index) {
-            <span class="dot" [class.active]="(imageIndexes[blog.id] || 0) === $index"></span>
-            }
-          </div>
-          }
-        </div>
+      @if (!isLoadingInitial()) {
+        @for (blog of filteredBlogs(); track blog.id) {
+          <article class="blog-card" (click)="navigateToBlog(blog.slug)" tabindex="0" role="button"
+            [attr.aria-label]="'Read blog: ' + blog.title" (keydown.enter)="navigateToBlog(blog.slug)">
 
-        <div class="card-body">
-          <p class="card-author">{{ blog.author }}</p>
-          <h3 class="card-title">{{ blog.title }}</h3>
-          <p class="card-excerpt">{{ blog.excerpt }}</p>
-
-          <div class="card-footer" (click)="$event.stopPropagation()">
-            <div class="card-stats">
-              <button type="button" class="stat-btn" [class.liked]="blog.isLiked" [disabled]="isBlogSyncing(blog.id)"
-                (click)="toggleLike(blog, $event)"
-                [attr.aria-label]="'Like this blog, ' + (blog.likesCount || 0) + ' likes'">
-                <svg viewBox="0 0 24 24" width="16" height="16" [attr.fill]="blog.isLiked ? 'currentColor' : 'none'"
-                  stroke="currentColor" stroke-width="2">
-                  <path
-                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                  </path>
-                </svg>
-                <span>{{ isBlogSyncing(blog.id) ? '…' : (blog.likesCount || 0) }}</span>
-              </button>
-              @if (blog.enableComments) {
-              <span class="stat-btn">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                  <path
-                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
-                  </path>
-                </svg>
-                <span>{{ blog.commentsCount || 0 }}</span>
-              </span>
+            <div class="card-image">
+              <img [src]="getCurrentImage(blog)" [alt]="blog.title" loading="lazy" />
+              <div class="cat-badges">
+                @for (cat of getCategories(blog.category); track cat) {
+                  <span class="cat-badge">{{ cat }}</span>
+                }
+              </div>
+              @if (blog.images.length > 1) {
+                <button class="img-prev" (click)="prevImage(blog, $event)" aria-label="Previous image">&#8249;</button>
+                <button class="img-next" (click)="nextImage(blog, $event)" aria-label="Next image">&#8250;</button>
+                <div class="img-dots">
+                  @for (img of blog.images; track $index) {
+                    <span class="dot" [class.active]="(imageIndexes[blog.id] || 0) === $index"></span>
+                  }
+                </div>
               }
             </div>
-            <button class="read-btn" (click)="navigateToBlog(blog.slug)">
-              Read More
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
+
+            <div class="card-body">
+              <div class="card-meta-row">
+                <span class="card-author">{{ blog.author }}</span>
+                <span class="card-date">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  {{ (blog.publishedOn || blog.date) | date:'MMM d, yyyy' }}
+                </span>
+              </div>
+
+              <h3 class="card-title">{{ blog.title }}</h3>
+              <p class="card-excerpt">{{ blog.excerpt }}</p>
+
+              <div class="card-footer" (click)="$event.stopPropagation()">
+                <div class="card-stats">
+                  <button type="button" class="stat-btn" [class.liked]="blog.isLiked"
+                    [disabled]="isBlogSyncing(blog.id)"
+                    (click)="toggleLike(blog, $event)"
+                    [attr.aria-label]="'Like this blog, ' + (blog.likesCount || 0) + ' likes'">
+                    <svg viewBox="0 0 24 24" width="16" height="16"
+                      [attr.fill]="blog.isLiked ? 'currentColor' : 'none'"
+                      stroke="currentColor" stroke-width="2">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span>{{ isBlogSyncing(blog.id) ? '…' : (blog.likesCount || 0) }}</span>
+                  </button>
+                  @if (blog.enableComments) {
+                    <span class="stat-btn">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                      </svg>
+                      <span>{{ blog.commentsCount || 0 }}</span>
+                    </span>
+                  }
+                </div>
+                <button class="read-btn" (click)="navigateToBlog(blog.slug)">
+                  Read More
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="8" y1="11" x2="14" y2="11" stroke-width="2"></line>
+            </svg>
+            <h3>No insights found</h3>
+            <p>No blogs in this category yet. Try a different filter.</p>
+            <button class="read-btn" style="margin: 0 auto;" (click)="onCategorySelect('ALL')">Show All</button>
           </div>
-        </div>
-      </article>
+        }
       }
     </div>
 
     <!-- Mid CTA (after all blogs) -->
     @if (!isLoadingInitial()) {
-    <div class="cta-banner mid-cta-banner">
-      <div class="cta-text">
-        <h2 class="cta-heading">Start Your Trading Journey with Confidence</h2>
-        <p>The stock market offers great opportunities—but success depends on the right strategy and guidance.</p>
-        <p>If you want to:</p>
-        <ul class="cta-list">
-          <li>Improve trading consistency</li>
-          <li>Avoid common mistakes</li>
-          <li>Get expert-backed insights</li>
-        </ul>
-        <p>Connect with <strong>Research Mantra</strong> and take the next step toward smarter trading.</p>
+      <div class="cta-banner mid-cta-banner">
+        <div class="cta-text">
+          <h2 class="cta-heading">Start Your Trading Journey with Confidence</h2>
+          <p>The stock market offers great opportunities—but success depends on the right strategy and guidance.</p>
+          <p>If you want to:</p>
+          <ul class="cta-list">
+            <li>Improve trading consistency</li>
+            <li>Avoid common mistakes</li>
+            <li>Get expert-backed insights</li>
+          </ul>
+          <p>Connect with <strong>Research Mantra</strong> and take the next step toward smarter trading.</p>
+        </div>
+        <a [routerLink]="['/contact']" class="cta-pill-btn">Get Investment Help</a>
       </div>
-      <a [routerLink]="['/contact']" class="cta-pill-btn">Get Investment Help</a>
-    </div>
 
-    <!-- SEO Content -->
-    <div class="seo-block">
-      <h2 class="seo-heading">Stock Market Analysis &amp; Trading Insights</h2>
-      <p>
-        The <strong>stock market in India</strong> offers multiple opportunities for traders and
-        investors, but success depends on understanding market trends, price action, and key
-        levels. Regular <strong>stock market analysis and nifty updates</strong> help traders
-        identify the right entry and exit points while managing risk effectively.
-      </p>
-      <p>
-        By following <strong>support and resistance levels, market structure, and trading
-          strategies</strong>, traders can avoid emotional decisions and improve consistency.
-        Whether you are focusing on intraday trading or short-term opportunities, having clarity
-        on market direction is essential.
-      </p>
-      <p>
-        Our analysis is designed to simplify complex market movements into actionable insights.
-        Instead of relying on random tips, structured trading backed by research can help you
-        make better decisions.
-      </p>
-      <p>
-        Staying updated with market trends, price behavior, and key levels allows traders to
-        adapt quickly and take advantage of opportunities in a dynamic market environment.
-      </p>
-    </div>
-
-
+      <!-- SEO Content -->
+      <div class="seo-block">
+        <h2 class="seo-heading">Stock Market Analysis &amp; Trading Insights</h2>
+        <p>
+          The <strong>stock market in India</strong> offers multiple opportunities for traders and
+          investors, but success depends on understanding market trends, price action, and key
+          levels. Regular <strong>stock market analysis and nifty updates</strong> help traders
+          identify the right entry and exit points while managing risk effectively.
+        </p>
+        <p>
+          By following <strong>support and resistance levels, market structure, and trading
+            strategies</strong>, traders can avoid emotional decisions and improve consistency.
+          Whether you are focusing on intraday trading or short-term opportunities, having clarity
+          on market direction is essential.
+        </p>
+        <p>
+          Our analysis is designed to simplify complex market movements into actionable insights.
+          Instead of relying on random tips, structured trading backed by research can help you
+          make better decisions.
+        </p>
+        <p>
+          Staying updated with market trends, price behavior, and key levels allows traders to
+          adapt quickly and take advantage of opportunities in a dynamic market environment.
+        </p>
+      </div>
     }
+
+    } <!-- end @else (normal view) -->
 
   </div>
 </div>
+
+<!-- Lead Capture Modal -->
+@if (showLeadModal()) {
+  <app-lead-capture-modal
+    (submitted)="onLeadSubmitted($event)"
+    (closed)="onModalClosed()"
+  ></app-lead-capture-modal>
+}
+
+<!-- Share Modal -->
+@if (shareModalBlog()) {
+  <app-share-modal
+    [shareUrl]="shareModalBlog()!.url"
+    [shareTitle]="shareModalBlog()!.title"
+    (closed)="closeShare()"
+  ></app-share-modal>
+}

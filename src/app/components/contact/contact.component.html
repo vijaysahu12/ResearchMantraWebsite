@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="section-header">
             <div class="eyebrow">Contact Us</div>
-            <h2 class="main-heading">Contact Stock Advisory Experts – <span class="highlight">Research Mantra</span></h2>
+            <h1 class="main-heading">Contact Stock Advisory Experts – <span class="highlight">Research Mantra</span></h1>
             <p class="sub-heading">
                 Have specific questions about our plans or research? Send us a message and our team will get back to you
                 shortly.
@@ -13,7 +13,7 @@
         <div class="contact-content">
             <div class="contact-card">
                 <div class="card-inner-header">
-                    <h3 class="card-title">Let's Talk</h3>
+                    <h2 class="card-title">Let's Talk</h2>
                     <p class="card-subtitle">Are you ready to make something memorable? We're ready to help.</p>
                 </div>
 
@@ -22,7 +22,7 @@
                         <!-- Full Name -->
                         <div class="form-group">
                             <label for="fullName" class="sr-only">Full Name</label>
-                            <input type="text" id="fullName" formControlName="fullName"
+                            <input type="text" id="fullName" formControlName="fullName" maxlength="50"
                                 placeholder="Full Name *" (input)="onNameInput($event)"
                                 [class.error]="contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid" />
                             @if (contactForm.get('fullName')?.touched && contactForm.get('fullName')?.invalid) {
@@ -62,6 +62,12 @@
                             }
                         </div>
 
+                        <!-- Investment Capital (Optional) -->
+                        <div class="form-group">
+                            <label for="investmentCapital" class="sr-only">Investment Capital</label>
+                            <input type="text" id="investmentCapital" formControlName="investmentCapital"
+                                placeholder="Investment Capital E.g. ₹1L, ₹5L, ₹10L+" />
+                        </div>
                         <!-- Website (UI only) -->
                         <div class="form-group">
                             <label for="website" class="sr-only">Website</label>
@@ -95,8 +101,8 @@
 
                     <!-- Message -->
                     <div class="form-group message-group">
-                        <label for="message" class="sr-only">Message</label>
-                        <textarea id="message" formControlName="message" rows="3" placeholder="Message *"
+                        <label for="contact-message" class="sr-only">Message</label>
+                        <textarea id="contact-message" formControlName="message" rows="3" maxlength="300" placeholder="Message *"
                             [class.error]="contactForm.get('message')?.touched && contactForm.get('message')?.invalid"></textarea>
                         @if (contactForm.get('message')?.touched && contactForm.get('message')?.invalid) {
                         <span class="error-text">Message is required</span>
@@ -105,13 +111,11 @@
 
                     <!-- Terms and Conditions -->
                     <div class="terms-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" formControlName="acceptTerms">
+                        <label class="checkbox-container" for="acceptTerms">
+                            <input type="checkbox" id="acceptTerms" formControlName="acceptTerms">
                             <span class="checkmark"></span>
-                            <span class="terms-text">
-                                I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank"
-                                    (click)="$event.stopPropagation()">Terms &amp; Conditions</a>
-                            </span>
+                            I accept the <a href="https://researchmantra.in/terms-conditions" target="_blank"
+                                (click)="$event.stopPropagation()">Terms &amp; Conditions</a>
                         </label>
                         @if (contactForm.get('acceptTerms')?.touched && contactForm.get('acceptTerms')?.invalid) {
                         <span class="error-text">You must accept the terms to proceed</span>
@@ -120,18 +124,16 @@
 
                     <!-- Opt-in Communications -->
                     <div class="optin-group">
-                        <label class="checkbox-container optin-checkbox">
-                            <input type="checkbox" formControlName="optInCommunications">
+                        <label class="checkbox-container optin-checkbox" for="optInCommunications">
+                            <input type="checkbox" id="optInCommunications" formControlName="optInCommunications">
                             <span class="checkmark checkmark-top"></span>
-                            <span class="terms-text">
-                                I would like to receive communications from Research Mantra via SMS, Email, WhatsApp
-                                and Google RCS for my services offers and updates.
-                            </span>
+                            I would like to receive communications from Research Mantra via SMS, Email, WhatsApp
+                            and Google RCS for my services offers and updates.
                         </label>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="submit-btn" [disabled]="contactForm.invalid || isSubmitting()">
+                        <button type="submit" class="submit-btn" aria-label="Send A Message" [disabled]="contactForm.invalid || isSubmitting()">
                             @if (isSubmitting()) {
                             <span>Sending...</span>
                             } @else {

@@ -1,0 +1,147 @@
+<div class="purchase-overlay" (click)="onOverlayClick()">
+  <div class="purchase-modal" role="dialog" aria-modal="true" aria-labelledby="purchase-title" (click)="$event.stopPropagation()">
+    <button type="button" class="pm-close" (click)="close()" aria-label="Close" [disabled]="paying()">×</button>
+
+    <header class="pm-head">
+      <span class="pm-thumb" aria-hidden="true">
+        @if (productImage()) { <img [src]="productImage()" [alt]="productName()" /> }
+        @else { <span class="pm-thumb-mono">{{ monogram(productName()) }}</span> }
+      </span>
+      <div class="pm-head-text">
+        <p class="pm-kicker">Subscribe &amp; unlock</p>
+        <h2 id="purchase-title">{{ productName() }}</h2>
+        <div class="pm-head-badges">
+          @if (category()) { <span class="pm-chip">{{ category() }}</span> }
+          @if (productTag()) { <span class="pm-chip alt">{{ productTag() }}</span> }
+        </div>
+      </div>
+    </header>
+
+    @if (payStatus() === 'pending') {
+      <div class="pm-status">
+        <span class="status-spinner" aria-hidden="true"></span>
+        <h3>Waiting for your payment…</h3>
+        <p>Complete the payment in the tab that just opened. This page updates automatically the moment it’s done.</p>
+        <button type="button" class="pm-pay" (click)="checkStatusNow()" [disabled]="statusChecking()">
+          @if (statusChecking()) { <span class="pm-spinner small" aria-hidden="true"></span> }
+          <span>{{ statusChecking() ? 'Checking…' : 'I’ve completed payment' }}</span>
+        </button>
+        <button type="button" class="pm-textbtn" (click)="cancelPending()">Cancel</button>
+      </div>
+    } @else if (payStatus() === 'success') {
+      <div class="pm-status">
+        <span class="status-tick" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><circle class="st-ring" cx="26" cy="26" r="24" fill="none"/><path class="st-check" fill="none" d="M14 27l8 8 16-17"/></svg>
+        </span>
+        <h3>{{ finalAmount() === 0 ? 'Subscription activated! 🎉' : 'Payment successful! 🎉' }}</h3>
+        <p>Your subscription is now active. Open the Research Mantra app to start using it.</p>
+        <a routerLink="/mobile" class="pm-pay success-btn">Open in the app <span aria-hidden="true">→</span></a>
+        <button type="button" class="pm-textbtn" (click)="close()">Done</button>
+      </div>
+    } @else if (payStatus() === 'failed') {
+      <div class="pm-status">
+        <span class="status-x" aria-hidden="true">!</span>
+        <h3>Payment not completed</h3>
+        <p>Your payment was cancelled or didn’t go through. No amount was deducted — you can try again.</p>
+        <button type="button" class="pm-pay" (click)="retryFailed()">Try again</button>
+        <button type="button" class="pm-textbtn" (click)="close()">Close</button>
+      </div>
+    } @else if (plansLoading()) {
+      <div class="pm-loading"><span class="pm-spinner" aria-hidden="true"></span><p>Loading plans…</p></div>
+    } @else if (plansError()) {
+      <div class="pm-state" role="alert">
+        <p>{{ plansError() }}</p>
+        <button type="button" (click)="loadPlans()">Try again</button>
+      </div>
+    } @else if (durations().length > 0) {
+      <div class="pm-body">
+        <p class="pm-label reveal" style="--d:.04s">Choose your plan</p>
+        <div class="plan-options">
+          @for (duration of durations(); track duration.subscriptionDurationId; let i = $index) {
+            <button type="button" class="plan-option reveal" [style.--d]="(0.08 + i * 0.06) + 's'"
+                    [class.selected]="selectedDuration()?.subscriptionDurationId === duration.subscriptionDurationId"
+                    [attr.aria-pressed]="selectedDuration()?.subscriptionDurationId === duration.subscriptionDurationId"
+                    (click)="selectDuration(duration)">
+              <span class="plan-check" aria-hidden="true"></span>
+              <span class="plan-info">
+                <span class="plan-top">
+                  <span class="plan-name">{{ duration.subscriptionDurationName || (duration.months + ' Months') }}</span>
+                  @if (duration.isRecommended) { <span class="plan-reco">★ Best value</span> }
+                  @else if (discountPercent(duration) > 0) { <span class="plan-off">{{ discountPercent(duration) }}% off</span> }
+                </span>
+                @if (duration.months > 0) {
+                  <span class="plan-permonth">₹{{ (duration.netPayment / duration.months) | number:'1.0-0' }}/mo · billed for {{ duration.months }} months</span>
+                }
+              </span>
+              <span class="plan-price">
+                <strong>₹{{ duration.netPayment | number:'1.0-0' }}</strong>
+                @if (duration.actualPrice > duration.netPayment) { <s>₹{{ duration.actualPrice | number:'1.0-0' }}</s> }
+              </span>
+            </button>
+          }
+        </div>
+
+        <p class="pm-label reveal" style="--d:.24s">Your details</p>
+        <div class="contact-fields reveal" style="--d:.26s">
+          <div class="contact-field" [class.field-error]="fullName.invalid && fullName.touched">
+            <label for="pm-fullname">Full name</label>
+            <input id="pm-fullname" type="text" placeholder="Your full name" [formControl]="fullName" autocomplete="name" />
+          </div>
+          <div class="contact-field" [class.field-error]="email.invalid && email.touched">
+            <label for="pm-email">Email address</label>
+            <input id="pm-email" type="email" placeholder="you@example.com" [formControl]="email" autocomplete="email" />
+          </div>
+        </div>
+        @if ((fullName.invalid && fullName.touched) || (email.invalid && email.touched)) {
+          <p class="pm-error">Please enter a valid name and email address to continue.</p>
+        }
+
+        <div class="coupon-row reveal" style="--d:.3s">
+          <div class="coupon-field" [class.applied]="appliedCoupon().length > 0">
+            <svg class="coupon-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+            <input type="text" [formControl]="coupon" placeholder="Have a coupon code?"
+                   [disabled]="applyingCoupon() || appliedCoupon().length > 0" aria-label="Coupon code" />
+          </div>
+          @if (appliedCoupon()) {
+            <button type="button" class="coupon-btn ghost" (click)="clearCoupon()">Remove</button>
+          } @else {
+            <button type="button" class="coupon-btn" (click)="applyCoupon()" [disabled]="applyingCoupon() || !coupon.value.trim()">
+              {{ applyingCoupon() ? 'Applying…' : 'Apply' }}
+            </button>
+          }
+        </div>
+        @if (appliedCoupon()) {
+          <p class="coupon-ok">✓ Coupon <strong>{{ appliedCoupon() }}</strong> applied — saved ₹{{ couponDiscount() | number:'1.0-0' }}</p>
+        }
+        @if (purchaseError()) { <p class="pm-error" role="alert">{{ purchaseError() }}</p> }
+
+        <div class="summary reveal" style="--d:.36s">
+          <div class="sum-row"><span>Plan</span><span>{{ selectedDuration()?.subscriptionDurationName || (selectedDuration()?.months + ' months') }}</span></div>
+          <div class="sum-row"><span>Original price</span><span>₹{{ selectedOriginal() | number:'1.0-0' }}</span></div>
+          @if (planDiscount() > 0) { <div class="sum-row disc"><span>Plan discount</span><span>−₹{{ planDiscount() | number:'1.0-0' }}</span></div> }
+          @if (couponDiscount() > 0) { <div class="sum-row disc"><span>Coupon ({{ appliedCoupon() }})</span><span>−₹{{ couponDiscount() | number:'1.0-0' }}</span></div> }
+          <div class="sum-total">
+            <div class="sum-total-label"><span>Total payable</span>@if (perMonthAmount() > 0) { <small>≈ ₹{{ perMonthAmount() | number:'1.0-0' }}/month</small> }</div>
+            <strong>₹{{ finalAmount() | number:'1.0-2' }}</strong>
+          </div>
+          @if (totalSavings() > 0) { <div class="save-pill">🎉 You save ₹{{ totalSavings() | number:'1.0-0' }} ({{ savingsPercent() }}%)</div> }
+        </div>
+
+        <button type="button" class="pm-pay reveal" style="--d:.42s" (click)="proceedToPay()" [disabled]="paying() || !selectedDuration() || fullName.invalid || email.invalid">
+          @if (paying()) { <span class="pm-spinner small" aria-hidden="true"></span> }
+          <span>
+            @if (paying()) { {{ finalAmount() === 0 ? 'Activating…' : 'Creating secure payment…' }} }
+            @else if (finalAmount() === 0) { Activate for free }
+            @else { Proceed to pay ₹{{ finalAmount() | number:'1.0-0' }} }
+          </span>
+        </button>
+
+        <div class="pm-trust reveal" style="--d:.48s">
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Secure payment</span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Instant activation</span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>SEBI-registered</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

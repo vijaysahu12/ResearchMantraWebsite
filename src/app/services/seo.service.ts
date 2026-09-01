@@ -4,6 +4,20 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { filter } from 'rxjs/operators';
 
+interface SeoMetaConfig {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    image?: string;
+    type?: string;
+    canonicalUrl?: string;
+}
+
+interface FaqSchemaItem {
+    question: string;
+    answer: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -37,10 +51,12 @@ export class SeoService {
         element.setAttribute('href', canonicalUrl);
     }
 
-    setMetaTags(config: { title?: string, description?: string, keywords?: string, image?: string, type?: string }) {
-        // Set og:url to the current canonical URL for proper SEO indexing
-        const currentUrl = this.baseUrl + this.router.url.split('?')[0].split('#')[0];
-        this.metaService.updateTag({ property: 'og:url', content: currentUrl });
+    setMetaTags(config: SeoMetaConfig) {
+        const canonicalUrl =
+            config.canonicalUrl || this.baseUrl + this.router.url.split('?')[0].split('#')[0];
+
+        this.updateCanonicalUrl(canonicalUrl);
+        this.metaService.updateTag({ property: 'og:url', content: canonicalUrl });
 
         // Set twitter:card for rich social media previews
         this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
@@ -71,5 +87,37 @@ export class SeoService {
         } else {
             this.metaService.updateTag({ property: 'og:type', content: 'website' });
         }
+    }
+
+    /**
+     * Injects (or clears) FAQPage JSON-LD structured data for the current page,
+     * so search engines and AI answer engines can surface individual Q&As directly.
+     */
+    setFaqSchema(faqs: FaqSchemaItem[] | undefined | null) {
+        const existing = this.document.getElementById('faq-schema');
+        existing?.remove();
+
+        if (!faqs || faqs.length === 0) {
+            return;
+        }
+
+        const schema = {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqs.map(faq => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: faq.answer
+                }
+            }))
+        };
+
+        const script = this.document.createElement('script');
+        script.id = 'faq-schema';
+        script.type = 'application/ld+json';
+        script.text = JSON.stringify(schema);
+        this.document.head.appendChild(script);
     }
 }

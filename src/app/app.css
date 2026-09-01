@@ -1,0 +1,290 @@
+/* ===================== TOP ANNOUNCEMENT BAR ===================== */
+/* Fixed shell holding the promo bar + floating header. It slides up out of
+   view on scroll-down and back in on scroll-up. Transparent so the page
+   (dark hero on home) shows through behind the floating header. */
+.top-shell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: transform 0.35s ease;
+    will-change: transform;
+}
+
+.top-shell--hidden {
+    transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .top-shell {
+        transition: none;
+    }
+}
+
+.top-promo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 16px;
+    background: linear-gradient(90deg, #0b1533 0%, #4f46e5 50%, #0b1533 100%);
+    background-size: 200% 100%;
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    animation: tpbShift 6s ease infinite;
+    transition: filter 0.2s ease;
+}
+
+.top-promo-bar:hover {
+    filter: brightness(1.1);
+}
+
+@keyframes tpbShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Per-campaign background themes */
+.top-promo-bar.tpb-theme-gold {
+    background-image: linear-gradient(90deg, #7c2d12 0%, #d97706 50%, #7c2d12 100%);
+}
+
+.top-promo-bar.tpb-theme-green {
+    background-image: linear-gradient(90deg, #064e3b 0%, #059669 50%, #064e3b 100%);
+}
+
+.tpb-flame {
+    animation: tpbFlame 1.2s ease-in-out infinite;
+}
+
+@keyframes tpbFlame {
+    0%, 100% { transform: scale(1) rotate(-4deg); }
+    50% { transform: scale(1.2) rotate(4deg); }
+}
+
+.tpb-text strong {
+    color: #FACC15;
+    font-weight: 800;
+}
+
+.tpb-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #FACC15;
+    color: #1a1200;
+    font-weight: 800;
+    font-size: 12.5px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    white-space: nowrap;
+    transition: transform 0.2s ease;
+}
+
+.top-promo-bar:hover .tpb-cta {
+    transform: translateX(2px);
+}
+
+@media (max-width: 600px) {
+    .top-promo-bar {
+        font-size: 12.5px;
+        gap: 7px;
+        padding: 8px 12px;
+    }
+
+    .tpb-cta {
+        font-size: 11.5px;
+        padding: 4px 10px;
+    }
+}
+
+@media (max-width: 380px) {
+    .tpb-text strong { display: inline; }
+    .tpb-text { font-size: 11.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .top-promo-bar,
+    .tpb-flame {
+        animation: none;
+    }
+}
+
+/* App-wide promo popup */
+.promo-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.promo-content {
+    background: #fff;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: promoScale 0.3s ease-out;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+@keyframes promoScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.promo-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #94A3B8;
+    cursor: pointer;
+    line-height: 1;
+    z-index: 10;
+    padding: 4px 8px;
+}
+
+.promo-close:hover { color: #475569; }
+
+.promo-body {
+    padding: 40px;
+    text-align: center;
+}
+
+.promo-icon {
+    width: 64px;
+    height: 64px;
+    background: #EFF6FF;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #2563EB;
+}
+
+.promo-body h3 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 10px;
+    color: #0F172A;
+    letter-spacing: -0.01em;
+}
+
+.promo-body p {
+    font-size: 15px;
+    color: #64748B;
+    margin: 0 0 4px;
+    line-height: 1.6;
+}
+
+.promo-qr-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 24px 0 16px;
+}
+
+.promo-qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.promo-qr-frame {
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.promo-qr-frame img {
+    display: block;
+    border-radius: 6px;
+}
+
+.promo-qr-platform {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.promo-store-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    color: #fff;
+    box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.promo-store-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 10px 20px -6px rgba(0, 0, 0, 0.5);
+}
+
+.promo-store-btn--play {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.promo-store-btn--ios {
+    background: linear-gradient(135deg, #0F172A, #334155);
+}
+
+.promo-qr-divider {
+    width: 1px;
+    height: 150px;
+    background: #E2E8F0;
+    align-self: center;
+    margin: 0 12px;
+    flex-shrink: 0;
+}
+
+.promo-hint {
+    font-size: 12px;
+    color: #94A3B8;
+    margin: 0 !important;
+}
+
+@media (max-width: 480px) {
+    .promo-body { padding: 28px 20px; }
+
+    .promo-qr-frame img {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .promo-qr-divider { height: 120px; margin: 0 8px; }
+
+    .promo-body h3 { font-size: 18px; }
+}

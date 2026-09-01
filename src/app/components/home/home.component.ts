@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { RmIntroComponent } from '../rm-intro/rm-intro.component';
+import { HomeBasketOfferComponent } from '../home-basket-offer/home-basket-offer.component';
+import { HomeProductsComponent } from '../home-products/home-products.component';
 import { TradeSetupsComponent } from '../trade-setups/trade-setups.component';
 import { WhyChooseRmComponent } from '../why-choose-rm/why-choose-rm.component';
 import { PricingPlansComponent } from '../pricing-plans/pricing-plans.component';
@@ -9,11 +11,14 @@ import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { FaqComponent } from '../faq/faq.component';
 import { ComplaintsSummaryComponent } from '../complaints-summary/complaints-summary.component';
 import { MustReadComponent } from '../must-read/must-read.component';
+import { ContactComponent } from '../contact/contact.component';
 
 @Component({
   selector: 'app-home',
   imports: [
     RmIntroComponent,
+    HomeBasketOfferComponent,
+    HomeProductsComponent,
     TradeSetupsComponent,
     WhyChooseRmComponent,
     PricingPlansComponent,
@@ -21,10 +26,13 @@ import { MustReadComponent } from '../must-read/must-read.component';
     TestimonialsComponent,
     ComplaintsSummaryComponent,
     MustReadComponent,
-    FaqComponent
+    FaqComponent,
+    ContactComponent
   ],
   template: `
     <app-rm-intro></app-rm-intro>
+    <app-home-basket-offer></app-home-basket-offer>
+    <app-home-products></app-home-products>
     <app-trade-setups></app-trade-setups>
     <app-why-choose-rm></app-why-choose-rm>
     <app-pricing-plans></app-pricing-plans>
@@ -33,6 +41,7 @@ import { MustReadComponent } from '../must-read/must-read.component';
     <app-complaints-summary></app-complaints-summary>
     <app-must-read></app-must-read>
     <app-faq></app-faq>
+    <app-contact></app-contact>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -1,0 +1,73 @@
+@if (loading()) {
+  <section class="bo-section" aria-label="Loading special offer">
+    <div class="bo-inner"><div class="bo-card bo-skeleton"></div></div>
+  </section>
+} @else if (baskets().length > 0) {
+  <section class="bo-section" aria-labelledby="bo-heading">
+    <div class="bo-inner">
+      <div class="bo-head">
+        <span class="bo-eyebrow">🔥 Special offer</span>
+        <h2 id="bo-heading">Get more, together — in one basket</h2>
+        <p class="bo-sub">Handpicked products bundled at one special price. Limited time.</p>
+      </div>
+
+      @if (isSingle()) {
+        @for (basket of baskets(); track basket.id) {
+          <article
+            class="bo-hero"
+            tabindex="0"
+            (click)="openBasket(basket)"
+            (keydown.enter)="openBasket(basket)"
+            (keydown.space)="$event.preventDefault(); openBasket(basket)"
+            [attr.aria-label]="'View the ' + displayName(basket.name) + ' basket offer'"
+          >
+            <div class="bo-hero-media">
+              @if (basket.listImage) {
+                <img [src]="basket.listImage" [alt]="displayName(basket.name)" loading="lazy" />
+              } @else {
+                <span class="bo-mono">{{ monogram(basket.name) }}</span>
+              }
+            </div>
+            <div class="bo-hero-body">
+              <h3>{{ displayName(basket.name) }}</h3>
+              <p>All the products in this basket, bundled together at one special price.</p>
+              <span class="bo-cta">
+                Buy Basket
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+          </article>
+        }
+      } @else {
+        <div class="bo-row" role="list">
+          @for (basket of baskets(); track basket.id) {
+            <article
+              class="bo-card"
+              role="listitem"
+              tabindex="0"
+              (click)="openBasket(basket)"
+              (keydown.enter)="openBasket(basket)"
+              (keydown.space)="$event.preventDefault(); openBasket(basket)"
+              [attr.aria-label]="'View the ' + displayName(basket.name) + ' basket offer'"
+            >
+              <div class="bo-media">
+                @if (basket.listImage) {
+                  <img [src]="basket.listImage" [alt]="displayName(basket.name)" loading="lazy" />
+                } @else {
+                  <span class="bo-mono">{{ monogram(basket.name) }}</span>
+                }
+              </div>
+              <div class="bo-body">
+                <h3>{{ displayName(basket.name) }}</h3>
+                <span class="bo-cta">
+                  Buy Basket
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </div>
+  </section>
+}

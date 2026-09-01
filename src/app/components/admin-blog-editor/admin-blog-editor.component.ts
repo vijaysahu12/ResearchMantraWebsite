@@ -22,8 +22,8 @@ export class AdminBlogEditorComponent {
   readonly slugEdited = signal(false);
   readonly canonicalUrl = computed(() =>
     this.form.controls.slug.value
-      ? `https://researchmantra.in/blogs/${this.form.controls.slug.value}`
-      : 'https://researchmantra.in/blogs/your-post-slug',
+      ? `https://researchmantra.in/${this.form.controls.slug.value}`
+      : 'https://researchmantra.in/your-post-slug',
   );
 
   readonly form = new FormGroup({

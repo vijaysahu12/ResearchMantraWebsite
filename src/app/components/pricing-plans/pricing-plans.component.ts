@@ -1,161 +1,290 @@
-import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import {
+    Component, ChangeDetectionStrategy, signal, inject,
+    AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone, PLATFORM_ID
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 
-interface FeatureRow {
+interface PriceTier {
+    label: string;
+    price: string;
+    highlight?: boolean;
+}
+
+interface Plan {
+    id: number;
     name: string;
-    cashPositional: string;
-    fatafatOptions: string;
-    huntingFuture: string;
+    category: string;
+    idealFor: string;
+    tradingFocus: string;
+    capitalRequired: string;
+    tradeFrequency: string;
+    alertsSupport: string;
+    tradeDetails: string;
+    riskManagement: string;
+    pricing: PriceTier[];
 }
 
 @Component({
     selector: 'app-pricing-plans',
-    standalone: true,
-    imports: [RouterLink, ReactiveFormsModule],
+    imports: [NgOptimizedImage],
     templateUrl: './pricing-plans.component.html',
     styleUrl: './pricing-plans.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PricingPlansComponent {
-    private fb = inject(FormBuilder);
+export class PricingPlansComponent implements AfterViewInit, OnDestroy {
+    private router = inject(Router);
+    private zone = inject(NgZone);
+    private platformId = inject(PLATFORM_ID);
 
-    // Modal State
-    isModalOpen = signal(false);
-    isLoading = signal(false);
-    errorMessage = signal('');
-    noRecordsFound = signal(false);
+    @ViewChild('pinWrap') pinWrap!: ElementRef<HTMLElement>;
+    @ViewChild('viewport') viewport!: ElementRef<HTMLElement>;
+    @ViewChild('track') track!: ElementRef<HTMLElement>;
+    @ViewChild('progressFill') progressFill!: ElementRef<HTMLElement>;
 
-    private http = inject(HttpClient);
+    private pinEnabled = false;
+    private scrollDistance = 0;
+    private currentX = 0;
+    private targetX = 0;
+    private raf = 0;
+    private cleanup: (() => void) | null = null;
 
-    // Form
-    reportForm: FormGroup;
+    ngAfterViewInit(): void {
+        if (!isPlatformBrowser(this.platformId)) return;
+        this.zone.runOutsideAngular(() => {
+            const onScroll = () => this.onScroll();
+            const onResize = () => this.measure();
 
-    constructor() {
-        this.reportForm = this.fb.group({
-            fromDate: [''],
-            toDate: ['']
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onResize);
+            window.addEventListener('load', onResize);
+
+            // Recompute once images/fonts have settled the layout width.
+            setTimeout(() => this.measure(), 300);
+
+            this.cleanup = () => {
+                window.removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', onResize);
+                window.removeEventListener('load', onResize);
+                if (this.raf) cancelAnimationFrame(this.raf);
+            };
         });
     }
 
+    ngOnDestroy(): void {
+        this.cleanup?.();
+    }
+
+    /** Measure overflow and decide whether the pin effect should be active. */
+    private measure(): void {
+        const wrap = this.pinWrap?.nativeElement;
+        const view = this.viewport?.nativeElement;
+        const track = this.track?.nativeElement;
+        if (!wrap || !view || !track) return;
+
+        const wide = window.innerWidth > 900;
+        const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+        this.scrollDistance = Math.max(0, track.scrollWidth - view.clientWidth);
+        this.pinEnabled = wide && motionOk && this.scrollDistance > 0;
+
+        if (this.pinEnabled) {
+            wrap.classList.add('pin-on');
+            // Tall spacer = one screen to view + the horizontal distance to travel.
+            wrap.style.height = `${window.innerHeight + this.scrollDistance}px`;
+            this.onScroll();
+        } else {
+            wrap.classList.remove('pin-on');
+            wrap.style.height = '';
+            track.style.transform = '';
+            this.currentX = this.targetX = 0;
+            if (this.progressFill) this.progressFill.nativeElement.style.width = '0%';
+        }
+    }
+
+    private onScroll(): void {
+        if (!this.pinEnabled) return;
+        const rect = this.pinWrap.nativeElement.getBoundingClientRect();
+        const progress = Math.min(1, Math.max(0, -rect.top / this.scrollDistance));
+
+        this.targetX = -progress * this.scrollDistance;
+        if (this.progressFill) {
+            this.progressFill.nativeElement.style.width = `${progress * 100}%`;
+        }
+        if (!this.raf) this.raf = requestAnimationFrame(this.animate);
+    }
+
+    /** Ease the track toward the scroll-derived target for a smooth glide. */
+    private animate = (): void => {
+        const diff = this.targetX - this.currentX;
+        if (Math.abs(diff) < 0.5) {
+            this.currentX = this.targetX;
+        } else {
+            this.currentX += diff * 0.16;
+        }
+        this.track.nativeElement.style.transform = `translate3d(${this.currentX}px, 0, 0)`;
+
+        if (this.currentX !== this.targetX) {
+            this.raf = requestAnimationFrame(this.animate);
+        } else {
+            this.raf = 0;
+        }
+    };
+
+    /** Arrow buttons: nudge by one card either via page scroll (pinned) or native scroll (fallback). */
+    nudge(dir: number): void {
+        const track = this.track?.nativeElement;
+        const first = track?.firstElementChild as HTMLElement | null;
+        const step = first ? first.offsetWidth + 22 : 340;
+
+        if (this.pinEnabled) {
+            window.scrollBy({ top: dir * step, behavior: 'smooth' });
+        } else {
+            this.viewport?.nativeElement.scrollBy({ left: dir * step, behavior: 'smooth' });
+        }
+    }
+
+    scrollToContact(event: Event): void {
+        event.preventDefault();
+        const scroll = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        if (this.router.url === '/') {
+            scroll();
+        } else {
+            this.router.navigate(['/']).then(() => setTimeout(scroll, 100));
+        }
+    }
+
+    isModalOpen = signal(false);
+
     openReportModal() {
         this.isModalOpen.set(true);
-        this.errorMessage.set('');
-        this.noRecordsFound.set(false);
-        this.reportForm.reset({ fromDate: '', toDate: '' });
     }
 
     closeModal() {
         this.isModalOpen.set(false);
     }
 
-    isDateRangeInvalid(): boolean {
-        const from = this.reportForm.get('fromDate')?.value;
-        const to = this.reportForm.get('toDate')?.value;
-        if (from && to) {
-            return new Date(to) < new Date(from);
-        }
-        return false;
-    }
+    private readonly ALERTS = 'Research Mantra application';
+    private readonly TRADE_DETAILS = 'Clear entry, exit, target, stop-loss & reason of entry';
 
-
-    onDownloadDirect() {
-        if (this.isDateRangeInvalid()) {
-            this.errorMessage.set('To Date cannot be earlier than From Date');
-            return;
-        }
-
-        this.isLoading.set(true);
-        this.errorMessage.set('');
-        this.noRecordsFound.set(false);
-
-        const fromDate = this.reportForm.get('fromDate')?.value || '';
-        const toDate = this.reportForm.get('toDate')?.value || '';
-        const apiUrl = `https://crmapi.researchmantra.in/api/PdfReports/generate?fromDate=${fromDate}&toDate=${toDate}`;
-
-        this.http.get(apiUrl, { responseType: 'blob', observe: 'response' }).subscribe({
-            next: (response) => {
-                this.isLoading.set(false);
-
-                // Check if the response is actually a PDF
-                if (response.body && response.body.type === 'application/pdf') {
-                    const blob = new Blob([response.body], { type: 'application/pdf' });
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `PerformanceReport_${fromDate}_to_${toDate}.pdf`;
-                    link.click();
-                    window.URL.revokeObjectURL(url);
-                    this.closeModal();
-                } else {
-                    // If not a PDF, it might be an empty body or JSON message
-                    this.noRecordsFound.set(true);
-                }
-
-                if (typeof (window as any).gtag === 'function') {
-                    (window as any).gtag('event', 'report_download_success', {
-                        date_from: fromDate,
-                        date_to: toDate
-                    });
-                }
-            },
-            error: (err) => {
-                this.isLoading.set(false);
-                console.error('Download failed', err);
-
-                // Many times 404 or 204 is returned when no records exist
-                if (err.status === 404 || err.status === 204) {
-                    this.noRecordsFound.set(true);
-                } else {
-                    this.errorMessage.set('No Reports Found!');
-                }
-            }
-        });
-    }
-
-    features = signal<FeatureRow[]>([
+    plans = signal<Plan[]>([
         {
-            name: 'Ideal For',
-            cashPositional: 'Who focused on index trading',
-            fatafatOptions: 'Active intraday options traders',
-            huntingFuture: 'Serious traders seeking dedicated personal guidance'
+            id: 1,
+            name: 'Dhan Setu',
+            category: 'Intraday Index Options',
+            idealFor: 'Active intraday options traders',
+            tradingFocus: 'Intraday index option buy calls',
+            capitalRequired: '₹30,000 – ₹50,000 & above',
+            tradeFrequency: '1–2 intraday trades daily',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict intraday risk controls',
+            pricing: [
+                { label: '3 Months', price: '999' },
+                { label: '6 Months', price: '1,599' },
+                { label: '12 Months', price: '3,000', highlight: true }
+            ]
         },
         {
-            name: 'Trading Focus',
-            cashPositional: 'Only Nifty options or Bank Nifty options calls',
-            fatafatOptions: 'Nifty intraday option buy calls',
-            huntingFuture: 'Stock Options only'
+            id: 2,
+            name: 'Trend Tracker',
+            category: 'Intraday Stock Options',
+            idealFor: 'Active intraday options traders',
+            tradingFocus: 'Intraday stock option buy calls',
+            capitalRequired: '₹50,000 & above',
+            tradeFrequency: '1–2 intraday trades daily',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict intraday risk controls',
+            pricing: [
+                { label: '3 Months', price: '999' },
+                { label: '6 Months', price: '1,599' },
+                { label: '12 Months', price: '3,000', highlight: true }
+            ]
         },
         {
-            name: 'Capital Required',
-            cashPositional: '₹3,00,000 and above',
-            fatafatOptions: '₹50,000 and above',
-            huntingFuture: '₹5,00,000 and above'
+            id: 3,
+            name: 'Nifty Trend',
+            category: 'Positional Futures',
+            idealFor: 'Active positional future traders',
+            tradingFocus: 'Positional Nifty future trade only',
+            capitalRequired: '₹2,50,000 & above',
+            tradeFrequency: 'Intraday or positional trade',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict risk controls',
+            pricing: [
+                { label: '3 Months', price: '1,000' },
+                { label: '6 Months', price: '1,599' },
+                { label: '12 Months', price: '2,999', highlight: true }
+            ]
         },
         {
-            name: 'Trade Frequency',
-            cashPositional: '1 index call per day',
-            fatafatOptions: '1–2 intraday trades daily2–3 trades per session',
-            huntingFuture: '12–15 calls per month (Maximum 1 call per day)'
+            id: 4,
+            name: 'Midcap Trend',
+            category: 'Positional Futures',
+            idealFor: 'Active positional future traders',
+            tradingFocus: 'Positional Midcap future trade only',
+            capitalRequired: '₹3,00,000 & above',
+            tradeFrequency: 'Intraday or positional trade',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict risk controls',
+            pricing: [
+                { label: '3 Months', price: '1,000' },
+                { label: '6 Months', price: '1,599' },
+                { label: '12 Months', price: '2,999', highlight: true }
+            ]
         },
         {
-            name: 'Alerts & Support',
-            cashPositional: 'WhatsApp support during market hours',
-            fatafatOptions: 'WhatsApp trade alerts and live support',
-            huntingFuture: 'Dedicated personal support during market hours'
+            id: 5,
+            name: 'Long Term Goal Oriented',
+            category: 'Swing & Long-Term Equity',
+            idealFor: 'Active swing and long-term traders',
+            tradingFocus: 'Swing & long-term equity trade only',
+            capitalRequired: '₹1,00,000 & above',
+            tradeFrequency: 'Swing and long-term trade',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict risk controls',
+            pricing: [
+                { label: '3 Months', price: '1,499' },
+                { label: '6 Months', price: '1,998' },
+                { label: '12 Months', price: '3,500', highlight: true }
+            ]
         },
         {
-            name: 'Trade Details Provided',
-            cashPositional: 'Target and stop-loss for every trade',
-            fatafatOptions: 'Clear entry, target, and stop-loss',
-            huntingFuture: 'Target and stop-loss for every trade'
+            id: 6,
+            name: 'MCX Metals Pro',
+            category: 'Commodity',
+            idealFor: 'Active commodity traders',
+            tradingFocus: 'Crude oil, natural gas, zinc & other base metals',
+            capitalRequired: '₹2,50,000 & above',
+            tradeFrequency: 'Intraday or positional trade',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict risk controls',
+            pricing: [
+                { label: '3 Months', price: '1,199' },
+                { label: '6 Months', price: '1,600' },
+                { label: '12 Months', price: '2,601', highlight: true }
+            ]
         },
         {
-            name: 'Risk Management',
-            cashPositional: 'Defined stop-loss on all trades',
-            fatafatOptions: 'Strict intraday risk controls',
-            huntingFuture: 'Defined stop-loss on all trades'
+            id: 7,
+            name: 'MCX Bullion Pro',
+            category: 'Commodity',
+            idealFor: 'Active commodity traders',
+            tradingFocus: 'Gold and silver trades',
+            capitalRequired: '₹4,00,000 & above',
+            tradeFrequency: 'Intraday or positional trade',
+            alertsSupport: this.ALERTS,
+            tradeDetails: this.TRADE_DETAILS,
+            riskManagement: 'Strict risk controls',
+            pricing: [
+                { label: '3 Months', price: '1,199' },
+                { label: '6 Months', price: '1,600' },
+                { label: '12 Months', price: '2,601', highlight: true }
+            ]
         }
     ]);
 }

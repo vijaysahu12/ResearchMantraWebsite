@@ -1,63 +1,69 @@
 <section id="about" class="about-section">
+
+    <!-- Decorative background -->
+    <div class="about-bg" aria-hidden="true">
+        <span class="bg-blob bg-blob--one"></span>
+        <span class="bg-blob bg-blob--two"></span>
+        <span class="bg-monogram">SS</span>
+    </div>
+
     <div class="about-container">
-        <!-- Left Column: Profile Card -->
-        <div class="profile-column">
+
+        <!-- Left Column: Sticky Profile Card -->
+        <aside class="profile-column" aria-label="About Susmita Sahoo">
             <div class="profile-card">
-                <div class="avatar-container">
-                    <div class="avatar-placeholder">
-                        <img ngSrc="assets/SSImage.png" alt="Susmita Sahoo" width="120" height="180" priority>
+                <span class="card-glow" aria-hidden="true"></span>
+
+                <div class="avatar-wrap">
+                    <span class="avatar-ring" aria-hidden="true"></span>
+                    <div class="avatar">
+                        <img ngSrc="assets/SSImage.png" alt="Susmita Sahoo" width="1024" height="1536" priority>
                     </div>
-                </div>
-                <div class="profile-info">
-                    <h3 class="profile-name">Susmita Sahoo</h3>
-                    <p class="profile-title">Founder & Lead Analyst</p>
+                    <span class="verified" title="SEBI Registered">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </span>
                 </div>
 
-                <div class="credential-bar">
-                    <div class="credential-grid">
-                        <div class="credential-item">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                            <span>SEBI Registered RA</span>
-                        </div>
-                        <!-- <div class="credential-item"> -->
-                        <!-- <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg> -->
-                        <!-- <span>4+ Years Exp.</span> -->
-                        <!-- </div> -->
-                        <!-- <div class="credential-item">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                            </svg>
-                            <span>80% Accuracy</span>
-                        </div> -->
-                        <!-- <div class="credential-item">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                            <span>25,00+ Students</span>
-                        </div> -->
+                <h3 class="profile-name">Susmita Sahoo</h3>
+                <p class="profile-title">Founder &amp; Lead Analyst</p>
+
+                <div class="chips">
+                    <span class="chip">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        SEBI RA · INH000019150
+                    </span>
+                    <span class="chip">BSE Enlistment #6429</span>
+                    <span class="chip">MBA · Finance</span>
+                </div>
+
+                <div class="mini-stats">
+                    <div class="mini-stat">
+                        <strong>Full-time</strong>
+                        <span>Market Investor</span>
+                    </div>
+                    <div class="mini-stat">
+                        <strong>Equity · F&amp;O</strong>
+                        <span>Specialist</span>
+                    </div>
+                    <div class="mini-stat">
+                        <strong>Algo</strong>
+                        <span>Strategies</span>
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
 
         <!-- Right Column: Content -->
         <div class="content-column">
             <div class="eyebrow">Meet Your Advisor</div>
             <h2 class="main-heading">Hi, I'm <span class="highlight">Susmita Sahoo</span></h2>
-            <h3 class="sub-heading">SEBI Registered Research Analyst (INH000019150)</h3>
-            <h3 class="sub-heading">BSE enlistment number 6429</h3>
+            <p class="reg-line">SEBI Registered Research Analyst (INH000019150) · BSE Enlistment No. 6429</p>
 
             <div class="bio-content">
                 <p>
@@ -68,31 +74,62 @@
                 <p>
                     As a SEBI-registered Research Analyst, my work is driven by data, structure, and repeatable market
                     processes. Through Research Mantra, I help traders and investors cut through market noise by
-                    providing clear, research-backed insights that support confident decision-making
+                    providing clear, research-backed insights that support confident decision-making.
                 </p>
                 <p>
                     With an MBA in Finance, I combine strong analytical foundations with real-world market experience to
-                    design strategies focused on consistency, capital protection, and sustainable portfolio growth. At
-                    Research Mantra, My approach prioritizes probability, position sizing, and systematic execution over
-                    speculation.
+                    design strategies focused on consistency, capital protection, and sustainable portfolio growth. My
+                    approach prioritizes probability, position sizing, and systematic execution over speculation.
                 </p>
-                <h3>Core Skillset:</h3>
-                <p>Equity Investing. Intraday and Positional Trading. Options Trading. Algorithmic Trading.</p>
-                <h3>Investment Philosophy:</h3>
-                <p>Strategic, data-driven, and performance-oriented decision making.</p>
-                <h3>Mission:</h3>
-                <p>Helping traders and investors achieve consistent and sustainable growth through disciplined market
-                    participation.</p>
             </div>
 
-            <div class="quote-container">
-                <div class="quote-line"></div>
-                <div class="quote-text">
-                    "The market doesn't pay for excitement; it pays for discipline and the patience to wait for the
-                    right setup."
-                    <h2 class="quote-attribution">— Susmita Sahoo, Founder Research Mantra</h2>
+            <!-- Core Skillset -->
+            <div class="skill-block">
+                <span class="block-label">Core Skillset</span>
+                <div class="skill-tags">
+                    <span>Equity Investing</span>
+                    <span>Intraday &amp; Positional</span>
+                    <span>Options Trading</span>
+                    <span>Algorithmic Trading</span>
                 </div>
             </div>
+
+            <!-- Philosophy + Mission cards -->
+            <div class="info-cards">
+                <article class="info-card">
+                    <span class="info-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2Z"></path>
+                            <line x1="9" y1="22" x2="15" y2="22"></line>
+                        </svg>
+                    </span>
+                    <h3>Investment Philosophy</h3>
+                    <p>Strategic, data-driven, and performance-oriented decision making.</p>
+                </article>
+
+                <article class="info-card">
+                    <span class="info-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <circle cx="12" cy="12" r="0.5" fill="currentColor"></circle>
+                        </svg>
+                    </span>
+                    <h3>Mission</h3>
+                    <p>Helping traders and investors achieve consistent, sustainable growth through disciplined market
+                        participation.</p>
+                </article>
+            </div>
+
+            <!-- Pull Quote -->
+            <blockquote class="pull-quote">
+                <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+                <p>The market doesn't pay for excitement; it pays for discipline and the patience to wait for the
+                    right setup.</p>
+                <cite>— Susmita Sahoo, Founder Research Mantra</cite>
+            </blockquote>
         </div>
     </div>
 </section>

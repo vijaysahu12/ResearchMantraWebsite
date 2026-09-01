@@ -6,32 +6,52 @@ import { ResearchAuthService } from '../../services/research-auth.service';
 
 @Component({
     selector: 'app-header',
-    standalone: true,
     imports: [RouterLink],
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {
+        '(document:click)': 'onDocumentClick($event)'
+    }
 })
 export class HeaderComponent {
     isMenuOpen = signal(false);
     isBlogsOpen = signal(false);
     isComplianceOpen = signal(false);
+    isProfileOpen = signal(false);
     private elementRef = inject(ElementRef);
     private readonly a11yService = inject(AccessibilityService);
-    private readonly auth = inject(ResearchAuthService);
     private readonly router = inject(Router);
+    private readonly auth = inject(ResearchAuthService);
     readonly isAuthenticated = this.auth.isAuthenticated;
+    readonly session = this.auth.session;
 
     openAccessibilityPanel(): void {
         this.a11yService.openPanel();
     }
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: PointerEvent) {
-        // If the click is NOT inside the header component, close everything
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
 
+    onDocumentClick(event: PointerEvent) {
+        const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.closeAllMenus();
+        }
+    }
+
+    scrollToSection(event: Event, sectionId: string): void {
+        event.preventDefault();
+        this.isMenuOpen.set(false);
+
+        const scroll = () => {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        if (this.router.url === '/') {
+            scroll();
+        } else {
+            this.router.navigate(['/']).then(() => setTimeout(scroll, 100));
         }
     }
 
@@ -39,6 +59,18 @@ export class HeaderComponent {
         this.isMenuOpen.set(false);
         this.isBlogsOpen.set(false);
         this.isComplianceOpen.set(false);
+        this.isProfileOpen.set(false);
+    }
+
+    toggleProfile(event: Event) {
+        event.stopPropagation();
+        this.isProfileOpen.update(open => !open);
+        this.isBlogsOpen.set(false);
+        this.isComplianceOpen.set(false);
+    }
+
+    monogram(name: string | undefined): string {
+        return (name || '?').trim().slice(0, 1).toUpperCase();
     }
 
     toggleMenu() {
@@ -51,7 +83,7 @@ export class HeaderComponent {
     toggleBlogs(event: Event) {
         event.stopPropagation();
         this.isBlogsOpen.update(open => !open);
-        this.isComplianceOpen.set(false); // Close the other one if this opens
+        this.isComplianceOpen.set(false);
     }
 
     toggleCompliance(event: Event) {

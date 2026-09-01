@@ -9,29 +9,30 @@
 }
 
 .header {
-    background-color: #FFFFFF;
+    background-color: transparent;
     height: var(--header-height);
     width: 100%;
     display: flex;
     align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    position: relative;
     font-family: var(--font-family);
-    border-bottom: 1px solid #F1F5F9;
+    padding: 10px clamp(14px, 3vw, 40px);
 }
 
 .header-container {
     width: 100%;
     max-width: 1520px;
+    height: 100%;
     margin: 0 auto;
-    padding: 0 clamp(20px, 2.25vw, 36px);
+    padding: 8px clamp(16px, 1.6vw, 26px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: clamp(16px, 1.5vw, 24px);
+    background: linear-gradient(135deg, #15294c 0%, #1e3c6b 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .left-section {
@@ -47,7 +48,7 @@
 }
 
 .brand-logo {
-    height: 48px;
+    height: 40px;
     width: auto;
     display: block;
 }
@@ -63,14 +64,14 @@
 .brand-name {
     font-weight: 700;
     font-size: 18px;
-    color: var(--text-primary);
+    color: #FFFFFF;
     line-height: 1.1;
     letter-spacing: -0.01em;
     white-space: nowrap;
 }
 
 .brand-owner {
-    color: #374151;
+    color: rgba(255, 255, 255, 0.75);
     font-size: 12px;
     font-weight: 600;
     line-height: 1.2;
@@ -78,7 +79,7 @@
 
 .brand-subtitle {
     font-size: 10px;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.58);
     font-weight: 600;
     line-height: 1.2;
     white-space: nowrap;
@@ -98,7 +99,7 @@
     gap: clamp(14px, 1.5vw, 24px);
     margin: 0;
     padding: 0;
-    height: var(--header-height);
+    height: 100%;
     align-items: stretch;
     flex-wrap: nowrap;
 }
@@ -111,7 +112,7 @@
 
 .nav-links a {
     text-decoration: none;
-    color: var(--text-primary);
+    color: rgba(255, 255, 255, 0.82);
     font-size: 14px;
     font-weight: bold;
     transition: color 0.2s;
@@ -119,7 +120,7 @@
 }
 
 .nav-links a:hover {
-    color: var(--text-muted);
+    color: #FACC15;
 }
 
 .right-section {
@@ -134,8 +135,8 @@
     background: transparent;
     border: none;
     font-size: 15px;
-    font-weight: 400;
-    color: var(--text-primary);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     padding: 8px 16px;
     transition: opacity 0.2s;
@@ -148,7 +149,7 @@
 }
 
 .research-link {
-    color: #0b61ad;
+    color: #6cb0ff;
     font-size: 14px;
     font-weight: 800;
 }
@@ -215,11 +216,22 @@
     display: none;
     background: transparent;
     border: none;
-    color: var(--text-primary);
+    color: #FFFFFF;
     cursor: pointer;
     padding: 8px;
     border-radius: 8px;
 }
+
+/* Profile icon + account popover */
+.profile-dropdown { position: relative; display: flex; align-items: center; }
+.profile-btn { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); cursor: pointer; padding: 0; transition: background .2s, border-color .2s; }
+.profile-btn:hover { background: rgba(255,255,255,.22); }
+.profile-btn:focus-visible { outline: 2px solid #FACC15; outline-offset: 2px; }
+.profile-avatar { color: #fff; font-size: 14px; font-weight: 850; }
+.profile-menu { position: absolute; top: calc(100% + 10px); right: 0; min-width: 200px; padding: 14px 16px; background: #fff; border: 1px solid #F1F5F9; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05); display: none; z-index: 1001; }
+.profile-dropdown.open .profile-menu { display: block; animation: fadeIn .2s ease-out; }
+.profile-name { margin: 0 0 2px; color: var(--text-primary); font-size: 14.5px; font-weight: 800; }
+.profile-phone { margin: 0; color: var(--text-muted); font-size: 13px; }
 
 /* Dropdown Styling */
 .dropdown {
@@ -234,11 +246,16 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
-    color: var(--text-primary);
+    color: rgba(255, 255, 255, 0.82);
     transition: color 0.2s;
     white-space: nowrap;
+    cursor: pointer;
+}
+
+.dropdown-toggle:hover {
+    color: #FACC15;
 }
 
 .dropdown-toggle svg {
@@ -321,8 +338,8 @@
 }
 
 .dropdown-menu li a:hover {
-    background-color: #F8FAFC;
-    color: var(--brand-yellow);
+    background-color: #F1F5F9;
+    color: #0b61ad;
 }
 
 @keyframes fadeIn {
@@ -339,7 +356,7 @@
 
 @media (max-width: 1280px) {
     .header-container {
-        padding: 0 20px;
+        padding: 8px 18px;
     }
 
     .left-section {
@@ -369,17 +386,18 @@
     }
 
     .center-section {
-        position: fixed;
-        top: var(--header-height);
+        position: absolute;
+        top: calc(100% - 6px);
         left: 0;
         right: 0;
         background-color: #FFFFFF;
         padding: 40px 24px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 16px 16px;
         display: none;
-        max-height: calc(100vh - var(--header-height));
+        max-height: calc(100vh - var(--promo-h, 44px) - var(--header-height));
         overflow-y: auto;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.18);
     }
 
     .center-section.mobile-open {
@@ -398,6 +416,11 @@
     .nav-links a {
         font-size: 18px;
         font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .nav-links a:hover {
+        color: var(--text-muted);
     }
 
     /* Mobile Dropdown Adjustments */
@@ -412,6 +435,11 @@
         font-size: 18px;
         width: 100%;
         justify-content: center;
+        color: var(--text-primary);
+    }
+
+    .dropdown-toggle:hover {
+        color: var(--text-muted);
     }
 
     .dropdown-menu {
@@ -517,7 +545,7 @@
     .header {
         height: auto;
         min-height: var(--header-height);
-        padding: 8px 0;
+        padding: 8px 10px;
     }
 
     .header-container {

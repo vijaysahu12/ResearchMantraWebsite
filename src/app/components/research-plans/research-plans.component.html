@@ -19,80 +19,112 @@
     }
 
     @if (durations().length > 0) {
-      <section class="plans-content" aria-labelledby="duration-heading">
-        <div class="plan-panel">
-          <div class="section-heading">
-            <p>{{ planName() }}</p>
-            <h2 id="duration-heading">Choose your duration</h2>
-          </div>
+      <div class="step-indicator" aria-hidden="true">
+        <span class="step-dot" [class.active]="step() === 'select'" [class.done]="step() === 'payment'">1</span>
+        <span class="step-caption">Choose plan &amp; details</span>
+        <span class="step-line" [class.fill]="step() === 'payment'"></span>
+        <span class="step-dot" [class.active]="step() === 'payment'">2</span>
+        <span class="step-caption">Payment</span>
+      </div>
 
-          <div class="duration-grid" role="radiogroup" aria-label="Research subscription duration">
-            @for (duration of durations(); track duration.subscriptionMappingId) {
-              <button
-                type="button"
-                class="duration-card"
-                [class.selected]="selectedDuration()?.subscriptionMappingId === duration.subscriptionMappingId"
-                [attr.aria-checked]="selectedDuration()?.subscriptionMappingId === duration.subscriptionMappingId"
-                role="radio"
-                (click)="selectDuration(duration)"
-              >
-                @if (duration.isRecommended) { <span class="recommended">Recommended</span> }
-                <strong>{{ duration.subscriptionDurationName }}</strong>
-                <span class="price">{{ formatCurrency(duration.netPayment) }}</span>
-                <span class="monthly">{{ formatCurrency(duration.netPayment / duration.months) }} per month</span>
-                @if (duration.actualPrice > duration.netPayment) {
-                  <span class="saving">Save {{ formatCurrency(duration.actualPrice - duration.netPayment) }}</span>
-                }
-              </button>
-            }
-          </div>
+      @if (step() === 'select') {
+        <section class="plans-content" aria-labelledby="duration-heading">
+          <div class="plan-panel">
+            <div class="section-heading">
+              <p>{{ planName() }}</p>
+              <h2 id="duration-heading">Choose your duration</h2>
+            </div>
 
-          <div class="benefits">
-            <h3>Your subscription includes</h3>
-            <ul>
-              <li>Complete access to all published company Research reports</li>
-              <li>The same entitlement across the mobile app and website</li>
-              <li>New reports and updates published during your active duration</li>
-            </ul>
-          </div>
-        </div>
-
-        <aside class="checkout-card" aria-labelledby="checkout-heading">
-          <h2 id="checkout-heading">Order summary</h2>
-          <div class="summary-row"><span>Research Report</span><strong>{{ selectedDuration()?.subscriptionDurationName }}</strong></div>
-          <div class="summary-row"><span>Plan price</span><strong>{{ formatCurrency(selectedDuration()?.netPayment || 0) }}</strong></div>
-          @if (couponDiscount() > 0) {
-            <div class="summary-row discount"><span>Coupon {{ appliedCoupon() }}</span><strong>−{{ formatCurrency(couponDiscount()) }}</strong></div>
-          }
-
-          <form class="coupon-form" (submit)="$event.preventDefault(); applyCoupon()">
-            <label for="coupon-code">Coupon code</label>
-            <div><input id="coupon-code" type="text" maxlength="50" [formControl]="coupon" autocomplete="off" /><button type="submit" [disabled]="applyingCoupon() || !coupon.value.trim()">{{ applyingCoupon() ? 'Applying…' : 'Apply' }}</button></div>
-          </form>
-
-          <div class="total"><span>Total payable</span><strong>{{ formatCurrency(finalAmount()) }}</strong></div>
-
-          <label class="risk-consent">
-            <input type="checkbox" [formControl]="acceptedRisk" />
-            <span>I understand that investment in securities is subject to market risks and Research reports do not guarantee returns.</span>
-          </label>
-
-          <button class="pay-button" type="button" (click)="startPayment()" [disabled]="paying() || !selectedDuration()">
-            {{ paying() ? 'Creating payment…' : 'Proceed to secure payment' }}
-          </button>
-
-          @if (paymentMessage()) {
-            <div class="payment-state" aria-live="polite">
-              <p>{{ paymentMessage() }}</p>
-              @if (paymentRequestId()) {
-                <button type="button" (click)="checkPaymentNow()" [disabled]="checkingPayment()">{{ checkingPayment() ? 'Checking…' : 'I completed payment' }}</button>
+            <div class="duration-grid" role="radiogroup" aria-label="Research subscription duration">
+              @for (duration of durations(); track duration.subscriptionMappingId) {
+                <button
+                  type="button"
+                  class="duration-card"
+                  [class.selected]="selectedDuration()?.subscriptionMappingId === duration.subscriptionMappingId"
+                  [attr.aria-checked]="selectedDuration()?.subscriptionMappingId === duration.subscriptionMappingId"
+                  role="radio"
+                  (click)="selectDuration(duration)"
+                >
+                  @if (duration.isRecommended) { <span class="recommended">Recommended</span> }
+                  <strong>{{ duration.subscriptionDurationName }}</strong>
+                  <span class="price">{{ formatCurrency(duration.netPayment) }}</span>
+                  <span class="monthly">{{ formatCurrency(duration.netPayment / duration.months) }} per month</span>
+                  @if (duration.actualPrice > duration.netPayment) {
+                    <span class="saving">Save {{ formatCurrency(duration.actualPrice - duration.netPayment) }}</span>
+                  }
+                </button>
               }
             </div>
-          }
 
-          <p class="secure-note">Secure payment processing. Your access is activated only after server-side payment confirmation.</p>
-        </aside>
-      </section>
+            <div class="benefits">
+              <h3>Your subscription includes</h3>
+              <ul>
+                <li>Complete access to all published company Research reports</li>
+                <li>The same entitlement across the mobile app and website</li>
+                <li>New reports and updates published during your active duration</li>
+              </ul>
+            </div>
+          </div>
+
+          <aside class="checkout-card" aria-labelledby="checkout-heading">
+            <h2 id="checkout-heading">Order summary</h2>
+            <div class="summary-row"><span>Research Report</span><strong>{{ selectedDuration()?.subscriptionDurationName }}</strong></div>
+            <div class="summary-row"><span>Plan price</span><strong>{{ formatCurrency(selectedDuration()?.netPayment || 0) }}</strong></div>
+            @if (couponDiscount() > 0) {
+              <div class="summary-row discount"><span>Coupon {{ appliedCoupon() }}</span><strong>−{{ formatCurrency(couponDiscount()) }}</strong></div>
+            }
+
+            <form class="coupon-form" (submit)="$event.preventDefault(); applyCoupon()">
+              <label for="coupon-code">Coupon code</label>
+              <div><input id="coupon-code" type="text" maxlength="50" [formControl]="coupon" autocomplete="off" /><button type="submit" [disabled]="applyingCoupon() || !coupon.value.trim()">{{ applyingCoupon() ? 'Applying…' : 'Apply' }}</button></div>
+            </form>
+
+            <div class="total"><span>Total payable</span><strong>{{ formatCurrency(finalAmount()) }}</strong></div>
+
+            <label class="risk-consent">
+              <input type="checkbox" [formControl]="acceptedRisk" />
+              <span>I understand that investment in securities is subject to market risks and Research reports do not guarantee returns.</span>
+            </label>
+
+            <button class="pay-button" type="button" (click)="startPayment()" [disabled]="paying() || !selectedDuration()">
+              {{ paying() ? 'Creating payment…' : 'Proceed to secure payment' }}
+            </button>
+
+            <p class="secure-note">Secure payment processing. Your access is activated only after server-side payment confirmation.</p>
+          </aside>
+        </section>
+      } @else {
+        <section class="payment-step" aria-live="polite">
+          @if (payStatus() === 'pending') {
+            <div class="payment-status">
+              <span class="status-spinner" aria-hidden="true"></span>
+              <h2>Waiting for your payment…</h2>
+              <p>{{ paymentMessage() }}</p>
+              @if (paymentRequestId()) {
+                <button type="button" class="pay-button" (click)="checkPaymentNow()" [disabled]="checkingPayment()">
+                  {{ checkingPayment() ? 'Checking…' : 'I completed payment' }}
+                </button>
+              }
+              <button type="button" class="ghost-btn" (click)="backToSelect()">Cancel and go back</button>
+            </div>
+          } @else if (payStatus() === 'success') {
+            <div class="payment-status">
+              <span class="status-tick" aria-hidden="true">
+                <svg viewBox="0 0 52 52"><circle class="st-ring" cx="26" cy="26" r="24" fill="none"/><path class="st-check" fill="none" d="M14 27l8 8 16-17"/></svg>
+              </span>
+              <h2>Payment successful! 🎉</h2>
+              <p>{{ paymentMessage() }}</p>
+            </div>
+          } @else if (payStatus() === 'failed') {
+            <div class="payment-status">
+              <span class="status-x" aria-hidden="true">!</span>
+              <h2>Payment not completed</h2>
+              <p>{{ paymentError() }}</p>
+              <button type="button" class="pay-button" (click)="backToSelect()">Try again</button>
+            </div>
+          }
+        </section>
+      }
     }
   }
 </main>

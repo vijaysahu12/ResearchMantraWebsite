@@ -1,4 +1,8 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+    Component, ChangeDetectionStrategy, signal, inject,
+    AfterViewInit, OnDestroy, ElementRef, ViewChild, PLATFORM_ID
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 interface Testimonial {
     id: number;
@@ -17,7 +21,62 @@ interface Testimonial {
     styleUrl: './testimonials.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TestimonialsComponent {
+export class TestimonialsComponent implements AfterViewInit, OnDestroy {
+    private platformId = inject(PLATFORM_ID);
+    private observer: IntersectionObserver | null = null;
+    private fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+
+    @ViewChild('grid') grid!: ElementRef<HTMLElement>;
+
+    ngAfterViewInit(): void {
+        if (!isPlatformBrowser(this.platformId)) return;
+
+        const el = this.grid?.nativeElement;
+        const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+
+        // If we can't animate safely, leave the cards fully visible (no hiding).
+        if (!el || !motionOk || typeof IntersectionObserver === 'undefined') {
+            return;
+        }
+
+        // Direct DOM class toggles — independent of change detection, so the
+        // cards can never get stuck hidden.
+        el.classList.add('js-anim');
+
+        try {
+            this.observer = new IntersectionObserver((entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        this.reveal(el);
+                        break;
+                    }
+                }
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            this.observer.observe(el);
+        } catch {
+            this.reveal(el);
+        }
+
+        // Safety net: never let the cards stay hidden, even if the observer misses.
+        this.fallbackTimer = setTimeout(() => this.reveal(el), 1500);
+    }
+
+    private reveal(el: HTMLElement): void {
+        el.classList.add('in-view');
+        this.observer?.disconnect();
+        this.observer = null;
+        if (this.fallbackTimer) {
+            clearTimeout(this.fallbackTimer);
+            this.fallbackTimer = null;
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.observer?.disconnect();
+        if (this.fallbackTimer) clearTimeout(this.fallbackTimer);
+    }
+
     testimonials = signal<Testimonial[]>([
         {
             id: 1,
