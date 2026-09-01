@@ -109,15 +109,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
         }
 
-        .article-inner-title {
-            font-size: 32px;
-            font-weight: 800;
-            color: #1e3a8a;
-            margin-bottom: 40px;
-            line-height: 1.3;
-            display: none; /* Hidden because content now has its own h1 */
-        }
-
         .publish-meta {
             display: inline-flex;
             align-items: center;
@@ -253,9 +244,6 @@
             .content-card {
                 padding: 32px 20px;
                 margin-top: -40px;
-            }
-            .article-inner-title {
-                font-size: 24px;
             }
             .content-layout {
                 margin-top: -60px;

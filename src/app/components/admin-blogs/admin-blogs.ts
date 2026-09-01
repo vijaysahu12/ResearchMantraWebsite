@@ -11,6 +11,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AdminBlogService } from '../../services/admin-blog.service';
+import { BlogService } from '../../services/blog.service';
 import { LeadService } from '../../services/lead.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
@@ -27,6 +28,7 @@ import { EnquiryStateService } from '../../services/enquiry-state.service';
 })
 export class AdminBlogs implements OnInit {
   private blogService = inject(AdminBlogService);
+  private staticBlogService = inject(BlogService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
@@ -66,20 +68,30 @@ export class AdminBlogs implements OnInit {
     this.router.navigate(['/stock-market-analysis-and-nifty-updates']);
   }
 
+  /** Built-in posts published on an ISO yyyy-MM-dd date. */
+  private localBlogsOn(date: string): any[] {
+    const parts = date.split('-');
+    if (parts.length !== 3) return [];
+    return this.staticBlogService.getBlogsOnDate(+parts[0], +parts[1], +parts[2]);
+  }
+
   private loadBlogsByDate(date: string) {
+    // Built-in posts resolve synchronously, so the date view is populated during
+    // SSR and stays correct when the API is unreachable.
+    const local = this.localBlogsOn(date);
+    this.dateBlogs.set(local);
     if (!this.isBrowser) return;
+
     this.isLoadingDate.set(true);
     this.blogService.getBlogsByDate(date).subscribe({
       next: (res: any) => {
-        const blogs = res?.data ?? [];
-        console.log('[by-date] raw response:', res);
-        console.log('[by-date] blogs:', blogs);
-        this.dateBlogs.set(blogs);
+        const apiBlogs: any[] = res?.data ?? [];
+        const seen = new Set(local.map(b => b.slug));
+        this.dateBlogs.set([...local, ...apiBlogs.filter(b => !seen.has(b?.slug))]);
         this.isLoadingDate.set(false);
       },
-      error: (err) => {
-        console.error('[by-date] error:', err);
-        this.dateBlogs.set([]);
+      error: () => {
+        this.dateBlogs.set(local);
         this.isLoadingDate.set(false);
       }
     });
@@ -219,6 +231,9 @@ export class AdminBlogs implements OnInit {
     this.isLoadingInitial.set(true);
     setTimeout(() => {
       this.searchQuery.set('');
+      // Reset the chip too: clearing from an empty result should return the full
+      // list, not leave the user stuck on the filter that produced no matches.
+      this.selectedCategory.set('ALL');
       this.isLoadingInitial.set(false);
     }, 300);
   }
@@ -271,72 +286,86 @@ export class AdminBlogs implements OnInit {
     this.pendingSlug.set(null);
   }
 
-  // Add a local tracking set
-  private processingLikes = new Set<string>();
+  /**
+   * Ids with a like request in flight. A signal rather than a plain Set because
+   * the template reads it through isBlogSyncing() and this component is OnPush.
+   */
+  private readonly processingLikes = signal<ReadonlySet<string>>(new Set());
+
+  private setLikeProcessing(id: string, processing: boolean): void {
+    this.processingLikes.update((current) => {
+      const next = new Set(current);
+      if (processing) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  /**
+   * Write a blog's like state back into the signal by replacing the object.
+   * Mutating the existing object in place leaves the signal's reference
+   * unchanged, so an OnPush template never re-renders and the heart/count appear
+   * frozen even though the click was handled.
+   */
+  private patchLike(id: string, isLiked: boolean, likesCount: number): void {
+    this.blogs.update((blogs) =>
+      blogs.map((b) => (b.id === id ? { ...b, isLiked, likesCount: Math.max(0, likesCount) } : b)),
+    );
+  }
+
+  private rememberLike(id: string, isLiked: boolean): void {
+    if (!this.isBrowser) return;
+    try {
+      if (isLiked) localStorage.setItem(`blog_liked_${id}`, 'true');
+      else localStorage.removeItem(`blog_liked_${id}`);
+    } catch {
+      // Private browsing / blocked storage — the server response is the source of truth.
+    }
+  }
 
   toggleLike(blog: any, event: Event) {
     event.stopPropagation();
 
-    // 1. If we are already waiting for a response for THIS blog, ignore new clicks
-    if (this.processingLikes.has(blog.id)) {
-      console.log('⏳ Still processing previous click, ignoring...');
-      return;
-    }
+    // Ignore repeat clicks while this blog's request is still in flight.
+    if (this.processingLikes().has(blog.id)) return;
+    this.setLikeProcessing(blog.id, true);
 
-    // 2. Mark as processing
-    this.processingLikes.add(blog.id);
+    // Optimistic update. `likesCount` is absent on some payloads, and
+    // `undefined + 1` is NaN — which the template rendered as 0, so the count
+    // appeared not to move at all.
+    const wasLiked = !!blog.isLiked;
+    const previousCount = Number(blog.likesCount) || 0;
+    const optimisticCount = wasLiked ? Math.max(0, previousCount - 1) : previousCount + 1;
 
-    // 3. Optimistic Update
-    const wasLiked = blog.isLiked;
-    blog.isLiked = !blog.isLiked;
-    blog.likesCount = blog.isLiked ? blog.likesCount + 1 : Math.max(0, blog.likesCount - 1);
-
-    if (this.isBrowser) {
-      if (blog.isLiked) {
-        localStorage.setItem(`blog_liked_${blog.id}`, 'true');
-      } else {
-        localStorage.removeItem(`blog_liked_${blog.id}`);
-      }
-    }
+    this.patchLike(blog.id, !wasLiked, optimisticCount);
+    this.rememberLike(blog.id, !wasLiked);
 
     this.blogService.toggleLike(blog.id, this.userId).subscribe({
       next: (res: any) => {
-        const updatedBlogs = this.blogs().map((b) =>
-          b.id === blog.id
-            ? { ...b, isLiked: res.data.isLiked, likesCount: res.data.totalLikes }
-            : b,
-        );
-        this.blogs.set(updatedBlogs);
+        // Trust the server's tally when it sends one; otherwise keep the
+        // optimistic values rather than resetting the count to 0.
+        const serverLiked = res?.data?.isLiked;
+        const serverCount = res?.data?.totalLikes;
+        const isLiked = typeof serverLiked === 'boolean' ? serverLiked : !wasLiked;
+        const count = Number.isFinite(Number(serverCount)) && serverCount !== null
+          ? Number(serverCount)
+          : optimisticCount;
 
-        if (this.isBrowser) {
-          if (res.data.isLiked) {
-            localStorage.setItem(`blog_liked_${blog.id}`, 'true');
-          } else {
-            localStorage.removeItem(`blog_liked_${blog.id}`);
-          }
-        }
-
-        this.processingLikes.delete(blog.id);
+        this.patchLike(blog.id, isLiked, count);
+        this.rememberLike(blog.id, isLiked);
+        this.setLikeProcessing(blog.id, false);
       },
       error: () => {
-        blog.isLiked = wasLiked;
-        blog.likesCount = blog.isLiked ? blog.likesCount + 1 : blog.likesCount - 1;
-
-        if (this.isBrowser) {
-          if (wasLiked) {
-            localStorage.setItem(`blog_liked_${blog.id}`, 'true');
-          } else {
-            localStorage.removeItem(`blog_liked_${blog.id}`);
-          }
-        }
-
-        this.processingLikes.delete(blog.id);
+        // Roll back to exactly what we captured before the click.
+        this.patchLike(blog.id, wasLiked, previousCount);
+        this.rememberLike(blog.id, wasLiked);
+        this.setLikeProcessing(blog.id, false);
       },
     });
   }
 
   isBlogSyncing(id: string): boolean {
-    return this.processingLikes.has(id);
+    return this.processingLikes().has(id);
   }
 
   openEnquiry() {

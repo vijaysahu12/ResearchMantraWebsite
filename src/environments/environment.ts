@@ -12,7 +12,7 @@ export const environment = {
   // mobilePushNotificationUrl: 'http://testmobileapi.kingresearch.co.in/api/',
   mobilePushNotificationUrl: 'https://localhost:7001/api/',
   mobileBaseUrl: 'http://product.researchmantra.in/api/',
-  gatewayUrl: ' https://localhost:7159/gateway/',
+  gatewayUrl: 'https://localhost:7159/gateway/',
   gupshupApiKey: '',
   azureBlobUrl: 'https://communitypostdata.blob.core.windows.net/mobileapptest/'
 };

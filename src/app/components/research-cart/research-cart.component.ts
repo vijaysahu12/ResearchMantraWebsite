@@ -6,7 +6,7 @@ import { Subscription, catchError, finalize, of, switchMap, timer } from 'rxjs';
 import { AppliedCouponInput, CartItem, CartWithDurations, PaymentStatusProduct } from '../../models/research.models';
 import { ResearchAuthService } from '../../services/research-auth.service';
 import { ResearchCartService } from '../../services/research-cart.service';
-import { ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { describePaymentError, ResearchSubscriptionService } from '../../services/research-subscription.service';
 
 type PayStatus = 'idle' | 'pending' | 'success' | 'failed';
 
@@ -31,8 +31,13 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
   readonly selectedDurationId = signal<number | null>(null);
   readonly expandedId = signal<number | null>(null);
 
-  /** Only one coupon can be applied per order — it's validated per-product but scoped to the whole cart at payment time. */
-  readonly appliedCoupon = signal<AppliedCouponInput | null>(null);
+  /**
+   * One coupon per product. The pricing endpoint takes the whole set
+   * (`appliedCoupons`) and returns each item's own `appliedCouponCode` /
+   * `couponDiscountAmount`, so applying a code to one product must never clear
+   * another product's code.
+   */
+  readonly appliedCoupons = signal<AppliedCouponInput[]>([]);
   readonly couponBusyId = signal<number | null>(null);
   readonly couponErrors = signal<Record<number, string>>({});
   readonly removingId = signal<number | null>(null);
@@ -159,7 +164,11 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.couponBusyId.set(null)))
       .subscribe({
         next: () => {
-          this.appliedCoupon.set({ productId: item.productMId, couponCode: code.toUpperCase() });
+          // Replace only this product's coupon; every other product keeps its own.
+          this.appliedCoupons.update((coupons) => [
+            ...coupons.filter((c) => c.productId !== item.productMId),
+            { productId: item.productMId, couponCode: code.toUpperCase() },
+          ]);
           this.reload();
         },
         error: () => this.setCouponError(item.productMId, 'That coupon is invalid or not available for this duration.'),
@@ -167,8 +176,8 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
   }
 
   removeCoupon(item: CartItem): void {
-    if (this.appliedCoupon()?.productId !== item.productMId) return;
-    this.appliedCoupon.set(null);
+    if (!this.appliedCoupons().some((c) => c.productId === item.productMId)) return;
+    this.appliedCoupons.update((coupons) => coupons.filter((c) => c.productId !== item.productMId));
     this.couponControl(item.productMId).reset();
     this.reload();
   }
@@ -197,7 +206,9 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
       .removeFromCart(item.id)
       .pipe(
         switchMap(() => {
-          if (this.appliedCoupon()?.productId === item.productMId) this.appliedCoupon.set(null);
+          // Drop only the removed product's coupon.
+          this.appliedCoupons.update((coupons) => coupons.filter((c) => c.productId !== item.productMId));
+          this.couponControls.get(item.productMId)?.reset();
           return this.cartService.getCartWithDurations(this.currentAppliedCoupons());
         }),
         finalize(() => this.removingId.set(null)),
@@ -226,13 +237,16 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
     this.purchaseError.set('');
 
     const merchantTransactionId = this.subscriptions.newMerchantTransactionId();
-    const coupon = this.appliedCoupon();
 
     this.subscriptions
       .addPaymentRequest({
         productIds: items.map((i) => i.productMId),
         amount: this.finalAmount(),
-        couponCode: coupon?.couponCode ?? '',
+        // `amount` already has every applied coupon priced in by the cart
+        // endpoint, so the charge is correct. AddPaymentRequest only carries a
+        // single `couponCode`, so it records the first applied code; see
+        // paymentCouponCode().
+        couponCode: this.paymentCouponCode(),
         subscriptionDurationId: duration.subscriptionDurationId,
         merchantTransactionId,
         customerName: this.fullName.value.trim(),
@@ -261,7 +275,7 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
         },
         error: (error: unknown) => {
           paymentWindow?.close();
-          this.purchaseError.set(error instanceof Error ? error.message : 'The payment link could not be created.');
+          this.purchaseError.set(describePaymentError(error, 'The payment link could not be created.'));
         },
       });
   }
@@ -292,9 +306,18 @@ export class ResearchCartComponent implements OnInit, OnDestroy {
     if (this.payStatus() === 'pending') this.checkStatusNow();
   }
 
+  /**
+   * The code sent to Payment/AddPaymentRequest, which accepts one `couponCode`
+   * string only. The charged `amount` already reflects every applied coupon, so
+   * this affects the redemption record rather than the price. If the backend
+   * gains multi-coupon support, this is the single place to change.
+   */
+  private paymentCouponCode(): string {
+    return this.appliedCoupons()[0]?.couponCode ?? '';
+  }
+
   private currentAppliedCoupons(): AppliedCouponInput[] {
-    const coupon = this.appliedCoupon();
-    return coupon ? [coupon] : [];
+    return this.appliedCoupons();
   }
 
   private reload(): void {

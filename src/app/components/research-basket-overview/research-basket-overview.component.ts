@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, catchError, finalize, of, switchMap, timer } from 'rxjs';
 import { BasketOverview, PaymentStatusProduct } from '../../models/research.models';
 import { ProductBasketService } from '../../services/product-basket.service';
-import { ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { describePaymentError, ResearchSubscriptionService } from '../../services/research-subscription.service';
 
 type PayStatus = 'idle' | 'pending' | 'success' | 'failed';
 
@@ -123,7 +123,7 @@ export class ResearchBasketOverviewComponent implements OnInit, OnDestroy {
           this.titleService.setTitle(`${this.displayName(basket.name)} | Research Mantra`);
         },
         error: (error: unknown) => {
-          this.errorMessage.set(error instanceof Error ? error.message : 'This basket could not be loaded.');
+          this.errorMessage.set(describePaymentError(error, 'This basket could not be loaded.'));
         },
       });
   }
@@ -165,7 +165,7 @@ export class ResearchBasketOverviewComponent implements OnInit, OnDestroy {
         },
         error: (error: unknown) => {
           paymentWindow?.close();
-          this.purchaseError.set(error instanceof Error ? error.message : 'The payment link could not be created.');
+          this.purchaseError.set(describePaymentError(error, 'The payment link could not be created.'));
         },
       });
   }

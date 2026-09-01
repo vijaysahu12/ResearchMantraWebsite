@@ -14,7 +14,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subscription, catchError, finalize, of, switchMap, timer } from 'rxjs';
 import { PaymentStatusProduct, SubscriptionDuration } from '../../models/research.models';
-import { ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { describePaymentError, ResearchSubscriptionService } from '../../services/research-subscription.service';
 import { ResearchAuthService } from '../../services/research-auth.service';
 
 type PayStatus = 'idle' | 'pending' | 'success' | 'failed';
@@ -138,7 +138,7 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: unknown) => {
-          this.plansError.set(error instanceof Error ? error.message : 'Plans could not be loaded.');
+          this.plansError.set(describePaymentError(error, 'Plans could not be loaded.'));
         },
       });
   }
@@ -237,11 +237,9 @@ export class PurchaseDialogComponent implements OnInit, OnDestroy {
         error: (error: unknown) => {
           paymentWindow?.close();
           this.purchaseError.set(
-            error instanceof Error
-              ? error.message
-              : isFree
+            describePaymentError(error, isFree
                 ? 'We could not activate your free subscription. Please try again.'
-                : 'The payment link could not be created.',
+                : 'The payment link could not be created.'),
           );
         },
       });

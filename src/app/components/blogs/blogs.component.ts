@@ -131,9 +131,22 @@ export class BlogsComponent implements OnInit {
     let blogs = this.blogs();
 
     if (category && category !== 'ALL') {
-      blogs = blogs.filter(
-        (b) => b.category?.toLowerCase() === category.toLowerCase(),
-      );
+      if (category === 'Others') {
+        // Anything whose category matches none of the named chips lands here, so
+        // no post is unreachable through the filters.
+        const known = this.categories
+          .filter((c) => c !== 'ALL' && c !== 'Others')
+          .map((c) => c.toLowerCase());
+        blogs = blogs.filter((blog) => {
+          const cat = blog.category?.toLowerCase() ?? '';
+          return !known.some((keyword) => cat.includes(keyword));
+        });
+      } else {
+        // Partial match, because `category` is a comma-separated list
+        // ("Investing, Stocks") that getCategories() splits for the badges.
+        const keyword = category.toLowerCase();
+        blogs = blogs.filter((blog) => blog.category?.toLowerCase().includes(keyword));
+      }
     }
 
     if (!query) return blogs;
@@ -162,6 +175,9 @@ export class BlogsComponent implements OnInit {
     this.isSearching.set(true);
     setTimeout(() => {
       this.searchQuery.set('');
+      // Reset the chip too: clearing from an empty result should return the full
+      // list, not leave the user stuck on the filter that produced no matches.
+      this.selectedCategory.set('ALL');
       this.isSearching.set(false);
     }, 300);
   }

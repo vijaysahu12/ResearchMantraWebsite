@@ -69,7 +69,6 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
                     <!-- Main Content -->
                     <div class="article-body">
                         <div class="content-card">
-                            <h2 class="article-inner-title">{{ blog()?.title }}</h2>
                             <div
                                 class="content-wrapper"
                                 [innerHTML]="sanitizedContent()"
@@ -264,11 +263,15 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
                                              [class.has-post]="cell.hasPost"
                                              [class.empty-cell]="!cell.day"
                                              [class.clickable]="cell.hasPost"
+                                             [class.is-current]="cell.isCurrent"
                                              (click)="onCalendarCellClick(cell)"
                                              (keydown.enter)="onCalendarCellClick(cell)"
+                                             (keydown.space)="onCalendarCellClick(cell)"
                                              [attr.role]="cell.hasPost ? 'button' : null"
                                              [attr.tabindex]="cell.hasPost ? 0 : null"
-                                             [attr.aria-label]="cell.hasPost ? 'View posts from day ' + cell.day : null">
+                                             [attr.aria-current]="cell.isCurrent ? 'page' : null"
+                                             [attr.title]="cell.label || null"
+                                             [attr.aria-label]="cell.label || null">
                                             @if (cell.day) {
                                                 <span class="cal-day-num">{{ cell.day }}</span>
                                                 @if (cell.hasPost) {
@@ -878,6 +881,19 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     color: #374151;
 }
 
+/* Checklist used inline within blog content HTML: items supply their own box glyph */
+.content-wrapper ::ng-deep .rm-checklist {
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
+}
+
+.content-wrapper ::ng-deep .rm-checklist li {
+    margin-bottom: 10px;
+    padding-left: 0;
+    color: #374151;
+}
+
 /* Comparison tables used inline within blog content HTML */
 .content-wrapper ::ng-deep .table-container {
     max-width: 100%;
@@ -983,6 +999,12 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
     line-height: 1.35;
     margin-bottom: 8px;
     color: #ffffff;
+}
+
+/* When a CTA title is marked as a heading in the source content, drop the heading top margin */
+.content-wrapper ::ng-deep h2.rm-cta-box-title,
+.content-wrapper ::ng-deep h3.rm-cta-box-title {
+    margin-top: 0;
 }
 
 .content-wrapper ::ng-deep .rm-cta-box p {
@@ -1622,6 +1644,25 @@ import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-mo
             background: #bbf7d0;
         }
 
+        .cal-cell.clickable:focus-visible {
+            outline: 2px solid #1d4ed8;
+            outline-offset: 2px;
+        }
+
+        /* The day the post being read was published on */
+        .cal-cell.is-current {
+            background: #1e3a8a;
+        }
+
+        .cal-cell.is-current .cal-day-num {
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .cal-cell.is-current .cal-dot {
+            background: #ffffff;
+        }
+
         /* ── You May Also Like ─────────────────────────── */
         .related-section {
             background: #f3f4f6;
@@ -1849,9 +1890,26 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         const days = this.postDays();
         const firstDay = new Date(year, month - 1, 1).getDay();
         const daysInMonth = new Date(year, month, 0).getDate();
-        const cells: Array<{ day: number | null; hasPost: boolean }> = [];
-        for (let i = 0; i < firstDay; i++) cells.push({ day: null, hasPost: false });
-        for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, hasPost: days.includes(d) });
+        const monthName = this.monthNames[month - 1];
+        const currentSlug = this.blog()?.slug;
+
+        const cells: Array<{ day: number | null; hasPost: boolean; label: string; isCurrent: boolean }> = [];
+        for (let i = 0; i < firstDay; i++) cells.push({ day: null, hasPost: false, label: '', isCurrent: false });
+        for (let d = 1; d <= daysInMonth; d++) {
+            const posts = this.blogService.getBlogsOnDate(year, month, d);
+            const hasPost = days.includes(d);
+            const label = !hasPost
+                ? ''
+                : posts.length === 1
+                    ? `Read the post published on ${monthName} ${d}, ${year}`
+                    : `View posts published on ${monthName} ${d}, ${year}`;
+            cells.push({
+                day: d,
+                hasPost,
+                label,
+                isCurrent: !!currentSlug && posts.some(p => p.slug === currentSlug)
+            });
+        }
         return cells;
     });
 
@@ -1871,16 +1929,47 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         this.loadCalendarDates();
     }
 
+    /** Days from the built-in posts, merged with whatever the API reports. */
+    private localPostDays(): number[] {
+        return this.blogService.getPostDaysInMonth(this.calendarYear(), this.calendarMonth());
+    }
+
+    /**
+     * Point the calendar at the month the given post was published in, so a
+     * reader of an older article sees that month's posts rather than an empty
+     * current month.
+     */
+    private anchorCalendarToBlog(blog: BlogPost) {
+        const raw = (blog.publishedOn ?? blog.date ?? '').trim();
+        if (!raw) return;
+        const parsed = new Date(raw);
+        if (isNaN(parsed.getTime())) return;
+
+        const year = parsed.getFullYear();
+        const month = parsed.getMonth() + 1;
+        if (year === this.calendarYear() && month === this.calendarMonth()) return;
+
+        this.calendarYear.set(year);
+        this.calendarMonth.set(month);
+        this.loadCalendarDates();
+    }
+
     private loadCalendarDates() {
+        // Built-in posts are known synchronously, so the calendar is marked up
+        // even during SSR and when the API is unreachable.
+        const local = this.localPostDays();
+        this.postDays.set(local);
         if (!this.isBrowser) return;
+
         this.calendarLoading.set(true);
         this.adminBlogService.getCalendarDates(this.calendarYear(), this.calendarMonth()).subscribe({
             next: (res: any) => {
-                this.postDays.set(res?.data?.days ?? []);
+                const apiDays: number[] = res?.data?.days ?? [];
+                this.postDays.set([...new Set([...local, ...apiDays])].sort((a, b) => a - b));
                 this.calendarLoading.set(false);
             },
             error: () => {
-                this.postDays.set([]);
+                this.postDays.set(local);
                 this.calendarLoading.set(false);
             }
         });
@@ -1890,6 +1979,15 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         if (!cell.hasPost || !cell.day) return;
         const y = this.calendarYear();
         const m = this.calendarMonth();
+
+        // A single post on that date goes straight to the article; several share
+        // the date, so fall back to the date-filtered listing.
+        const matches = this.blogService.getBlogsOnDate(y, m, cell.day);
+        if (matches.length === 1) {
+            this.navigateToRelated(matches[0].slug);
+            return;
+        }
+
         const mm = String(m).padStart(2, '0');
         const dd = String(cell.day).padStart(2, '0');
         this.router.navigate(['/stock-market-analysis-and-nifty-updates'], { queryParams: { date: `${y}-${mm}-${dd}` } });
@@ -1925,6 +2023,14 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        // Default the calendar to the current month before resolving the post;
+        // anchorCalendarToBlog() then re-points it at the post's own month.
+        // This must run first - the params subscription fires synchronously.
+        const now = new Date();
+        this.calendarYear.set(now.getFullYear());
+        this.calendarMonth.set(now.getMonth() + 1);
+        this.loadCalendarDates();
+
         this.route.params.subscribe(params => {
             const slugValue = params['slug'];
             this.expandedFaqIndex.set(null);
@@ -1940,6 +2046,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
             if (foundBlog) {
                 this.blog.set(foundBlog);
                 this.updateSeoTags(foundBlog);
+                this.anchorCalendarToBlog(foundBlog);
                 this.loadRelatedBlogs(slugValue);
                 this.loading.set(false);
                 this.ensureVisitorIdentity();
@@ -2001,12 +2108,6 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                 }
             });
         });
-
-        // Init calendar with current month
-        const now = new Date();
-        this.calendarYear.set(now.getFullYear());
-        this.calendarMonth.set(now.getMonth() + 1);
-        this.loadCalendarDates();
     }
 
     private loadComments(blogId: any) {
@@ -2122,8 +2223,9 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         
         // Optimistic update
         const newLikedState = !wasLiked;
+        const previousCount = Number(this.likesCount()) || 0;
         this.isLiked.set(newLikedState);
-        this.likesCount.update(count => wasLiked ? count - 1 : count + 1);
+        this.likesCount.set(wasLiked ? Math.max(0, previousCount - 1) : previousCount + 1);
         
         // Save to local storage for admin blogs
         if (this.isApiBlog()) {
@@ -2136,14 +2238,20 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
 
         this.adminBlogService.toggleLike(currentBlog.id.toString(), this.userId).subscribe({
             next: (res: any) => {
-                this.isLiked.set(res.data.isLiked);
-                this.likesCount.set(res.data.totalLikes);
+                // Trust the server's tally when it sends one; otherwise keep the
+                // optimistic values rather than blanking the count.
+                const serverLiked = res?.data?.isLiked;
+                const serverCount = res?.data?.totalLikes;
+                this.isLiked.set(typeof serverLiked === 'boolean' ? serverLiked : newLikedState);
+                if (Number.isFinite(Number(serverCount)) && serverCount !== null) {
+                    this.likesCount.set(Math.max(0, Number(serverCount)));
+                }
                 this.isSyncingLike.set(false);
             },
             error: () => {
-                // Revert on error
+                // Revert to exactly what we captured before the click.
                 this.isLiked.set(wasLiked);
-                this.likesCount.update(count => wasLiked ? count + 1 : count - 1);
+                this.likesCount.set(previousCount);
                 
                 // Revert local storage
                 if (this.isApiBlog()) {

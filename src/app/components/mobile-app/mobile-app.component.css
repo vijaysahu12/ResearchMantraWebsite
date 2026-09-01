@@ -564,11 +564,15 @@
 }
 
 /* ===================== FLOATING DOWNLOAD BUTTON ===================== */
+/* Two other fixed elements own the bottom-right corner: the social rail
+   (55px wide at right: 2rem, z-index 1000) and the full-width install bottom
+   bar (z-index 990). Sit to the left of the rail and above the bar so neither
+   paints over this CTA or steals its clicks. */
 .floating-download {
     position: fixed;
-    right: clamp(1rem, 3vw, 2rem);
-    bottom: clamp(1rem, 3vw, 2rem);
-    z-index: 900;
+    right: calc(2rem + 55px + 1rem);
+    bottom: 4.5rem;
+    z-index: 1000;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -609,6 +613,15 @@
     }
 }
 
+/* Track the social rail as it shrinks and moves in at each breakpoint, and stay
+   above the taller install bottom bar. */
+@media (max-width: 768px) {
+    .floating-download {
+        right: calc(0.75rem + 42px + 0.75rem);
+        bottom: 5.25rem;
+    }
+}
+
 @media (max-width: 560px) {
     .floating-download-text {
         display: none;
@@ -621,6 +634,13 @@
     .floating-download svg {
         width: 24px;
         height: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-download {
+        right: calc(0.5rem + 36px + 0.6rem);
+        bottom: 6.5rem;
     }
 }
 
