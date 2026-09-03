@@ -6,6 +6,7 @@ import { BlogService, BlogPost } from '../../services/blog.service';
 import { AdminBlogService } from '../../services/admin-blog.service';
 import { SeoService } from '../../services/seo.service';
 import { LeadService } from '../../services/lead.service';
+import { BlogLikeService } from '../../services/blog-like.service';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 
@@ -1803,6 +1804,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     private sanitizer = inject(DomSanitizer);
     private seoService = inject(SeoService);
     private leadService = inject(LeadService);
+    private likeService = inject(BlogLikeService);
     private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     goBack(event: Event) {
@@ -1836,7 +1838,8 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     isSyncingLike = signal<boolean>(false);
     isSubmittingComment = signal<boolean>(false);
 
-    private userId = '00000000-0000-0000-0000-000000000000';
+    /** Stable per-visitor id, so likes are not shared between readers. */
+    private get userId() { return this.likeService.userId; }
 
     /** Name captured via lead modal — shown in comment form and sent with comment */
     visitorName = signal<string>(this.leadService.getLeadName());
@@ -2089,8 +2092,9 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                         this.commentsCount.set(apiData.commentsCount || 0);
                         this.likesCount.set(apiData.likesCount || 0);
                         
-                        const localLiked = this.isBrowser ? localStorage.getItem(`blog_liked_${apiData.id}`) : null;
-                        this.isLiked.set(localLiked === 'true' ? true : (apiData.isLiked || false));
+                        // GetBlogBySlug never reports isLiked, so the visitor's
+                        // own like is only known from what we remembered locally.
+                        this.isLiked.set(this.likeService.isLiked(apiData.id) || apiData.isLiked === true);
                         
                         if (apiData.enableComments) {
                             this.loadComments(apiData.id);
@@ -2227,14 +2231,9 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         this.isLiked.set(newLikedState);
         this.likesCount.set(wasLiked ? Math.max(0, previousCount - 1) : previousCount + 1);
         
-        // Save to local storage for admin blogs
-        if (this.isApiBlog()) {
-            if (newLikedState) {
-                localStorage.setItem(`blog_liked_${currentBlog.id}`, 'true');
-            } else {
-                localStorage.removeItem(`blog_liked_${currentBlog.id}`);
-            }
-        }
+        // Remember it so the heart survives a reload — the detail API cannot
+        // tell us about it on the way back in.
+        this.likeService.remember(currentBlog.id, newLikedState);
 
         this.adminBlogService.toggleLike(currentBlog.id.toString(), this.userId).subscribe({
             next: (res: any) => {
@@ -2242,26 +2241,21 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                 // optimistic values rather than blanking the count.
                 const serverLiked = res?.data?.isLiked;
                 const serverCount = res?.data?.totalLikes;
-                this.isLiked.set(typeof serverLiked === 'boolean' ? serverLiked : newLikedState);
+                const settledLiked = typeof serverLiked === 'boolean' ? serverLiked : newLikedState;
+                this.isLiked.set(settledLiked);
                 if (Number.isFinite(Number(serverCount)) && serverCount !== null) {
                     this.likesCount.set(Math.max(0, Number(serverCount)));
                 }
+                // Re-record the settled state: what we show and what we remember
+                // must never disagree, or a reload contradicts the button.
+                this.likeService.remember(currentBlog.id, settledLiked);
                 this.isSyncingLike.set(false);
             },
             error: () => {
                 // Revert to exactly what we captured before the click.
                 this.isLiked.set(wasLiked);
                 this.likesCount.set(previousCount);
-                
-                // Revert local storage
-                if (this.isApiBlog()) {
-                    if (wasLiked) {
-                        localStorage.setItem(`blog_liked_${currentBlog.id}`, 'true');
-                    } else {
-                        localStorage.removeItem(`blog_liked_${currentBlog.id}`);
-                    }
-                }
-                
+                this.likeService.remember(currentBlog.id, wasLiked);
                 this.isSyncingLike.set(false);
             }
         });

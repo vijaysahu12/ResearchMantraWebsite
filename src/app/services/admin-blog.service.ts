@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ResearchAuthService } from './research-auth.service';
+import { BlogLikeService } from './blog-like.service';
 
 export interface BlogPost {
     id: string;
@@ -69,6 +70,7 @@ export class AdminBlogService {
     private readonly publicApiUrl = `${environment.websiteBlogApiUrl}WebsiteBlog`;
     private readonly http = inject(HttpClient);
     private readonly auth = inject(ResearchAuthService);
+    private readonly likes = inject(BlogLikeService);
     private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     private processBlogContent(content: string): string {
@@ -107,6 +109,15 @@ export class AdminBlogService {
         });
     }
 private blogs = signal<BlogPost[]>([]);
+
+    /**
+     * True until the blog list has been fetched at least once. The list page
+     * renders its skeleton from this; without it the empty "No insights found"
+     * state shows during the first load, because an unfetched list and a list
+     * with no matches look identical from the template.
+     */
+    private readonly loadingBlogs = signal<boolean>(true);
+    readonly blogsLoading = this.loadingBlogs.asReadonly();
     // getBlogs() {
     //     return this.blogsData;
     // }
@@ -121,6 +132,7 @@ private blogs = signal<BlogPost[]>([]);
 
 loadBlogs(page = 1, size = 10, category = '') {
   this.blogs.set([]);
+  this.loadingBlogs.set(true);
 
   const ts = Date.now();
   const categoryParam = category && category !== 'ALL'
@@ -140,13 +152,18 @@ loadBlogs(page = 1, size = 10, category = '') {
       const mappedData = (res?.data ?? []).map((b: any) => ({
         ...b,
         images: b.images ?? [],
-        enableComments: b.enableComments === true || String(b.enableComments).toLowerCase() === 'true'
+        enableComments: b.enableComments === true || String(b.enableComments).toLowerCase() === 'true',
+        // The list endpoint takes no user, so it always answers isLiked:false —
+        // re-apply what this visitor liked or every reload clears their hearts.
+        isLiked: this.likes.isLiked(b.id) || b.isLiked === true
       }));
       this.blogs.set(mappedData);
+      this.loadingBlogs.set(false);
     },
     error: (err) => {
       console.error('❌ [Service] API Error:', err);
       this.blogs.set([]);
+      this.loadingBlogs.set(false);
     }
   });
 }

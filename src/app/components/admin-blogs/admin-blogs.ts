@@ -5,7 +5,6 @@ import {
   signal,
   computed,
   OnInit,
-  effect,
   PLATFORM_ID,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -13,6 +12,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { AdminBlogService } from '../../services/admin-blog.service';
 import { BlogService } from '../../services/blog.service';
 import { LeadService } from '../../services/lead.service';
+import { BlogLikeService } from '../../services/blog-like.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
 import { SeoService } from '../../services/seo.service';
@@ -32,12 +32,22 @@ export class AdminBlogs implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
+  private likeService = inject(BlogLikeService);
   private seoService = inject(SeoService);
   private enquiryState = inject(EnquiryStateService);
   private platformId = inject(PLATFORM_ID);
   private get isBrowser() { return isPlatformBrowser(this.platformId); }
 
-  isLoadingInitial = signal<boolean>(false);
+  /** Brief skeleton while a search or category change re-filters the list. */
+  private isFiltering = signal<boolean>(false);
+
+  /**
+   * Drives the grid's skeleton off the request itself, so it stays up until the
+   * blogs actually arrive. This used to start `false` and be cleared by an
+   * effect watching the blogs signal — which fires on the empty array the
+   * request starts with, so "No insights found" flashed for the whole fetch.
+   */
+  isLoadingInitial = computed(() => this.blogService.blogsLoading() || this.isFiltering());
 
   public activeCommentBlogId: string | number | null = null;
 
@@ -49,7 +59,8 @@ export class AdminBlogs implements OnInit {
 
   // 🟢 Track current image index per blog
   imageIndexes: { [key: string]: number } = {};
-  userId: any = '00000000-0000-0000-0000-000000000000'; // Replace with actual user ID logic
+  /** Stable per-visitor id, so one reader's like cannot cancel another's. */
+  get userId() { return this.likeService.userId; }
 
   // Category tabs
   readonly categories = ['ALL', 'Nifty', 'Options', 'F&O', 'Stocks', 'Investment', 'Portfolio', 'Market', 'Sector', 'Levels', 'Education', 'Others'];
@@ -85,7 +96,7 @@ export class AdminBlogs implements OnInit {
     this.isLoadingDate.set(true);
     this.blogService.getBlogsByDate(date).subscribe({
       next: (res: any) => {
-        const apiBlogs: any[] = res?.data ?? [];
+        const apiBlogs: any[] = this.likeService.applyRemembered(res?.data ?? []);
         const seen = new Set(local.map(b => b.slug));
         this.dateBlogs.set([...local, ...apiBlogs.filter(b => !seen.has(b?.slug))]);
         this.isLoadingDate.set(false);
@@ -134,15 +145,6 @@ export class AdminBlogs implements OnInit {
     this.shareModalBlog.set(null);
   }
 
-  constructor() {
-    effect(() => {
-      const blogs = this.blogs();
-      if (blogs !== undefined && blogs !== null) {
-        this.isLoadingInitial.set(false);
-      }
-    });
-  }
-
   ngOnInit(): void {
     this.seoService.setMetaTags({
       title: 'Stock Market Analysis & Nifty Updates 2026 | Insights',
@@ -163,7 +165,6 @@ export class AdminBlogs implements OnInit {
         this.loadBlogsByDate(date);
       } else {
         this.dateBlogs.set([]);
-        this.isLoadingInitial.set(true);
         this.refreshBlogs();
       }
     });
@@ -217,10 +218,10 @@ export class AdminBlogs implements OnInit {
     }
 
     this.searchTimeout = setTimeout(() => {
-      this.isLoadingInitial.set(true);
+      this.isFiltering.set(true);
       setTimeout(() => {
         this.searchQuery.set(value);
-        this.isLoadingInitial.set(false);
+        this.isFiltering.set(false);
       }, 300);
     }, 400);
   }
@@ -228,13 +229,13 @@ export class AdminBlogs implements OnInit {
   clearSearch() {
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
-    this.isLoadingInitial.set(true);
+    this.isFiltering.set(true);
     setTimeout(() => {
       this.searchQuery.set('');
       // Reset the chip too: clearing from an empty result should return the full
       // list, not leave the user stuck on the filter that produced no matches.
       this.selectedCategory.set('ALL');
-      this.isLoadingInitial.set(false);
+      this.isFiltering.set(false);
     }, 300);
   }
 
@@ -314,13 +315,7 @@ export class AdminBlogs implements OnInit {
   }
 
   private rememberLike(id: string, isLiked: boolean): void {
-    if (!this.isBrowser) return;
-    try {
-      if (isLiked) localStorage.setItem(`blog_liked_${id}`, 'true');
-      else localStorage.removeItem(`blog_liked_${id}`);
-    } catch {
-      // Private browsing / blocked storage — the server response is the source of truth.
-    }
+    this.likeService.remember(id, isLiked);
   }
 
   toggleLike(blog: any, event: Event) {

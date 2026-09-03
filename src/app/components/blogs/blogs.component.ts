@@ -12,6 +12,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
 import { AdminBlogService } from '../../services/admin-blog.service';
 import { LeadService } from '../../services/lead.service';
+import { BlogLikeService } from '../../services/blog-like.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
 
@@ -30,6 +31,7 @@ export class BlogsComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
+  private likeService = inject(BlogLikeService);
   private platformId = inject(PLATFORM_ID);
   private get isBrowser() { return isPlatformBrowser(this.platformId); }
 
@@ -42,7 +44,8 @@ export class BlogsComponent implements OnInit {
   private searchTimeout: any;
 
   imageIndexes: { [key: string]: number } = {};
-  userId: any = '00000000-0000-0000-0000-000000000000';
+  /** Stable per-visitor id, so one reader's like cannot cancel another's. */
+  get userId() { return this.likeService.userId; }
 
   // Category tabs
   readonly categories = ['ALL', 'Nifty', 'Options', 'F&O', 'Stocks', 'Investment', 'Portfolio', 'Market', 'Sector', 'Levels', 'Education', 'Others'];
@@ -273,6 +276,7 @@ export class BlogsComponent implements OnInit {
       next: (res) => {
         blog.isLiked = res.data.isLiked;
         blog.likesCount = res.data.totalLikes;
+        this.likeService.remember(blog.id, res.data.isLiked);
       },
     });
   }
