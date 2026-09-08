@@ -171,7 +171,6 @@ export class AdminBlogs implements OnInit {
   }
 
   private refreshBlogs(): void {
-    // Load all blogs without server-side category filter; filtering is done client-side
     this.blogService.loadBlogs(1, 100);
   }
 
@@ -293,11 +292,12 @@ export class AdminBlogs implements OnInit {
    */
   private readonly processingLikes = signal<ReadonlySet<string>>(new Set());
 
-  private setLikeProcessing(id: string, processing: boolean): void {
+  private setLikeProcessing(id: string | number, processing: boolean): void {
+    const key = String(id);
     this.processingLikes.update((current) => {
       const next = new Set(current);
-      if (processing) next.add(id);
-      else next.delete(id);
+      if (processing) next.add(key);
+      else next.delete(key);
       return next;
     });
   }
@@ -308,13 +308,13 @@ export class AdminBlogs implements OnInit {
    * unchanged, so an OnPush template never re-renders and the heart/count appear
    * frozen even though the click was handled.
    */
-  private patchLike(id: string, isLiked: boolean, likesCount: number): void {
+  private patchLike(id: string | number, isLiked: boolean, likesCount: number): void {
     this.blogs.update((blogs) =>
       blogs.map((b) => (b.id === id ? { ...b, isLiked, likesCount: Math.max(0, likesCount) } : b)),
     );
   }
 
-  private rememberLike(id: string, isLiked: boolean): void {
+  private rememberLike(id: string | number, isLiked: boolean): void {
     this.likeService.remember(id, isLiked);
   }
 
@@ -322,7 +322,7 @@ export class AdminBlogs implements OnInit {
     event.stopPropagation();
 
     // Ignore repeat clicks while this blog's request is still in flight.
-    if (this.processingLikes().has(blog.id)) return;
+    if (this.isBlogSyncing(blog.id)) return;
     this.setLikeProcessing(blog.id, true);
 
     // Optimistic update. `likesCount` is absent on some payloads, and
@@ -359,8 +359,8 @@ export class AdminBlogs implements OnInit {
     });
   }
 
-  isBlogSyncing(id: string): boolean {
-    return this.processingLikes().has(id);
+  isBlogSyncing(id: string | number): boolean {
+    return this.processingLikes().has(String(id));
   }
 
   openEnquiry() {

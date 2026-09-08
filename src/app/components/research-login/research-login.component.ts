@@ -107,7 +107,7 @@ export class ResearchLoginComponent {
             saved && this.isSafeInternalUrl(saved)
               ? saved
               : this.safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'));
-          void this.router.navigateByUrl(target);
+          void this.router.navigateByUrl(target, { replaceUrl: true });
         },
         error: () => this.errorMessage.set('The OTP could not be verified. Please try again.'),
       });

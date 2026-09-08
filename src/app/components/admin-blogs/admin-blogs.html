@@ -183,7 +183,7 @@
                   <span class="cat-badge">{{ cat }}</span>
                 }
               </div>
-              @if (blog.images.length > 1) {
+              @if (blog.images && blog.images.length > 1) {
                 <button class="img-prev" (click)="prevImage(blog, $event)" aria-label="Previous image">&#8249;</button>
                 <button class="img-next" (click)="nextImage(blog, $event)" aria-label="Next image">&#8250;</button>
                 <div class="img-dots">
