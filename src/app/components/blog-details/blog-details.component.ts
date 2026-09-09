@@ -1902,6 +1902,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         const daysInMonth = new Date(year, month, 0).getDate();
         const monthName = this.monthNames[month - 1];
         const currentSlug = this.blog()?.slug;
+        const blogScoped = this.calendarSource() === 'blog';
 
         const cells: Array<{ day: number | null; hasPost: boolean; label: string; isCurrent: boolean }> = [];
         for (let i = 0; i < firstDay; i++) cells.push({ day: null, hasPost: false, label: '', isCurrent: false });
@@ -1910,7 +1911,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
             const hasPost = days.includes(d);
             const label = !hasPost
                 ? ''
-                : posts.length === 1
+                : blogScoped && posts.length === 1
                     ? `Read the post published on ${monthName} ${d}, ${year}`
                     : `View posts published on ${monthName} ${d}, ${year}`;
             cells.push({
@@ -1986,14 +1987,28 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
 
         if (!this.isBrowser) return;
 
+        const year = this.calendarYear();
+        const month = this.calendarMonth();
+
+        // The reader can move to another month, or to a blog article, while this
+        // is still in flight. A late response must not repaint a calendar that
+        // has moved on -- on a blog article that would mark market-analysis days
+        // the blogs section cannot resolve. Whichever call is current owns
+        // calendarLoading, so a stale one bows out without touching it.
+        const isStale = () => this.calendarSource() !== 'market'
+            || this.calendarYear() !== year
+            || this.calendarMonth() !== month;
+
         this.calendarLoading.set(true);
-        this.adminBlogService.getCalendarDates(this.calendarYear(), this.calendarMonth()).subscribe({
+        this.adminBlogService.getCalendarDates(year, month).subscribe({
             next: (res: any) => {
+                if (isStale()) return;
                 const apiDays: number[] = res?.data?.days ?? [];
                 this.postDays.set([...new Set([...local, ...apiDays])].sort((a, b) => a - b));
                 this.calendarLoading.set(false);
             },
             error: () => {
+                if (isStale()) return;
                 this.postDays.set(local);
                 this.calendarLoading.set(false);
             }
@@ -2005,20 +2020,24 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         const y = this.calendarYear();
         const m = this.calendarMonth();
 
-        // A single post on that date goes straight to the article; several share
-        // the date, so fall back to the date-filtered listing.
+        const mm = String(m).padStart(2, '0');
+        const dd = String(cell.day).padStart(2, '0');
+
+        // A market-analysis calendar marks admin publish days too, and only that
+        // section's listing can show them, so every date goes through it.
+        if (this.calendarSource() !== 'blog') {
+            this.router.navigate(['/stock-market-analysis-and-nifty-updates'], { queryParams: { date: `${y}-${mm}-${dd}` } });
+            return;
+        }
+
+        // Inside the blogs section every marked day is a blog day: a lone post
+        // opens directly, several share the date so fall back to the listing.
         const matches = this.blogService.getBlogsOnDate(y, m, cell.day);
         if (matches.length === 1) {
             this.navigateToRelated(matches[0].slug);
             return;
         }
-
-        const mm = String(m).padStart(2, '0');
-        const dd = String(cell.day).padStart(2, '0');
-        const listing = this.calendarSource() === 'blog'
-            ? '/blogs'
-            : '/stock-market-analysis-and-nifty-updates';
-        this.router.navigate([listing], { queryParams: { date: `${y}-${mm}-${dd}` } });
+        this.router.navigate(['/blogs'], { queryParams: { date: `${y}-${mm}-${dd}` } });
     }
 
     sanitizedContent = computed(() => {
