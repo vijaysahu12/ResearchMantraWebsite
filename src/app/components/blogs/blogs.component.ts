@@ -5,12 +5,10 @@ import {
   signal,
   computed,
   OnInit,
-  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
-import { AdminBlogService } from '../../services/admin-blog.service';
 import { LeadService } from '../../services/lead.service';
 import { BlogLikeService } from '../../services/blog-like.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
@@ -26,14 +24,10 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
 })
 export class BlogsComponent implements OnInit {
   private blogService = inject(BlogService);
-  private adminBlogService = inject(AdminBlogService);
-  private apiBlogService = inject(AdminBlogService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
   private likeService = inject(BlogLikeService);
-  private platformId = inject(PLATFORM_ID);
-  private get isBrowser() { return isPlatformBrowser(this.platformId); }
 
   public activeCommentBlogId: string | number | null = null;
 
@@ -109,19 +103,20 @@ export class BlogsComponent implements OnInit {
     return `${monthNames[month - 1]} ${day}, ${year}`;
   }
 
+  /**
+   * Posts for the date picked in an article's calendar. This is the blogs
+   * section, so it lists the blog posts only — the admin-published market
+   * analysis posts have their own dated listing on
+   * /stock-market-analysis-and-nifty-updates. They resolve synchronously, so
+   * the view is populated during SSR and without the API.
+   */
   private loadBlogsByDate(date: string) {
-    if (!this.isBrowser) return;
-    this.isLoadingDate.set(true);
-    this.adminBlogService.getBlogsByDate(date).subscribe({
-      next: (res: any) => {
-        this.dateBlogs.set(res?.data ?? []);
-        this.isLoadingDate.set(false);
-      },
-      error: () => {
-        this.dateBlogs.set([]);
-        this.isLoadingDate.set(false);
-      }
-    });
+    const parts = date.split('-');
+    const blogs = parts.length === 3
+      ? this.blogService.getBlogsOnDate(+parts[0], +parts[1], +parts[2])
+      : [];
+    this.dateBlogs.set(blogs);
+    this.isLoadingDate.set(false);
   }
 
   clearDateFilter() {

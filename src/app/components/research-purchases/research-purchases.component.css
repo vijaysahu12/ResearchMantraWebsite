@@ -219,6 +219,42 @@
 /* ---------- Orders ---------- */
 .orders { display: grid; gap: 14px; }
 
+/* A long purchase history scrolls inside the panel instead of stretching the
+   page, so the tabs, section heading and order count stay in view. Below the
+   card-reflow breakpoint the page itself scrolls -- nested scrolling on touch
+   is worse than a tall page. */
+@media (min-width: 861px) {
+  .orders {
+    max-height: clamp(360px, calc(100vh - 280px), 640px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Breathing room so the cards' hover lift and shadow are not clipped by
+       the scroll box; the negative margin keeps them aligned with the heading. */
+    padding: 6px 10px 6px 6px;
+    margin: -6px -10px -6px -6px;
+    scrollbar-width: thin;
+    scrollbar-color: #c3d9ec transparent;
+  }
+
+  .orders:focus-visible {
+    outline: 3px solid #f5a623;
+    outline-offset: 2px;
+    border-radius: 18px;
+  }
+
+  .orders::-webkit-scrollbar { width: 10px; }
+  .orders::-webkit-scrollbar-track { background: transparent; }
+
+  .orders::-webkit-scrollbar-thumb {
+    background: #c3d9ec;
+    background-clip: content-box;
+    border: 3px solid transparent;
+    border-radius: 999px;
+  }
+
+  .orders::-webkit-scrollbar-thumb:hover { background: #9dc2e2; background-clip: content-box; }
+}
+
 .order-card { grid-template-columns: auto minmax(0, 2fr) 1fr 1fr auto; }
 
 .ghost-btn {

@@ -1877,6 +1877,13 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     calendarMonth = signal<number>(0);
     calendarLoading = signal<boolean>(false);
     postDays = signal<number[]>([]);
+    /**
+     * Which section the article being read belongs to. The sidebar calendar is
+     * scoped to it: on a blog article it marks (and links to) blog posts only,
+     * while a market-analysis article keeps the admin-published dates it is
+     * listed with. Mixing the two made blog readers land on market analysis.
+     */
+    calendarSource = signal<'blog' | 'market'>('blog');
     readonly weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
     readonly monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -1957,11 +1964,26 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         this.loadCalendarDates();
     }
 
+    /** Re-scope the calendar to one section and refresh the days it marks. */
+    private setCalendarSource(source: 'blog' | 'market') {
+        if (this.calendarSource() === source) return;
+        this.calendarSource.set(source);
+        this.loadCalendarDates();
+    }
+
     private loadCalendarDates() {
         // Built-in posts are known synchronously, so the calendar is marked up
         // even during SSR and when the API is unreachable.
         const local = this.localPostDays();
         this.postDays.set(local);
+
+        // Blog articles: the built-in posts ARE the blogs section, so stop here
+        // rather than merging in the admin-published market-analysis dates.
+        if (this.calendarSource() === 'blog') {
+            this.calendarLoading.set(false);
+            return;
+        }
+
         if (!this.isBrowser) return;
 
         this.calendarLoading.set(true);
@@ -1993,7 +2015,10 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
 
         const mm = String(m).padStart(2, '0');
         const dd = String(cell.day).padStart(2, '0');
-        this.router.navigate(['/stock-market-analysis-and-nifty-updates'], { queryParams: { date: `${y}-${mm}-${dd}` } });
+        const listing = this.calendarSource() === 'blog'
+            ? '/blogs'
+            : '/stock-market-analysis-and-nifty-updates';
+        this.router.navigate([listing], { queryParams: { date: `${y}-${mm}-${dd}` } });
     }
 
     sanitizedContent = computed(() => {
@@ -2047,6 +2072,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
             const foundBlog = this.blogService.getBlogBySlug(slugValue);
 
             if (foundBlog) {
+                this.setCalendarSource('blog');
                 this.blog.set(foundBlog);
                 this.updateSeoTags(foundBlog);
                 this.anchorCalendarToBlog(foundBlog);
@@ -2057,7 +2083,9 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            // Step 3: Not in hardcoded blogs — call the admin API
+            // Step 3: Not in hardcoded blogs — it is an admin-published
+            // (market analysis) post, so the calendar covers those dates.
+            this.setCalendarSource('market');
             this.loading.set(true);
             this.adminBlogService.getBlogDetails(slugValue).subscribe({
                 next: (res: any) => {

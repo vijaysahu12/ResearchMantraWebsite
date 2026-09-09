@@ -98,7 +98,7 @@
           </div>
         }
         @else {
-          <div class="orders" aria-label="Purchase orders">
+          <div class="orders" role="region" tabindex="0" aria-label="Purchase orders, scrollable list">
             @for (order of purchases(); track order.transactionId) {
               <article class="record-card order-card">
                 <span class="card-ico" aria-hidden="true">
