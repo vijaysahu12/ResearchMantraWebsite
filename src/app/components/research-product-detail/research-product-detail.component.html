@@ -72,162 +72,24 @@
 
         <div class="detail-grid">
           <div class="detail-main">
-            @if (item.roi != null || item.accuracy != null || item.contentCount || item.videoCount) {
+            @if (item.contentCount || item.videoCount) {
               <div class="stat-row">
-                @if (item.roi != null && item.roi > 0) { <div class="stat"><span>ROI</span><strong>{{ item.roi | number:'1.0-2' }}%</strong></div> }
-                @if (item.accuracy != null && item.accuracy > 0) { <div class="stat"><span>Accuracy</span><strong>{{ item.accuracy | number:'1.0-2' }}%</strong></div> }
                 @if (item.contentCount) { <div class="stat"><span>Reports</span><strong>{{ item.contentCount }}</strong></div> }
                 @if (item.videoCount) { <div class="stat"><span>Videos</span><strong>{{ item.videoCount }}</strong></div> }
               </div>
             }
 
-            <div class="detail-tabs" role="tablist">
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'about'" [class.active]="activeTab() === 'about'" (click)="selectTab('about')">Overview</button>
-              <button type="button" role="tab" [attr.aria-selected]="activeTab() === 'performance'" [class.active]="activeTab() === 'performance'" (click)="selectTab('performance')">Performance</button>
-            </div>
+            @if (item.description) {
+              <section class="detail-section">
+                <h2>About this product</h2>
+                <div class="rich-text" [innerHTML]="item.description"></div>
+              </section>
+            }
 
-            @if (activeTab() === 'about') {
-              @if (item.description) {
-                <section class="detail-section">
-                  <h2>About this product</h2>
-                  <div class="rich-text" [innerHTML]="item.description"></div>
-                </section>
-              }
-
-              @if (item.extraBenefits) {
-                <section class="detail-section">
-                  <h2>What you get</h2>
-                  <div class="rich-text" [innerHTML]="item.extraBenefits"></div>
-                </section>
-              }
-            } @else {
-              <section class="detail-section performance-section">
-                <h2>Closed trades performance</h2>
-
-                @if (performanceLoading()) {
-                  <div class="perf-skeleton" aria-live="polite" aria-label="Loading performance">
-                    <span></span><span></span><span></span>
-                  </div>
-                } @else if (performanceError()) {
-                  <div class="state-card small" role="alert">
-                    <p>{{ performanceError() }}</p>
-                    <div class="state-actions">
-                      <button type="button" (click)="retryPerformance()">Try again</button>
-                    </div>
-                  </div>
-                } @else if (performance().length === 0) {
-                  <p class="perf-empty">No closed trades to show yet for this product.</p>
-                } @else {
-                  @if (performanceSummary(); as summary) {
-                    <div class="perf-kpis">
-                      <div class="perf-kpi">
-                        <span>Closed trades</span>
-                        <strong>{{ summary.totalTrades }}</strong>
-                      </div>
-                      <div class="perf-kpi">
-                        <span>Win rate</span>
-                        <strong>{{ summary.winRate | number:'1.0-0' }}%</strong>
-                      </div>
-                      <div class="perf-kpi">
-                        <span>Total profit</span>
-                        <strong [class.gain]="summary.totalProfit > 0" [class.loss]="summary.totalProfit < 0">
-                          {{ summary.totalProfit > 0 ? '+' : '' }}{{ summary.totalProfit | number:'1.0-2' }}
-                        </strong>
-                      </div>
-                      <div class="perf-kpi">
-                        <span>Avg. ROI</span>
-                        <strong [class.gain]="summary.avgRoi > 0" [class.loss]="summary.avgRoi < 0">
-                          {{ summary.avgRoi > 0 ? '+' : '' }}{{ summary.avgRoi | number:'1.0-2' }}%
-                        </strong>
-                      </div>
-                    </div>
-                  }
-
-                  <div class="perf-chart-card">
-                    <div class="perf-chart-head">
-                      <h3>Profit by trade</h3>
-                      <div class="perf-legend">
-                        <span class="perf-legend-item"><i class="swatch gain"></i>Profit</span>
-                        <span class="perf-legend-item"><i class="swatch loss"></i>Loss</span>
-                      </div>
-                    </div>
-                    <div class="perf-chart-wrap">
-                      <svg class="perf-chart" viewBox="0 0 100 50" preserveAspectRatio="none" role="img" aria-label="Profit for each closed trade, oldest to newest">
-                        <line class="perf-baseline" x1="0" y1="25" x2="100" y2="25" />
-                        @for (bar of chartBars(); track bar.trade.id; let i = $index) {
-                          <rect
-                            class="perf-bar"
-                            [class.gain]="bar.isPositive"
-                            [class.loss]="!bar.isPositive"
-                            [class.hovered]="hoveredTradeIndex() === i"
-                            [attr.x]="bar.x"
-                            [attr.y]="bar.y"
-                            [attr.width]="bar.width"
-                            [attr.height]="bar.height"
-                            rx="0.8"
-                            (mouseenter)="hoverBar(i)"
-                            (mouseleave)="hoverBar(null)"
-                          >
-                            <title>{{ bar.trade.stockSymbol }} · {{ bar.trade.profit > 0 ? '+' : '' }}{{ bar.trade.profit | number:'1.0-2' }} ({{ bar.trade.roi | number:'1.0-2' }}%)</title>
-                          </rect>
-                        }
-                      </svg>
-
-                      @if (hoveredTradeIndex() !== null && chartBars()[hoveredTradeIndex()!]; as hovered) {
-                        <div class="perf-tooltip" [style.left.%]="hovered.x + hovered.width / 2">
-                          <strong>{{ hovered.trade.stockSymbol }}</strong>
-                          <span [class.gain]="hovered.isPositive" [class.loss]="!hovered.isPositive">
-                            {{ hovered.trade.profit > 0 ? '+' : '' }}{{ hovered.trade.profit | number:'1.0-2' }} ({{ hovered.trade.roi | number:'1.0-2' }}%)
-                          </span>
-                          <small>{{ splitDate(hovered.trade.entryDateTime).date }}</small>
-                        </div>
-                      }
-                    </div>
-                  </div>
-
-                  <div class="perf-table-wrap">
-                    <table class="perf-table">
-                      <thead>
-                        <tr>
-                          <th>Symbol</th>
-                          <th>Entry</th>
-                          <th class="num">Entry price</th>
-                          <th class="num">Exit price</th>
-                          <th class="num">P&amp;L</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (trade of performance(); track trade.id) {
-                          <tr>
-                            <td class="symbol">{{ trade.stockSymbol }}</td>
-                            <td class="date-cell">
-                              <span>{{ splitDate(trade.entryDateTime).date }}</span>
-                              <small>{{ splitDate(trade.entryDateTime).time }}</small>
-                            </td>
-                            <td class="num" data-label="Entry price">₹{{ trade.entryPrice | number:'1.2-2' }}</td>
-                            <td class="num" data-label="Exit price">₹{{ trade.exitPrice | number:'1.2-2' }}</td>
-                            <td class="num pnl-cell">
-                              <span [class.gain]="trade.profit > 0" [class.loss]="trade.profit < 0">
-                                {{ trade.profit > 0 ? '+' : '' }}{{ trade.profit | number:'1.0-2' }}
-                              </span>
-                              <small [class.gain]="trade.roi > 0" [class.loss]="trade.roi < 0">
-                                {{ trade.roi > 0 ? '+' : '' }}{{ trade.roi | number:'1.2-2' }}%
-                              </small>
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-
-                  @if (performanceHasMore()) {
-                    <div class="perf-load-more">
-                      <button type="button" (click)="loadMorePerformance()" [disabled]="performanceLoadingMore()">
-                        {{ performanceLoadingMore() ? 'Loading…' : 'Load more' }}
-                      </button>
-                    </div>
-                  }
-                }
+            @if (item.extraBenefits) {
+              <section class="detail-section">
+                <h2>What you get</h2>
+                <div class="rich-text" [innerHTML]="item.extraBenefits"></div>
               </section>
             }
           </div>

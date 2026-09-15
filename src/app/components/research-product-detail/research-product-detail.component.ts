@@ -2,34 +2,11 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
-import { ProductDetail, ProductPerformanceItem } from '../../models/research.models';
+import { ProductDetail } from '../../models/research.models';
 import { ProductService } from '../../services/product.service';
 import { ResearchAuthService } from '../../services/research-auth.service';
 import { ResearchCartService } from '../../services/research-cart.service';
 import { PurchaseDialogComponent } from '../purchase-dialog/purchase-dialog.component';
-
-const PERFORMANCE_PAGE_SIZE = 10;
-const CHART_BASELINE = 25;
-const CHART_HALF_HEIGHT = 22;
-const CHART_BAR_GAP = 1.2;
-
-type DetailTab = 'about' | 'performance';
-
-interface PerformanceChartBar {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  isPositive: boolean;
-  trade: ProductPerformanceItem;
-}
-
-interface PerformanceSummary {
-  totalTrades: number;
-  winRate: number;
-  totalProfit: number;
-  avgRoi: number;
-}
 
 @Component({
   selector: 'app-research-product-detail',
@@ -54,59 +31,11 @@ export class ResearchProductDetailComponent implements OnInit {
   readonly addingToCart = signal(false);
   readonly addToCartError = signal('');
 
-  readonly activeTab = signal<DetailTab>('about');
-  readonly performance = signal<ProductPerformanceItem[]>([]);
-  readonly performanceLoading = signal(false);
-  readonly performanceLoadingMore = signal(false);
-  readonly performanceError = signal('');
-  readonly performanceHasMore = signal(true);
-  readonly hoveredTradeIndex = signal<number | null>(null);
-  private performancePage = 1;
-  private performanceLoaded = false;
-
   private productId = '';
 
   readonly isOwned = computed(() => {
     const product = this.product();
     return Boolean(product?.isInMyBucket && product?.isInValidity);
-  });
-
-  /** Oldest-first so the chart reads left-to-right like a timeline. */
-  readonly chartTrades = computed(() => [...this.performance()].reverse());
-
-  readonly chartBars = computed<PerformanceChartBar[]>(() => {
-    const rows = this.chartTrades();
-    const n = rows.length;
-    if (!n) return [];
-
-    const maxAbs = Math.max(1, ...rows.map((row) => Math.abs(row.profit)));
-    const barWidth = (100 - CHART_BAR_GAP * (n + 1)) / n;
-
-    return rows.map((trade, i) => {
-      const magnitude = Math.abs(trade.profit) / maxAbs;
-      const height = trade.profit === 0 ? 0.6 : Math.max(magnitude * CHART_HALF_HEIGHT, 1.4);
-      const isPositive = trade.profit >= 0;
-      return {
-        x: CHART_BAR_GAP + i * (barWidth + CHART_BAR_GAP),
-        y: isPositive ? CHART_BASELINE - height : CHART_BASELINE,
-        width: barWidth,
-        height,
-        isPositive,
-        trade,
-      };
-    });
-  });
-
-  readonly performanceSummary = computed<PerformanceSummary | null>(() => {
-    const rows = this.performance();
-    const total = rows.length;
-    if (!total) return null;
-
-    const wins = rows.filter((row) => row.profit > 0).length;
-    const totalProfit = rows.reduce((sum, row) => sum + row.profit, 0);
-    const avgRoi = rows.reduce((sum, row) => sum + row.roi, 0) / total;
-
-    return { totalTrades: total, winRate: (wins / total) * 100, totalProfit, avgRoi };
   });
 
   ngOnInit(): void {
@@ -137,55 +66,6 @@ export class ResearchProductDetailComponent implements OnInit {
 
   retry(): void {
     if (this.productId) this.load(this.productId);
-  }
-
-  selectTab(tab: DetailTab): void {
-    this.activeTab.set(tab);
-    if (tab === 'performance' && !this.performanceLoaded) this.loadPerformance();
-  }
-
-  private loadPerformance(): void {
-    this.performanceLoaded = true;
-    this.performancePage = 1;
-    this.performanceLoading.set(true);
-    this.performanceError.set('');
-    this.products
-      .getProductPerformance(this.productId, PERFORMANCE_PAGE_SIZE, this.performancePage)
-      .pipe(finalize(() => this.performanceLoading.set(false)))
-      .subscribe({
-        next: (rows) => {
-          this.performance.set(rows);
-          this.performanceHasMore.set(rows.length >= PERFORMANCE_PAGE_SIZE);
-        },
-        error: (error: unknown) => {
-          const message = error instanceof Error ? error.message : '';
-          this.performanceError.set(message || 'We could not load the performance history right now.');
-        },
-      });
-  }
-
-  retryPerformance(): void {
-    this.performanceLoaded = false;
-    this.loadPerformance();
-  }
-
-  loadMorePerformance(): void {
-    const nextPage = this.performancePage + 1;
-    this.performanceLoadingMore.set(true);
-    this.products
-      .getProductPerformance(this.productId, PERFORMANCE_PAGE_SIZE, nextPage)
-      .pipe(finalize(() => this.performanceLoadingMore.set(false)))
-      .subscribe({
-        next: (rows) => {
-          this.performancePage = nextPage;
-          this.performance.update((existing) => [...existing, ...rows]);
-          this.performanceHasMore.set(rows.length >= PERFORMANCE_PAGE_SIZE);
-        },
-        error: (error: unknown) => {
-          const message = error instanceof Error ? error.message : '';
-          this.performanceError.set(message || 'We could not load more trades right now.');
-        },
-      });
   }
 
   openPurchase(): void {
@@ -236,16 +116,5 @@ export class ResearchProductDetailComponent implements OnInit {
 
   monogram(name: string): string {
     return (name || '?').trim().slice(0, 1).toUpperCase();
-  }
-
-  hoverBar(index: number | null): void {
-    this.hoveredTradeIndex.set(index);
-  }
-
-  /** Splits the API's "date time" string into a date part and a muted time part. */
-  splitDate(entryDateTime: string | undefined): { date: string; time: string } {
-    if (!entryDateTime) return { date: '—', time: '' };
-    const [date, time = ''] = entryDateTime.split(' ');
-    return { date, time };
   }
 }
