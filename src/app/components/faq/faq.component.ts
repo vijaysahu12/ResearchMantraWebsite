@@ -50,11 +50,6 @@ export class FaqComponent {
             answer: 'You\'ll receive all trade ideas through our mobile app Research Mantra (available on Android and iOS) with instant push notifications. We also send SMS alerts for time-sensitive trades. Premium members get WhatsApp support as well.'
         },
         {
-            id: 5,
-            question: 'What is your success/accuracy rate?',
-            answer: 'Our historical accuracy rate is approximately 85% across all segments. However, we always recommend proper risk management as past performance doesn\'t guarantee future results. Every trade carries inherent market risk.'
-        },
-        {
             id: 6,
             question: 'Can I try before I subscribe?',
             answer: 'Absolutely! We offer 3 free trade ideas when you sign up with your mobile number in Research Mantra App. This helps you experience our research quality before committing to a paid plan.'
