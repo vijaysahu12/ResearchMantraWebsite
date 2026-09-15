@@ -4778,7 +4778,7 @@ export class BlogService {
 <p>Like the Sensex, the Nifty is designed to provide a snapshot of overall market performance rather than measuring every listed company.</p>
 <p>Because it includes companies from a wide range of industries, the Nifty is commonly used as a benchmark by investors, fund managers, and financial institutions.</p>
 <h3>Why Is Nifty Important?</h3>
-<p>The Nifty helps investors:</p>
+<p>The Nifty helps investors:</p> 
 <ul>
     <li>Monitor market performance</li>
     <li>Evaluate investment portfolios</li>

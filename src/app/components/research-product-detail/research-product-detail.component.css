@@ -8,7 +8,7 @@
    either side of the centered content card on wide screens. Bounded to a
    fixed band (not the full, variable page height) so both watermarks stay
    anchored to the same visible area regardless of how long the product's
-   description/performance table is. */
+   description is. */
 .bp-bg { position: absolute; top: 0; left: 0; right: 0; height: 1100px; overflow: hidden; pointer-events: none; z-index: 0; }
 
 .bp-grid {
@@ -110,86 +110,6 @@
 .rich-text ul, .rich-text ol { margin: 0 0 12px; padding-left: 20px; }
 .rich-text img { max-width: 100%; height: auto; border-radius: 10px; }
 .rich-text a { color: #0d6dca; }
-
-/* Tabs */
-.detail-tabs { display: flex; gap: 6px; margin-bottom: 22px; border-bottom: 1px solid #e4ebf3; }
-.detail-tabs button { padding: 11px 4px; margin-right: 22px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #64778a; font: inherit; font-weight: 750; font-size: 15px; cursor: pointer; }
-.detail-tabs button.active { color: #0d6dca; border-bottom-color: #0d6dca; }
-.detail-tabs button:focus-visible { outline: 3px solid #f5a623; outline-offset: 2px; }
-
-/* Performance tab */
-.performance-section { margin-top: 0; }
-.gain { color: #087443; }
-.loss { color: #c0392b; }
-
-/* KPI row */
-.perf-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
-.perf-kpi { padding: 13px 14px; border: 1px solid #e4ebf3; border-radius: 12px; background: #f8fbfe; }
-.perf-kpi span { display: block; margin-bottom: 5px; color: #8797a7; font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
-.perf-kpi strong { font-size: 18px; font-weight: 850; color: #0f2b47; }
-
-/* Chart card */
-.perf-chart-card { padding: 18px; border: 1px solid #e4ebf3; border-radius: 14px; background: #fff; margin-bottom: 22px; }
-.perf-chart-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-.perf-chart-head h3 { margin: 0; font-size: 13.5px; font-weight: 800; color: #45586b; }
-.perf-legend { display: flex; gap: 14px; }
-.perf-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 750; color: #64778a; }
-.swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-.swatch.gain { background: #087443; }
-.swatch.loss { background: #c0392b; }
-.perf-chart-wrap { position: relative; }
-.perf-chart { width: 100%; height: 140px; display: block; overflow: visible; }
-.perf-baseline { stroke: #dfe7ef; stroke-width: .3; }
-.perf-bar { fill: #087443; transition: opacity .15s; cursor: pointer; }
-.perf-bar.loss { fill: #c0392b; }
-.perf-bar:hover, .perf-bar.hovered { opacity: .8; }
-.perf-tooltip { position: absolute; top: -6px; transform: translate(-50%, -100%); background: #0f2b47; color: #fff; padding: 7px 11px; border-radius: 9px; font-size: 12px; white-space: nowrap; pointer-events: none; box-shadow: 0 8px 20px rgba(15,45,80,.28); display: flex; flex-direction: column; gap: 1px; z-index: 2; }
-.perf-tooltip::after { content: ''; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #0f2b47; }
-.perf-tooltip strong { font-size: 12.5px; }
-.perf-tooltip span.gain { color: #7be3a4; }
-.perf-tooltip span.loss { color: #ff9d9d; }
-.perf-tooltip small { color: #a9c6df; font-size: 10.5px; }
-
-/* Table */
-.perf-table-wrap { overflow-x: auto; border: 1px solid #e4ebf3; border-radius: 12px; }
-.perf-table { width: 100%; min-width: 480px; border-collapse: collapse; font-size: 13.5px; table-layout: fixed; }
-.perf-table th, .perf-table td { padding: 11px 12px; }
-.perf-table th { text-align: left; color: #8797a7; font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; background: #f8fbfe; border-bottom: 1px solid #e4ebf3; }
-.perf-table th.num, .perf-table td.num { text-align: right; }
-.perf-table td { color: #45586b; border-bottom: 1px solid #eef2f7; overflow: hidden; text-overflow: ellipsis; }
-.perf-table tr:last-child td { border-bottom: 0; }
-.perf-table td.symbol { color: #0f2b47; font-weight: 750; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.perf-table td.date-cell, .perf-table td.pnl-cell { display: flex; flex-direction: column; gap: 1px; }
-.perf-table td.pnl-cell { align-items: flex-end; }
-.perf-table td.date-cell small, .perf-table td.pnl-cell small { color: #8797a7; font-size: 11px; font-weight: 650; }
-.perf-table td.pnl-cell span { font-weight: 750; }
-.perf-empty { color: #64778a; font-size: 14px; padding: 18px 0; }
-.perf-load-more { display: flex; justify-content: center; margin-top: 18px; }
-.perf-load-more button { padding: 10px 22px; border: 1px solid #cdd9e6; border-radius: 999px; background: #fff; color: #0d6dca; font: inherit; font-weight: 800; cursor: pointer; }
-.perf-load-more button:hover { background: #f4f9ff; }
-.perf-load-more button:disabled { opacity: .6; cursor: default; }
-.perf-skeleton { display: grid; gap: 10px; }
-.perf-skeleton span { height: 44px; border-radius: 10px; background: linear-gradient(100deg,#e8edf3 30%,#f6f8fa 48%,#e8edf3 66%); background-size: 250% 100%; animation: shimmer 1.2s infinite; }
-.state-card.small { padding: 30px 20px; }
-
-@media (max-width: 560px) {
-  .perf-kpis { grid-template-columns: repeat(2, 1fr); }
-
-  /* Stack table rows into cards instead of scrolling horizontally. */
-  .perf-table-wrap { overflow-x: visible; border: none; }
-  .perf-table { min-width: 0; }
-  .perf-table thead { display: none; }
-  .perf-table, .perf-table tbody, .perf-table tr, .perf-table td { display: block; width: 100%; }
-  .perf-table tr { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 6px; padding: 14px; margin-bottom: 10px; border: 1px solid #e4ebf3; border-radius: 12px; }
-  .perf-table td { padding: 0; border-bottom: 0; }
-  .perf-table td.symbol { grid-column: 1 / -1; font-size: 14.5px; }
-  .perf-table td.date-cell { grid-column: 1 / -1; flex-direction: row; align-items: baseline; gap: 6px; margin-top: -4px; }
-  .perf-table td.date-cell small { color: #8797a7; }
-  .perf-table td.num { text-align: left; }
-  .perf-table td.num::before { content: attr(data-label); display: block; color: #8797a7; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
-  .perf-table td.pnl-cell { grid-column: 1 / -1; align-items: baseline; flex-direction: row; gap: 8px; padding-top: 8px; margin-top: 2px; border-top: 1px dashed #eef2f7; }
-  .perf-table td.pnl-cell::before { content: 'P&L'; color: #8797a7; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
-}
 
 /* Side buy card */
 .detail-side { position: relative; }
