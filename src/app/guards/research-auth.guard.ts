@@ -9,3 +9,11 @@ export const researchAuthGuard: CanActivateFn = (_route, state) => {
     ? true
     : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };
+
+export const unauthenticatedOnlyGuard: CanActivateFn = () => {
+  const auth = inject(ResearchAuthService);
+  const router = inject(Router);
+  return auth.isAuthenticated()
+    ? router.createUrlTree(['/research'])
+    : true;
+};

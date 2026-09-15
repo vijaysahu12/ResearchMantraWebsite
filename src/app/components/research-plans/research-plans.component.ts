@@ -4,7 +4,8 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, filter, map, of, switchMap, take, timer } from 'rxjs';
 import { SubscriptionDuration } from '../../models/research.models';
-import { ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { describePaymentError, ResearchSubscriptionService } from '../../services/research-subscription.service';
+import { ResearchAuthService } from '../../services/research-auth.service';
 
 @Component({
   selector: 'app-research-plans',
@@ -17,6 +18,7 @@ export class ResearchPlansComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly subscriptions = inject(ResearchSubscriptionService);
+  private readonly auth = inject(ResearchAuthService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
@@ -101,21 +103,44 @@ export class ResearchPlansComponent {
     this.payStatus.set('pending');
     this.paymentMessage.set(isFree ? 'Activating your subscription…' : 'Creating your secure payment link…');
 
+    // AddPaymentRequest is the live gateway integration used by the cart, the
+    // purchase dialog and the basket overview. The payment is tracked by the
+    // merchant transaction id we generate here, not by a gateway link id.
+    const merchantTransactionId = this.subscriptions.newMerchantTransactionId();
+    const session = this.auth.session();
+
     this.subscriptions
-      .createPaymentRequest(this.productId, duration, this.finalAmount(), this.appliedCoupon())
+      .addPaymentRequest({
+        productIds: [this.productId],
+        amount: this.finalAmount(),
+        couponCode: this.appliedCoupon(),
+        subscriptionDurationId: duration.subscriptionDurationId,
+        merchantTransactionId,
+        // This screen collects no name/email — AddPaymentRequest does not read
+        // either field yet, and the signed-in session supplies the name.
+        customerName: session?.name?.trim() ?? '',
+        customerEmail: '',
+      })
       .subscribe({
         next: (payment) => {
           this.paying.set(false);
-          if (isFree || payment.is_free) {
+          if (isFree || payment?.isFree) {
             this.finishPayment();
             return;
           }
-          this.paymentRequestId.set(payment.link_id);
+          if (!payment?.url) {
+            paymentWindow?.close();
+            this.paymentMessage.set('');
+            this.payStatus.set('failed');
+            this.paymentError.set('The payment link could not be created. Please try again.');
+            return;
+          }
+          this.paymentRequestId.set(merchantTransactionId);
           if (paymentWindow) {
-            paymentWindow.location.href = payment.link_url;
+            paymentWindow.location.href = payment.url;
             paymentWindow.focus();
           } else {
-            window.location.assign(payment.link_url);
+            window.location.assign(payment.url);
             return;
           }
           this.paymentMessage.set('Complete the payment in the secure window. We will unlock Research automatically.');
@@ -127,11 +152,12 @@ export class ResearchPlansComponent {
           this.paymentMessage.set('');
           this.payStatus.set('failed');
           this.paymentError.set(
-            error instanceof Error
-              ? error.message
-              : isFree
+            describePaymentError(
+              error,
+              isFree
                 ? 'We could not activate your free subscription. Please try again.'
                 : 'The payment link could not be created.',
+            ),
           );
         },
       });
@@ -140,11 +166,18 @@ export class ResearchPlansComponent {
   checkPaymentNow(): void {
     if (!this.paymentRequestId()) return;
     this.checkingPayment.set(true);
-    this.subscriptions.getPaymentStatus(this.paymentRequestId()).subscribe({
-      next: (status) => {
+    this.subscriptions.getPaymentStatusV2(this.paymentRequestId()).subscribe({
+      next: (products) => {
         this.checkingPayment.set(false);
-        if (status.link_status?.toUpperCase() === 'PAID') {
+        const status = products[0]?.paymentStatus?.toUpperCase();
+        if (status === 'SUCCESS') {
           this.finishPayment();
+          return;
+        }
+        if (status === 'FAILED') {
+          this.payStatus.set('failed');
+          this.paymentMessage.set('');
+          this.paymentError.set('The payment did not go through. You can try again.');
           return;
         }
         this.paymentMessage.set('Payment is still pending. Complete it in the secure window, then check again.');
@@ -196,8 +229,8 @@ export class ResearchPlansComponent {
   private pollPaymentStatus(): void {
     timer(2000, 3000)
       .pipe(
-        switchMap(() => this.subscriptions.getPaymentStatus(this.paymentRequestId()).pipe(catchError(() => of(null)))),
-        map((status) => status?.link_status?.toUpperCase() === 'PAID'),
+        switchMap(() => this.subscriptions.getPaymentStatusV2(this.paymentRequestId()).pipe(catchError(() => of(null)))),
+        map((products) => products?.[0]?.paymentStatus?.toUpperCase() === 'SUCCESS'),
         filter(Boolean),
         take(1),
         takeUntilDestroyed(this.destroyRef),

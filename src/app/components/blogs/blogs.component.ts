@@ -5,13 +5,12 @@ import {
   signal,
   computed,
   OnInit,
-  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
-import { AdminBlogService } from '../../services/admin-blog.service';
 import { LeadService } from '../../services/lead.service';
+import { BlogLikeService } from '../../services/blog-like.service';
 import { LeadCaptureModalComponent } from '../lead-capture-modal/lead-capture-modal.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
 
@@ -25,13 +24,10 @@ import { ShareModalComponent } from '../share-modal/share-modal.component';
 })
 export class BlogsComponent implements OnInit {
   private blogService = inject(BlogService);
-  private adminBlogService = inject(AdminBlogService);
-  private apiBlogService = inject(AdminBlogService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private leadService = inject(LeadService);
-  private platformId = inject(PLATFORM_ID);
-  private get isBrowser() { return isPlatformBrowser(this.platformId); }
+  private likeService = inject(BlogLikeService);
 
   public activeCommentBlogId: string | number | null = null;
 
@@ -42,7 +38,8 @@ export class BlogsComponent implements OnInit {
   private searchTimeout: any;
 
   imageIndexes: { [key: string]: number } = {};
-  userId: any = '00000000-0000-0000-0000-000000000000';
+  /** Stable per-visitor id, so one reader's like cannot cancel another's. */
+  get userId() { return this.likeService.userId; }
 
   // Category tabs
   readonly categories = ['ALL', 'Nifty', 'Options', 'F&O', 'Stocks', 'Investment', 'Portfolio', 'Market', 'Sector', 'Levels', 'Education', 'Others'];
@@ -106,19 +103,20 @@ export class BlogsComponent implements OnInit {
     return `${monthNames[month - 1]} ${day}, ${year}`;
   }
 
+  /**
+   * Posts for the date picked in an article's calendar. This is the blogs
+   * section, so it lists the blog posts only — the admin-published market
+   * analysis posts have their own dated listing on
+   * /stock-market-analysis-and-nifty-updates. They resolve synchronously, so
+   * the view is populated during SSR and without the API.
+   */
   private loadBlogsByDate(date: string) {
-    if (!this.isBrowser) return;
-    this.isLoadingDate.set(true);
-    this.adminBlogService.getBlogsByDate(date).subscribe({
-      next: (res: any) => {
-        this.dateBlogs.set(res?.data ?? []);
-        this.isLoadingDate.set(false);
-      },
-      error: () => {
-        this.dateBlogs.set([]);
-        this.isLoadingDate.set(false);
-      }
-    });
+    const parts = date.split('-');
+    const blogs = parts.length === 3
+      ? this.blogService.getBlogsOnDate(+parts[0], +parts[1], +parts[2])
+      : [];
+    this.dateBlogs.set(blogs);
+    this.isLoadingDate.set(false);
   }
 
   clearDateFilter() {
@@ -131,9 +129,22 @@ export class BlogsComponent implements OnInit {
     let blogs = this.blogs();
 
     if (category && category !== 'ALL') {
-      blogs = blogs.filter(
-        (b) => b.category?.toLowerCase() === category.toLowerCase(),
-      );
+      if (category === 'Others') {
+        // Anything whose category matches none of the named chips lands here, so
+        // no post is unreachable through the filters.
+        const known = this.categories
+          .filter((c) => c !== 'ALL' && c !== 'Others')
+          .map((c) => c.toLowerCase());
+        blogs = blogs.filter((blog) => {
+          const cat = blog.category?.toLowerCase() ?? '';
+          return !known.some((keyword) => cat.includes(keyword));
+        });
+      } else {
+        // Partial match, because `category` is a comma-separated list
+        // ("Investing, Stocks") that getCategories() splits for the badges.
+        const keyword = category.toLowerCase();
+        blogs = blogs.filter((blog) => blog.category?.toLowerCase().includes(keyword));
+      }
     }
 
     if (!query) return blogs;
@@ -162,6 +173,9 @@ export class BlogsComponent implements OnInit {
     this.isSearching.set(true);
     setTimeout(() => {
       this.searchQuery.set('');
+      // Reset the chip too: clearing from an empty result should return the full
+      // list, not leave the user stuck on the filter that produced no matches.
+      this.selectedCategory.set('ALL');
       this.isSearching.set(false);
     }, 300);
   }
@@ -257,6 +271,7 @@ export class BlogsComponent implements OnInit {
       next: (res) => {
         blog.isLiked = res.data.isLiked;
         blog.likesCount = res.data.totalLikes;
+        this.likeService.remember(blog.id, res.data.isLiked);
       },
     });
   }

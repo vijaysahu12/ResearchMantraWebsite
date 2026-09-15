@@ -20,7 +20,7 @@ import { BlogDetailsComponent } from './components/blog-details/blog-details.com
 import { AdminBlogs } from './components/admin-blogs/admin-blogs';
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { MobileTermsCondition } from './components/terms-conditions/mobile-terms-condition/mobile-terms-condition';
-import { researchAuthGuard } from './guards/research-auth.guard';
+import { researchAuthGuard, unauthenticatedOnlyGuard } from './guards/research-auth.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -55,6 +55,7 @@ export const routes: Routes = [
     },
     {
       path: 'login',
+      canActivate: [unauthenticatedOnlyGuard],
       loadComponent: () =>
         import('./components/research-login/research-login.component').then(
           (component) => component.ResearchLoginComponent,

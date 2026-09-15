@@ -210,7 +210,11 @@
               </svg>
             </div>
             <h2>No matching insights found</h2>
-            <p>We couldn't find any blogs matching "{{ searchQuery() }}". Try different keywords or clear the filter.</p>
+            @if (searchQuery()) {
+              <p>We couldn't find any blogs matching "{{ searchQuery() }}". Try different keywords or clear the filter.</p>
+            } @else {
+              <p>There are no posts in the {{ selectedCategory() }} category yet. Try another filter or view all posts.</p>
+            }
             <button class="btn clear-search-btn" (click)="clearSearch()">Clear Search</button>
           </div>
         }

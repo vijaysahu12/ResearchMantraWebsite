@@ -21,6 +21,7 @@ interface WebsiteLead {
     LeadTypeKey: string;
     LeadSourceKey: string;
     Remarks: string;
+    InvestmentCapital?: string;
     IsDisabled: number | null;
     IsDelete: number | null;
     CreatedOn: string | null;
@@ -59,7 +60,7 @@ export class ContactComponent {
             occupation: ['', [Validators.required]],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
             email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-            investmentCapital: [''],
+            investmentCapital: ['', [Validators.maxLength(50)]],
             message: ['', [Validators.required, Validators.maxLength(300)]],
             acceptTerms: [false, Validators.requiredTrue],
             // UI-only fields — not sent to backend
@@ -122,7 +123,8 @@ export class ContactComponent {
                 ServiceKey: '',
                 LeadTypeKey: '',
                 LeadSourceKey: 'Website Contact Form',
-                Remarks: `Occupation: ${formValue.occupation}\nMessage: ${formValue.message}${formValue.investmentCapital?.trim() ? '\nInvestment Capital: ' + formValue.investmentCapital.trim() : ''}`,
+                Remarks: `Occupation: ${formValue.occupation}\nMessage: ${formValue.message}`,
+                InvestmentCapital: formValue.investmentCapital?.trim() || '',
                 IsDisabled: 0,
                 IsDelete: 0,
                 CreatedOn: now,

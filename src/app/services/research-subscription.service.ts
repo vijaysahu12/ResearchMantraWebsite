@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -18,6 +18,47 @@ import {
 import { ResearchAuthService } from './research-auth.service';
 
 const RESEARCH_PLAN_ID = 24;
+
+/**
+ * Turn a failed payment call into something a customer can act on and a
+ * developer can diagnose.
+ *
+ * HttpErrorResponse is NOT an `instanceof Error`, so a plain
+ * `error instanceof Error ? error.message : 'generic'` check discards the status
+ * code and the gateway's own message — an expired session, a missing endpoint
+ * and an unconfigured gateway all render as the same sentence with nothing to
+ * tell them apart. The status code is kept in the text so it is visible in a
+ * screenshot or a support ticket.
+ */
+export function describePaymentError(error: unknown, fallback: string): string {
+  if (error instanceof HttpErrorResponse) {
+    const body: any = error.error;
+    const serverMessage: string =
+      (typeof body === 'string' ? body.trim() : '') ||
+      body?.message ||
+      body?.Message ||
+      body?.detail ||
+      body?.title ||
+      '';
+
+    if (error.status === 0) {
+      return 'The payment service could not be reached. Check your internet connection and try again.';
+    }
+    if (error.status === 401 || error.status === 403) {
+      return 'Your session has expired. Please sign in again to continue.';
+    }
+    if (error.status === 404) {
+      return `The payment service is unavailable right now (404). ${serverMessage}`.trim();
+    }
+    if (serverMessage) {
+      return `${serverMessage} (${error.status})`;
+    }
+    return `${fallback} (HTTP ${error.status})`;
+  }
+
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ResearchSubscriptionService {
