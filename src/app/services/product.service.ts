@@ -36,7 +36,7 @@ export class ProductService {
 
     return this.http
       .get<ApiEnvelope<ProductListItem[]>>(url, { ...this.authOptions(), params })
-      .pipe(map((response) => this.unwrap(response)));
+      .pipe(map((response) => this.dedupeById(this.unwrap(response))));
   }
 
   /**
@@ -92,6 +92,16 @@ export class ProductService {
   private authOptions(): { headers?: HttpHeaders } {
     const session = this.auth.session();
     return session ? { headers: new HttpHeaders({ Authorization: `Bearer ${session.accessToken}` }) } : {};
+  }
+
+  /**
+   * The products list endpoint can return the same product twice (a join in the
+   * API fans a row out), which showed one product as two identical cards and
+   * breaks Angular's track-by-id in the product carousels. Keep the first row per id.
+   */
+  private dedupeById(items: ProductListItem[]): ProductListItem[] {
+    const seen = new Set<number>();
+    return items.filter((item) => (seen.has(item.id) ? false : (seen.add(item.id), true)));
   }
 
   private unwrap<T>(response: ApiEnvelope<T>): T {

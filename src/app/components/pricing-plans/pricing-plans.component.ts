@@ -3,7 +3,7 @@ import {
     AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone, PLATFORM_ID
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 
 interface PriceTier {
     label: string;
@@ -27,7 +27,6 @@ interface Plan {
 
 @Component({
     selector: 'app-pricing-plans',
-    imports: [NgOptimizedImage],
     templateUrl: './pricing-plans.component.html',
     styleUrl: './pricing-plans.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -151,16 +150,6 @@ export class PricingPlansComponent implements AfterViewInit, OnDestroy {
         } else {
             this.router.navigate(['/']).then(() => setTimeout(scroll, 100));
         }
-    }
-
-    isModalOpen = signal(false);
-
-    openReportModal() {
-        this.isModalOpen.set(true);
-    }
-
-    closeModal() {
-        this.isModalOpen.set(false);
     }
 
     private readonly ALERTS = 'Research Mantra application';
