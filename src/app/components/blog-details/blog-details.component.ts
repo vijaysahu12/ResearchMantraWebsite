@@ -1807,8 +1807,6 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     private likeService = inject(BlogLikeService);
     private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-    private currentPostType: 'blog' | 'market-analysis' = 'blog';
-
     goBack(event: Event) {
         event.preventDefault();
         if (this.isBrowser) window.history.back();
@@ -1870,7 +1868,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     }
 
     navigateToRelated(slug: string) {
-        if (this.currentPostType === 'blog') {
+        if (this.calendarSource() === 'blog') {
             this.router.navigate(['/blogs', slug]);
         } else {
             this.router.navigate(['/', slug]);
@@ -1910,10 +1908,25 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         const currentSlug = this.blog()?.slug;
         const blogScoped = this.calendarSource() === 'blog';
 
+        let currentPostDay: number | null = null;
+        if (!blogScoped) {
+            const blog = this.blog();
+            const raw = ((blog as any)?.publishedOn ?? blog?.date ?? '').trim();
+            if (raw) {
+                const pd = new Date(raw);
+                if (!isNaN(pd.getTime()) && pd.getFullYear() === year && pd.getMonth() + 1 === month) {
+                    currentPostDay = pd.getDate();
+                }
+            }
+        }
+
         const cells: Array<{ day: number | null; hasPost: boolean; label: string; isCurrent: boolean }> = [];
         for (let i = 0; i < firstDay; i++) cells.push({ day: null, hasPost: false, label: '', isCurrent: false });
         for (let d = 1; d <= daysInMonth; d++) {
             const hasPost = days.includes(d);
+            const posts = hasPost && blogScoped
+                ? this.blogService.getBlogsOnDate(year, month, d)
+                : [];
             const label = !hasPost
                 ? ''
                 : blogScoped && posts.length === 1
@@ -1923,7 +1936,9 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                 day: d,
                 hasPost,
                 label,
-                isCurrent: !!currentSlug && posts.some(p => p.slug === currentSlug)
+                isCurrent: blogScoped
+                    ? !!currentSlug && posts.some(p => p.slug === currentSlug)
+                    : hasPost && d === currentPostDay,
             });
         }
         return cells;
@@ -1948,7 +1963,7 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     /** Days from the built-in posts. Returns empty for market-analysis pages
      *  because those posts live only in the API, not in the hardcoded data. */
     private localPostDays(): number[] {
-        if (this.currentPostType === 'market-analysis') return [];
+        if (this.calendarSource() !== 'blog') return [];
         return this.blogService.getPostDaysInMonth(this.calendarYear(), this.calendarMonth());
     }
 
