@@ -1,8 +1,8 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { catchError, forkJoin, of } from 'rxjs';
-import { GroupedPurchaseOrder, GroupedReceipt, MyBucketItem } from '../../models/research.models';
+import { catchError, forkJoin, map, of } from 'rxjs';
+import { GroupedPurchaseOrder, GroupedReceipt, MyBucketItem, PurchaseHistoryItem } from '../../models/research.models';
 import { ResearchSubscriptionService } from '../../services/research-subscription.service';
 import { PurchaseDialogComponent } from '../purchase-dialog/purchase-dialog.component';
 
@@ -32,7 +32,14 @@ export class ResearchPurchasesComponent {
     let purchasesFailed = false;
     forkJoin({
       bucket: this.subscriptions.getMyBucket().pipe(catchError(() => { bucketFailed = true; return of([]); })),
-      purchases: this.subscriptions.getGroupedPurchaseHistory().pipe(catchError(() => { purchasesFailed = true; return of([]); })),
+      purchases: this.subscriptions.getGroupedPurchaseHistory().pipe(
+        catchError(() =>
+          this.subscriptions.getPurchaseHistory().pipe(
+            map(items => this.groupPurchaseItems(items)),
+            catchError(() => { purchasesFailed = true; return of([] as GroupedPurchaseOrder[]); }),
+          )
+        ),
+      ),
     }).subscribe({
       next: ({ bucket, purchases }) => {
         this.bucket.set(bucket);
@@ -60,7 +67,6 @@ export class ResearchPurchasesComponent {
   }
 
   onRenewed(): void {
-    // Refresh the bucket so the renewed product shows its new validity.
     this.load();
   }
 
@@ -73,4 +79,27 @@ export class ResearchPurchasesComponent {
   }
 
   printReceipt(): void { window.print(); }
+
+  private groupPurchaseItems(items: PurchaseHistoryItem[]): GroupedPurchaseOrder[] {
+    const groups = new Map<string, GroupedPurchaseOrder>();
+    for (const item of items) {
+      const key = item.transactionId ?? `single-${item.id}`;
+      const existing = groups.get(key);
+      if (existing) {
+        existing.productCount++;
+        if (item.productName) existing.productNames.push(item.productName);
+        existing.purchaseOrderIds.push(item.id);
+      } else {
+        groups.set(key, {
+          transactionId: key,
+          paymentDate: item.paymentDate,
+          paidAmount: item.paidAmount ?? 0,
+          productCount: 1,
+          productNames: item.productName ? [item.productName] : [],
+          purchaseOrderIds: [item.id],
+        });
+      }
+    }
+    return [...groups.values()];
+  }
 }
