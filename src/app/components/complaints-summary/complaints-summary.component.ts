@@ -23,7 +23,7 @@ import { isPlatformBrowser } from '@angular/common';
             SEBI Compliance
         </div>
         <h2 class="section-title">Number Of Client's Complaints</h2>
-        <p class="update-note">Data of the month ending Jan, 2026 (Data is updated on 7th of every month)</p>
+        <p class="update-note">Data of the month ending Oct, 2026 (Data is updated on 7th of every month)</p>
 
         <div class="table-container">
             <div class="table-wrapper" role="region" tabindex="0" aria-label="Complaints summary table">
@@ -43,11 +43,11 @@ import { isPlatformBrowser } from '@angular/common';
                         <tr>
                             <td>Directly from investor</td>
                             <td>0</td>
+                            <td>1</td>
+                            <td>1</td>
                             <td>0</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td>6</td>
                         </tr>
                         <tr>
                             <td>SEBI (SCORES)</td>
@@ -72,11 +72,11 @@ import { isPlatformBrowser } from '@angular/common';
                         <tr>
                             <td><strong>Grand Total</strong></td>
                             <td>0</td>
+                            <td>1</td>
+                            <td>1</td>
                             <td>0</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td>6</td>
                         </tr>
                     </tfoot>
                 </table>
