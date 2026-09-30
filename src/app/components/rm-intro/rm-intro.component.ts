@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { StrategyUnlockService } from '../../services/strategy-unlock.service';
 
 type Step = 'mobile' | 'name' | 'otp' | 'success';
 
@@ -66,7 +67,10 @@ export class RmIntroComponent implements OnInit, AfterViewInit {
     enquiryForm: FormGroup;
     isEnquirySubmitting = signal<boolean>(false);
     enquirySuccess = signal<string>('');
-    showStrategyModal = signal<boolean>(false);
+    // Shared with the site-wide top announcement bar, which can also open this
+    // modal (see StrategyUnlockService). It is the very same WritableSignal, so
+    // every showStrategyModal.set(...) already in the template keeps working.
+    showStrategyModal = inject(StrategyUnlockService).isOpen;
     activeFormTab = signal<'telegram' | 'enquiry' | 'youtube'>('telegram');
 
     private readonly TAB_ORDER: Array<'telegram' | 'enquiry' | 'youtube'> = ['telegram', 'enquiry', 'youtube'];

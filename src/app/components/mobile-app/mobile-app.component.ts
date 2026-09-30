@@ -23,8 +23,14 @@ interface AppScreen {
 export class MobileAppComponent {
     private readonly platformId = inject(PLATFORM_ID);
 
-    readonly playStoreUrl = 'https://play.google.com/store/apps/details?id=com.research_mantra_official';
-    readonly appStoreUrl = 'https://apps.apple.com/in/app/research-mantra/id6764504116';
+    // The referrer is handed to the app after install (Play Install Referrer), so
+    // the backend can count downloads and registrations that came from this page.
+    // Its value is URL-encoded: utm_source=website&utm_medium=app_page&utm_campaign=app_download
+    readonly playStoreUrl = 'https://play.google.com/store/apps/details?id=com.research_mantra_official'
+        + '&referrer=utm_source%3Dwebsite%26utm_medium%3Dapp_page%26utm_campaign%3Dapp_download';
+    // Apple campaign link (pt = our provider token, ct = this page). Downloads from
+    // it show under App Store Connect > Analytics > Acquisition > Campaigns.
+    readonly appStoreUrl = 'https://apps.apple.com/app/apple-store/id6764504116?pt=128842162&ct=website_app_page&mt=8';
 
     /**
      * Store link that matches the visitor's device:
