@@ -50,13 +50,12 @@ export class HomeComponent implements OnInit {
   private metaService = inject(Meta);
 
   ngOnInit() {
-    this.titleService.setTitle('Research Mantra is Led by Susmita Sahoo, a SEBI Registered Research Analyst');
-    this.metaService.updateTag({ name: 'description', content: 'Research Mantra, directed by Susmita Sahoo, a SEBI Registered Research Analyst, offers professional stock analysis, investment research, and advisory services.' });
+    this.titleService.setTitle('Research Mantra Led by SEBI Registered Analyst Susmita Sahoo');
+    this.metaService.updateTag({ name: 'description', content: 'Research Mantra, led by SEBI Registered Research Analyst Susmita Sahoo, offers expert stock analysis, investment research, and trusted stock advisory services.' });
     this.metaService.updateTag({ name: 'keywords', content: 'SEBI Registered Research Analyst' });
 
-    // OG Tags
-    this.metaService.updateTag({ property: 'og:title', content: 'Research Mantra is Led by Susmita Sahoo, a SEBI Registered Research Analyst' });
-    this.metaService.updateTag({ property: 'og:description', content: 'Research Mantra, directed by Susmita Sahoo, a SEBI Registered Research Analyst, offers professional stock analysis, investment research, and advisory services.' });
+    this.metaService.updateTag({ property: 'og:title', content: 'Research Mantra Led by SEBI Registered Analyst Susmita Sahoo' });
+    this.metaService.updateTag({ property: 'og:description', content: 'Research Mantra, led by SEBI Registered Research Analyst Susmita Sahoo, offers expert stock analysis, investment research, and trusted stock advisory services.' });
     this.metaService.updateTag({ property: 'og:type', content: 'website' });
   }
 }
