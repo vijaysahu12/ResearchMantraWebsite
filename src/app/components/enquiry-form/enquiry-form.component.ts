@@ -79,6 +79,9 @@ interface WebsiteLead {
             <label for="mobile">Mobile Number*</label>
             <input type="tel" id="mobile" formControlName="mobile" maxlength="10" placeholder="Enter your mobile number"
                    (input)="onMobileInput($event)" [class.error]="isFieldInvalid('mobile')">
+            @if (isFieldInvalid('mobile')) {
+              <span class="field-error-text">Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9.</span>
+            }
           </div>
 
           <div class="form-group">
@@ -262,6 +265,13 @@ interface WebsiteLead {
     .form-group input.error {
       border-color: #ef4444;
       background: #fef2f2;
+    }
+
+    .field-error-text {
+      display: block;
+      font-size: 12px;
+      color: #ef4444;
+      margin-top: 4px;
     }
 
     .submit-btn {
@@ -452,7 +462,7 @@ export class EnquiryFormComponent {
 
   enquiryForm: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-    mobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+    mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
     email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
     message: ['', [Validators.maxLength(300)]],
     investmentCapital: [''],

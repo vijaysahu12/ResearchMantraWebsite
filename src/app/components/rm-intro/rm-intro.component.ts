@@ -75,6 +75,7 @@ export class RmIntroComponent implements OnInit, AfterViewInit {
 
     private readonly TAB_ORDER: Array<'telegram' | 'enquiry' | 'youtube'> = ['telegram', 'enquiry', 'youtube'];
     private rotationInterval: ReturnType<typeof setInterval> | null = null;
+    private userSelectedTab = false;
 
     constructor() {
         this.mobileForm = this.fb.group({
@@ -210,8 +211,8 @@ export class RmIntroComponent implements OnInit, AfterViewInit {
 
     selectTab(tab: 'telegram' | 'enquiry' | 'youtube') {
         this.activeFormTab.set(tab);
+        this.userSelectedTab = true;
         this.stopTabRotation();
-        this.startTabRotation();
     }
 
     onCardMouseEnter() {
@@ -219,7 +220,9 @@ export class RmIntroComponent implements OnInit, AfterViewInit {
     }
 
     onCardMouseLeave() {
-        this.startTabRotation();
+        if (!this.userSelectedTab) {
+            this.startTabRotation();
+        }
     }
 
     private startTabRotation() {

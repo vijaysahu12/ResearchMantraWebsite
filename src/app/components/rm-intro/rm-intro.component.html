@@ -200,6 +200,9 @@
                             <input type="tel" id="mobile" formControlName="mobile" maxlength="10"
                                 placeholder="Mobile Number *" (input)="onEnquiryMobileNumberInput($event)">
                         </div>
+                        @if (enquiryForm.get('mobile')?.touched && enquiryForm.get('mobile')?.invalid) {
+                            <span class="enquiry-field-error">Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9.</span>
+                        }
                     </div>
 
                     <div class="form-group">

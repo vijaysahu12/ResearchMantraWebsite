@@ -1868,7 +1868,11 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     }
 
     navigateToRelated(slug: string) {
-        this.router.navigate(['/', slug]);
+        if (this.calendarSource() === 'blog') {
+            this.router.navigate(['/blogs', slug]);
+        } else {
+            this.router.navigate(['/', slug]);
+        }
         if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1904,11 +1908,25 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         const currentSlug = this.blog()?.slug;
         const blogScoped = this.calendarSource() === 'blog';
 
+        let currentPostDay: number | null = null;
+        if (!blogScoped) {
+            const blog = this.blog();
+            const raw = ((blog as any)?.publishedOn ?? blog?.date ?? '').trim();
+            if (raw) {
+                const pd = new Date(raw);
+                if (!isNaN(pd.getTime()) && pd.getFullYear() === year && pd.getMonth() + 1 === month) {
+                    currentPostDay = pd.getDate();
+                }
+            }
+        }
+
         const cells: Array<{ day: number | null; hasPost: boolean; label: string; isCurrent: boolean }> = [];
         for (let i = 0; i < firstDay; i++) cells.push({ day: null, hasPost: false, label: '', isCurrent: false });
         for (let d = 1; d <= daysInMonth; d++) {
-            const posts = this.blogService.getBlogsOnDate(year, month, d);
             const hasPost = days.includes(d);
+            const posts = hasPost && blogScoped
+                ? this.blogService.getBlogsOnDate(year, month, d)
+                : [];
             const label = !hasPost
                 ? ''
                 : blogScoped && posts.length === 1
@@ -1918,7 +1936,9 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                 day: d,
                 hasPost,
                 label,
-                isCurrent: !!currentSlug && posts.some(p => p.slug === currentSlug)
+                isCurrent: blogScoped
+                    ? !!currentSlug && posts.some(p => p.slug === currentSlug)
+                    : hasPost && d === currentPostDay,
             });
         }
         return cells;
@@ -1940,8 +1960,10 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
         this.loadCalendarDates();
     }
 
-    /** Days from the built-in posts, merged with whatever the API reports. */
+    /** Days from the built-in posts. Returns empty for market-analysis pages
+     *  because those posts live only in the API, not in the hardcoded data. */
     private localPostDays(): number[] {
+        if (this.calendarSource() !== 'blog') return [];
         return this.blogService.getPostDaysInMonth(this.calendarYear(), this.calendarMonth());
     }
 
@@ -1973,8 +1995,6 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     }
 
     private loadCalendarDates() {
-        // Built-in posts are known synchronously, so the calendar is marked up
-        // even during SSR and when the API is unreachable.
         const local = this.localPostDays();
         this.postDays.set(local);
 
@@ -2070,13 +2090,11 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        // Default the calendar to the current month before resolving the post;
-        // anchorCalendarToBlog() then re-points it at the post's own month.
-        // This must run first - the params subscription fires synchronously.
+        // Default the calendar to the current month; anchorCalendarToBlog()
+        // re-points it once the post is resolved.
         const now = new Date();
         this.calendarYear.set(now.getFullYear());
         this.calendarMonth.set(now.getMonth() + 1);
-        this.loadCalendarDates();
 
         this.route.params.subscribe(params => {
             const slugValue = params['slug'];
@@ -2087,7 +2105,8 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            // Step 1: Check hardcoded blogs first
+            // Step 1: Check hardcoded blogs first.
+            // If found here the post belongs to the Blogs section, regardless of URL.
             const foundBlog = this.blogService.getBlogBySlug(slugValue);
 
             if (foundBlog) {
@@ -2109,39 +2128,36 @@ export class BlogDetailsComponent implements OnInit, OnDestroy {
             this.adminBlogService.getBlogDetails(slugValue).subscribe({
                 next: (res: any) => {
                     if (res?.data) {
-                        // Step 4: API returned blog — map to BlogPost with fallback values
+                        // Step 3: API returned post — map to BlogPost with fallback values.
+                        // Spread first so every API field (id, publishedOn, …) is
+                        // preserved exactly as the listing page does with …b.
                         const apiData = res.data;
                         const mappedBlog: BlogPost = {
-                            id: apiData.id ?? 0,
+                            ...apiData,
                             slug: apiData.slug ?? slugValue,
                             title: apiData.title ?? '',
                             excerpt: apiData.excerpt ?? '',
-                            // Process HTML content for safe rendering (handles link targets)
                             content: this.adminBlogService['processBlogContent'](apiData.content ?? ''),
                             category: apiData.category ?? '',
                             date: apiData.date ?? '',
-                            // Fallback values for fields the API may not return
                             author: apiData.author ?? 'Research Mantra',
                             readTime: apiData.readTime ?? '5 min read',
                             image: apiData.image ?? 'assets/default-blog.jpg',
-                            // SEO fallback chain: metaTitle → title, metaDescription → excerpt, keywords → category
                             metaTitle: apiData.metaTitle || apiData.title || '',
                             metaDescription: apiData.metaDescription || apiData.excerpt || '',
                             keywords: apiData.keywords || apiData.category || '',
-                            enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true'
+                            enableComments: apiData.enableComments === true || String(apiData.enableComments).toLowerCase() === 'true',
+                            isLiked: this.likeService.isLiked(apiData.id) || apiData.isLiked === true
                         };
 
                         this.blog.set(mappedBlog);
                         this.updateSeoTags(mappedBlog);
+                        this.anchorCalendarToBlog(mappedBlog);
                         this.loadRelatedBlogs(slugValue);
 
-                        // Fetch comments and likes for dynamic blogs
                         this.commentsCount.set(apiData.commentsCount || 0);
                         this.likesCount.set(apiData.likesCount || 0);
-                        
-                        // GetBlogBySlug never reports isLiked, so the visitor's
-                        // own like is only known from what we remembered locally.
-                        this.isLiked.set(this.likeService.isLiked(apiData.id) || apiData.isLiked === true);
+                        this.isLiked.set(mappedBlog.isLiked === true);
                         
                         if (apiData.enableComments) {
                             this.loadComments(apiData.id);
