@@ -41,6 +41,14 @@
     transition: filter 0.2s ease;
 }
 
+/* Action slides render as <button> instead of <a> (see app.html). Strip the UA
+   chrome so both spellings of the bar are pixel-identical. */
+button.top-promo-bar {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+}
+
 .top-promo-bar:hover {
     filter: brightness(1.1);
 }
