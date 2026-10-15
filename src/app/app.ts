@@ -1,4 +1,4 @@
-import { isPlatformBrowser, DOCUMENT, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser, DOCUMENT, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { Component, signal, computed, ChangeDetectionStrategy, inject, effect, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
@@ -15,10 +15,11 @@ import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import Clarity from '@microsoft/clarity';
 import { environment } from '../environments/environment';
+import { StrategyUnlockService } from './services/strategy-unlock.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent, InstallBottomBarComponent, FreeTrialDialogComponent, NgOptimizedImage],
+  imports: [RouterOutlet, RouterLink, HeaderComponent, FooterComponent, EnquiryFormComponent, FloatingSocialComponent, AccessibilityComponent, InstallBottomBarComponent, FreeTrialDialogComponent, NgOptimizedImage, NgTemplateOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,14 +35,29 @@ export class App {
   protected readonly topBarsHidden = signal(false);
   private lastScrollY = 0;
 
-  // Rotating campaigns shown in the site-wide top announcement bar
-  protected readonly topPromoCampaigns: Array<{ pre: string; bold: string; post: string; cta: string; link: string; returnUrl?: string; theme: 'trial' | 'gold' | 'green' }> = [
+  // Rotating campaigns shown in the site-wide top announcement bar.
+  // A slide either navigates (`link`) or runs an action (`action`) - the
+  // template renders the first as an <a> and the second as a <button>.
+  protected readonly topPromoCampaigns: Array<{
+    pre: string;
+    bold: string;
+    post: string;
+    cta: string;
+    link?: string;
+    returnUrl?: string;
+    action?: 'strategy';
+    theme: 'trial' | 'gold' | 'green';
+  }> = [
     { pre: 'Grab your ', bold: 'Exclusive Free Trial', post: ' on the Research Mantra App', cta: 'Install Now', link: '/mobile', theme: 'trial' },
+    // Same offer (and same modal) as the green button further down the home
+    // page. Green theme so the two read as one campaign.
+    { pre: '', bold: 'Unlock Sudarshan Strategy', post: ' for FREE', cta: 'Unlock Now', action: 'strategy', theme: 'green' },
   ];
   protected readonly activeTopPromoIndex = signal(0);
   protected readonly activeTopPromo = computed(() => this.topPromoCampaigns[this.activeTopPromoIndex()]);
   private topPromoTimer: ReturnType<typeof setInterval> | null = null;
 
+  private readonly strategyUnlock = inject(StrategyUnlockService);
   private readonly seoService = inject(SeoService);
   private readonly accessibilityService = inject(AccessibilityService);
   private readonly document = inject(DOCUMENT);
@@ -56,6 +72,7 @@ export class App {
     this.initAccessibilityEffect();
     this.schedulePromoPopup();
     this.startTopPromoRotation();
+    this.destroyRef.onDestroy(() => this.stopTopPromoRotation());
     this.initClarity();
   }
 
@@ -95,12 +112,31 @@ export class App {
   }
 
   /** Cycle the top announcement bar through Free Trial / bundle / combo campaigns. */
-  private startTopPromoRotation(): void {
-    if (!this.isBrowser) return;
+  protected startTopPromoRotation(): void {
+    // Guarded on the timer as well as the platform: the template restarts this
+    // on mouseleave, and a second interval would double the rotation speed.
+    if (!this.isBrowser || this.topPromoTimer) return;
     this.topPromoTimer = setInterval(() => {
       this.activeTopPromoIndex.update(i => (i + 1) % this.topPromoCampaigns.length);
     }, 4500);
-    this.destroyRef.onDestroy(() => { if (this.topPromoTimer) clearInterval(this.topPromoTimer); });
+  }
+
+  /**
+   * Freeze the rotation while the pointer is over the bar. The slides now have
+   * different destinations - one navigates, one opens a modal - so a swap
+   * mid-reach would send the click somewhere the user never aimed at.
+   */
+  protected stopTopPromoRotation(): void {
+    if (!this.topPromoTimer) return;
+    clearInterval(this.topPromoTimer);
+    this.topPromoTimer = null;
+  }
+
+  /** Slides carrying an `action` instead of a `link` are handled here. */
+  protected onTopPromoClick(): void {
+    if (this.activeTopPromo().action === 'strategy') {
+      this.strategyUnlock.requestOpen();
+    }
   }
 
   private initPortalShell(): void {
